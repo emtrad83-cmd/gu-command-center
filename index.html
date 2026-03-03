@@ -41,14 +41,13 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .date-sub{font-family:'DM Mono',monospace;font-size:.78rem;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:16px}
 .intro-formula{background:rgba(184,255,87,.05);border:1px solid rgba(184,255,87,.15);border-radius:8px;padding:12px 16px;font-family:'DM Mono',monospace;font-size:.78rem;color:var(--accent);margin-bottom:16px;line-height:1.5}
 .check-group{display:flex;flex-direction:column;gap:10px}
-.check-item{display:flex;align-items:flex-start;gap:10px;cursor:pointer;padding:10px 12px;border-radius:8px;border:1px solid transparent;transition:all .15s}
+.check-item{display:flex;align-items:flex-start;gap:10px;cursor:pointer;padding:10px 12px;border-radius:8px;border:1px solid transparent;transition:all .15s;user-select:none}
 .check-item:hover{background:var(--surface2);border-color:var(--border)}
 .check-item.checked{background:rgba(184,255,87,.05);border-color:rgba(184,255,87,.15)}
-.check-item input[type=checkbox]{display:none}
 .checkmark{width:20px;height:20px;border:1.5px solid var(--border);border-radius:5px;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .15s;background:var(--surface2)}
 .check-item.checked .checkmark{background:var(--accent);border-color:var(--accent)}
 .checkmark svg{display:none}.check-item.checked .checkmark svg{display:block}
-.check-label{color:var(--text2);font-size:.9rem;line-height:1.4}
+.check-label{color:var(--text2);font-size:.9rem;line-height:1.4;pointer-events:none}
 .check-item.checked .check-label{color:var(--text)}
 .field-label{font-family:'DM Mono',monospace;font-size:.72rem;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
 .text-input,textarea{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.9rem;width:100%;outline:none;transition:border-color .15s;resize:vertical}
@@ -168,26 +167,26 @@ textarea{min-height:80px}
 
       <div class="card-title">GU — Business Momentum</div>
       <div class="check-group">
-        <label class="check-item" onclick="toggleCheck(this)">
-          <input type="checkbox" name="business_opened">
+        <div class="check-item" onclick="toggleCheck(this)">
           <div class="checkmark"><svg width="12" height="9" viewBox="0 0 12 9" fill="none"><path d="M1 4L4.5 7.5L11 1" stroke="#0d0f0e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <span class="check-label">Business Opened</span>
-        </label>
-        <label class="check-item" onclick="toggleCheck(this)">
-          <input type="checkbox" name="gu_intro_made">
+          <input type="checkbox" name="business_opened" style="display:none">
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
           <div class="checkmark"><svg width="12" height="9" viewBox="0 0 12 9" fill="none"><path d="M1 4L4.5 7.5L11 1" stroke="#0d0f0e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <span class="check-label">GU Introduction Made <span style="color:var(--text3);font-size:.82rem">(sample offered, 6-W invited, or GU shared naturally)</span></span>
-        </label>
-        <label class="check-item" onclick="toggleCheck(this)">
-          <input type="checkbox" name="gu_exp_advanced">
+          <input type="checkbox" name="gu_intro_made" style="display:none">
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
           <div class="checkmark"><svg width="12" height="9" viewBox="0 0 12 9" fill="none"><path d="M1 4L4.5 7.5L11 1" stroke="#0d0f0e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <span class="check-label">GU Experience Advanced <span style="color:var(--text3);font-size:.82rem">(sample given / 6-W held / follow-up deepened)</span></span>
-        </label>
-        <label class="check-item" onclick="toggleCheck(this)">
-          <input type="checkbox" name="business_closed">
+          <input type="checkbox" name="gu_exp_advanced" style="display:none">
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
           <div class="checkmark"><svg width="12" height="9" viewBox="0 0 12 9" fill="none"><path d="M1 4L4.5 7.5L11 1" stroke="#0d0f0e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <span class="check-label">Business Closed <span style="color:var(--text3);font-size:.82rem">(data logged, stopped on time)</span></span>
-        </label>
+          <input type="checkbox" name="business_closed" style="display:none">
+        </div>
       </div>
 
       <hr class="divider">
@@ -209,21 +208,21 @@ textarea{min-height:80px}
       <hr class="divider">
       <div class="card-title">Fitness — Capacity Protection</div>
       <div class="check-group">
-        <label class="check-item" onclick="toggleCheck(this)">
-          <input type="checkbox" name="strength">
+        <div class="check-item" onclick="toggleCheck(this)">
           <div class="checkmark"><svg width="12" height="9" viewBox="0 0 12 9" fill="none"><path d="M1 4L4.5 7.5L11 1" stroke="#0d0f0e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <span class="check-label">Strength (Vitruvian)</span>
-        </label>
-        <label class="check-item" onclick="toggleCheck(this)">
-          <input type="checkbox" name="movement">
+          <input type="checkbox" name="strength" style="display:none">
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
           <div class="checkmark"><svg width="12" height="9" viewBox="0 0 12 9" fill="none"><path d="M1 4L4.5 7.5L11 1" stroke="#0d0f0e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <span class="check-label">Movement</span>
-        </label>
-        <label class="check-item" onclick="toggleCheck(this)">
-          <input type="checkbox" name="rest">
+          <input type="checkbox" name="movement" style="display:none">
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
           <div class="checkmark"><svg width="12" height="9" viewBox="0 0 12 9" fill="none"><path d="M1 4L4.5 7.5L11 1" stroke="#0d0f0e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <span class="check-label">Rest</span>
-        </label>
+          <input type="checkbox" name="rest" style="display:none">
+        </div>
       </div>
 
       <hr class="divider">
@@ -357,8 +356,18 @@ function collectPeople(){
   return people;
 }
 
+function toggleCheck(el){
+  el.classList.toggle('checked');
+  const cb=el.querySelector('input[type=checkbox]');
+  if(cb)cb.checked=el.classList.contains('checked');
+}
+
 function clearForm(){
-  document.querySelectorAll('.check-item').forEach(el=>{el.classList.remove('checked');const cb=el.querySelector('input[type=checkbox]');if(cb)cb.checked=false});
+  document.querySelectorAll('.check-item').forEach(el=>{
+    el.classList.remove('checked');
+    const cb=el.querySelector('input[type=checkbox]');
+    if(cb)cb.checked=false;
+  });
   for(let i=1;i<=5;i++){const inp=document.querySelector(`input[name="reach${i}"]`);if(inp)inp.value=''}
   personCardCount=0;
   document.getElementById('peopleLog').innerHTML='';
@@ -370,10 +379,17 @@ function clearForm(){
 }
 
 function prefillForm(e){
-  const sc=(name,val)=>{const el=document.querySelector(`input[name="${name}"]`);if(el&&val){el.checked=true;el.closest('.check-item')?.classList.add('checked')}};
-  sc('business_opened',e.business_opened);sc('gu_intro_made',e.gu_intro_made);
-  sc('gu_exp_advanced',e.gu_exp_advanced);sc('business_closed',e.business_closed);
-  sc('strength',e.strength);sc('movement',e.movement);sc('rest',e.rest);
+  const sc=(name,val)=>{
+    const el=document.querySelector(`.check-item input[name="${name}"]`);
+    if(el&&val){el.checked=true;el.closest('.check-item').classList.add('checked')}
+  };
+  sc('business_opened',e.business_opened);
+  sc('gu_intro_made',e.gu_intro_made);
+  sc('gu_exp_advanced',e.gu_exp_advanced);
+  sc('business_closed',e.business_closed);
+  sc('strength',e.strength);
+  sc('movement',e.movement);
+  sc('rest',e.rest);
   (e.reach_outs||[]).forEach((v,i)=>{const inp=document.querySelector(`input[name="reach${i+1}"]`);if(inp)inp.value=v});
   personCardCount=0;
   document.getElementById('peopleLog').innerHTML='';
@@ -416,8 +432,11 @@ function showTab(tab,btn){
   if(tab==='history'){renderHeatmap();renderHistory()}
 }
 
-function toggleCheck(el){el.classList.toggle('checked');el.querySelector('input').checked=el.classList.contains('checked')}
-function setShipped(val){currentShipped=val;document.getElementById('btnYes').classList.toggle('active',val==='YES');document.getElementById('btnNo').classList.toggle('active',val==='NO')}
+function setShipped(val){
+  currentShipped=val;
+  document.getElementById('btnYes').classList.toggle('active',val==='YES');
+  document.getElementById('btnNo').classList.toggle('active',val==='NO');
+}
 
 function collectFormData(){
   const gc=name=>!!document.querySelector(`input[name="${name}"]`)?.checked;
