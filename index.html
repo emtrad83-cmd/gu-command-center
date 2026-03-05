@@ -182,6 +182,7 @@
   .stage-mentor { background: rgba(0,212,170,.25); color: #00ffcc; }
   .stage-nurture { background: rgba(90,84,117,.3); color: var(--text2); }
   .stage-pass { background: rgba(255,101,132,.1); color: var(--accent3); }
+  .stage-gold { background: rgba(240,192,96,.2); color: var(--gold); }
 
   /* WARMTH COLORS */
   .warm-hot { background: #ff6060; }
@@ -408,6 +409,10 @@
         <div class="check-box" id="cb-bc">✓</div>
         <span class="check-label">Business Closed</span>
       </div>
+      <div class="check-item" id="ci-ro5" onclick="toggleCheck('five_reach_outs')">
+        <div class="check-box" id="cb-ro5">✓</div>
+        <span class="check-label">5 Reach-Outs Done</span>
+      </div>
     </div>
   </div>
 
@@ -488,12 +493,17 @@
     </select>
     <label>Current Stage</label>
     <select id="coachStage">
-      <option value="New Lead">New Lead</option>
-      <option value="Sample Offered">Sample Offered</option>
-      <option value="6-W Scheduled">6-W Scheduled</option>
-      <option value="Briefing Invited">Briefing Invited</option>
-      <option value="Enrolled Mentor">Enrolled Mentor</option>
+      <option value="New Prospect">New Prospect</option>
       <option value="Nurturing">Nurturing</option>
+      <option value="Sample">Sample</option>
+      <option value="6-W Conversation">6-W Conversation</option>
+      <option value="Patron Preso">Patron Preso</option>
+      <option value="Open Account">Open Account</option>
+      <option value="Trial">Trial</option>
+      <option value="Briefing">Briefing</option>
+      <option value="Saturday">Saturday</option>
+      <option value="MAP">MAP</option>
+      <option value="Interview">Interview</option>
     </select>
     <label>Emotional Temperature</label>
     <select id="coachTemp">
@@ -550,12 +560,17 @@
 
   <div class="pipeline-filter">
     <button class="filter-btn active" onclick="filterPipeline('All',this)">All</button>
-    <button class="filter-btn" onclick="filterPipeline('New Lead',this)">New Lead</button>
-    <button class="filter-btn" onclick="filterPipeline('Sample Offered',this)">Sample</button>
-    <button class="filter-btn" onclick="filterPipeline('6-W Scheduled',this)">6-W</button>
-    <button class="filter-btn" onclick="filterPipeline('Briefing Invited',this)">Briefing</button>
-    <button class="filter-btn" onclick="filterPipeline('Enrolled Mentor',this)">Mentor</button>
-    <button class="filter-btn" onclick="filterPipeline('Nurturing',this)">Nurture</button>
+    <button class="filter-btn" onclick="filterPipeline('New Prospect',this)">New Prospect</button>
+    <button class="filter-btn" onclick="filterPipeline('Nurturing',this)">Nurturing</button>
+    <button class="filter-btn" onclick="filterPipeline('Sample',this)">Sample</button>
+    <button class="filter-btn" onclick="filterPipeline('6-W Conversation',this)">6-W Conversation</button>
+    <button class="filter-btn" onclick="filterPipeline('Patron Preso',this)">Patron Preso</button>
+    <button class="filter-btn" onclick="filterPipeline('Open Account',this)">Open Account</button>
+    <button class="filter-btn" onclick="filterPipeline('Trial',this)">Trial</button>
+    <button class="filter-btn" onclick="filterPipeline('Briefing',this)">Briefing</button>
+    <button class="filter-btn" onclick="filterPipeline('Saturday',this)">Saturday</button>
+    <button class="filter-btn" onclick="filterPipeline('MAP',this)">MAP</button>
+    <button class="filter-btn" onclick="filterPipeline('Interview',this)">Interview</button>
   </div>
 
   <div id="pipelineList"></div>
@@ -636,12 +651,17 @@
     <input type="text" id="newContact" placeholder="Phone / Instagram / email"/>
     <label>Stage</label>
     <select id="newStage">
-      <option>New Lead</option>
-      <option>Sample Offered</option>
-      <option>6-W Scheduled</option>
-      <option>Briefing Invited</option>
-      <option>Enrolled Mentor</option>
+      <option>New Prospect</option>
       <option>Nurturing</option>
+      <option>Sample</option>
+      <option>6-W Conversation</option>
+      <option>Patron Preso</option>
+      <option>Open Account</option>
+      <option>Trial</option>
+      <option>Briefing</option>
+      <option>Saturday</option>
+      <option>MAP</option>
+      <option>Interview</option>
       <option>Passed</option>
     </select>
     <label>Warmth</label>
@@ -722,7 +742,7 @@ function getTodayStr() {
 function freshLog(date) {
   return {
     date, business_opened: false, gu_intro_made: false,
-    gu_exp_advanced: false, business_closed: false,
+    gu_exp_advanced: false, business_closed: false, five_reach_outs: false,
     reach_outs: [], people_introduced: [],
     strength: false, movement: false, rest: false,
     reflection: '', shipped: 'NO',
@@ -782,8 +802,8 @@ function renderLogForm() {
   document.getElementById('sixwCount').className = 'cadence-num' + (sw >= 1 ? ' met' : '');
 
   // Business checks
-  ['business_opened','gu_intro_made','gu_exp_advanced','business_closed'].forEach(k => {
-    const map = {business_opened:'bo',gu_intro_made:'gi',gu_exp_advanced:'ge',business_closed:'bc'};
+  ['business_opened','gu_intro_made','gu_exp_advanced','business_closed','five_reach_outs'].forEach(k => {
+    const map = {business_opened:'bo',gu_intro_made:'gi',gu_exp_advanced:'ge',business_closed:'bc',five_reach_outs:'ro5'};
     const id = map[k];
     document.getElementById('ci-'+id).classList.toggle('checked', !!currentLog[k]);
   });
@@ -825,7 +845,7 @@ function renderIntroList() {
     row.innerHTML = `
       <input type="text" value="${escHtml(p.name||'')}" placeholder="Name" style="flex:1;min-width:100px" oninput="currentLog.people_introduced[${i}].name=this.value"/>
       <select style="width:140px" onchange="currentLog.people_introduced[${i}].stage=this.value">
-        ${['New Lead','Sample Offered','6-W Scheduled','Briefing Invited','Enrolled Mentor','Nurturing'].map(s=>`<option ${p.stage===s?'selected':''}>${s}</option>`).join('')}
+        ${["New Prospect", "Nurturing", "Sample", "6-W Conversation", "Patron Preso", "Open Account", "Trial", "Briefing", "Saturday", "MAP", "Interview"].map(s=>`<option ${p.stage===s?'selected':''}>${s}</option>`).join('')}
       </select>
       <button class="remove-btn" onclick="removeIntro(${i})">✕</button>`;
     c.appendChild(row);
@@ -845,7 +865,7 @@ function removeRO(i) {
 
 function addIntroRow() {
   if (!currentLog.people_introduced) currentLog.people_introduced = [];
-  currentLog.people_introduced.push({name:'',stage:'New Lead'});
+  currentLog.people_introduced.push({name:'',stage:'New Prospect'});
   renderIntroList();
 }
 
@@ -869,7 +889,7 @@ function adjustCount(field, delta) {
 
 function toggleCheck(field) {
   currentLog[field] = !currentLog[field];
-  const map = {business_opened:'bo',gu_intro_made:'gi',gu_exp_advanced:'ge',business_closed:'bc',strength:'str',movement:'mov',rest:'rest'};
+  const map = {business_opened:'bo',gu_intro_made:'gi',gu_exp_advanced:'ge',business_closed:'bc',five_reach_outs:'ro5',strength:'str',movement:'mov',rest:'rest'};
   const id = map[field];
   const isFit = ['strength','movement','rest'].includes(field);
   document.getElementById('ci-'+id).classList.toggle('checked', currentLog[field]);
@@ -879,8 +899,9 @@ function toggleCheck(field) {
 }
 
 function autoDetectShipped() {
-  const guAction = currentLog.gu_intro_made || currentLog.gu_exp_advanced || currentLog.business_closed;
-  if (currentLog.business_opened && guAction) {
+  const guCount = [currentLog.gu_intro_made, currentLog.gu_exp_advanced, currentLog.business_closed, currentLog.five_reach_outs].filter(Boolean).length;
+  const fitnessCount = [currentLog.strength, currentLog.movement, currentLog.rest].filter(Boolean).length;
+  if (guCount >= 3 && fitnessCount >= 1) {
     currentLog.shipped = 'YES';
   }
 }
@@ -898,7 +919,7 @@ function updateShippedUI() {
   document.getElementById('shippedLabel').textContent = shipped ? '✓ SHIPPED' : 'NOT SHIPPED';
   document.getElementById('shippedSub').textContent = shipped
     ? 'You shipped today. Keep investing your energy!'
-    : 'Open business + complete at least 1 GU action to ship';
+    : 'Complete 3 GU actions + 1 fitness action to ship';
   document.getElementById('shippedToggleBtn').textContent = shipped ? 'Unmark' : 'Mark Shipped';
   document.getElementById('shippedToggleBtn').className = 'btn btn-sm ' + (shipped ? 'btn-secondary' : 'btn-success');
 }
@@ -991,6 +1012,7 @@ function renderHistory() {
           <span style="color:${l.gu_intro_made?'var(--accent)':'var(--text3)'}">${l.gu_intro_made?'✓':'○'} GU Intro Made</span>
           <span style="color:${l.gu_exp_advanced?'var(--accent)':'var(--text3)'}">${l.gu_exp_advanced?'✓':'○'} GU Exp. Advanced</span>
           <span style="color:${l.business_closed?'var(--accent)':'var(--text3)'}">${l.business_closed?'✓':'○'} Business Closed</span>
+          <span style="color:${l.five_reach_outs?'var(--accent)':'var(--text3)'}">${l.five_reach_outs?'✓':'○'} 5 Reach-Outs Done</span>
           <span style="color:${l.strength?'var(--accent2)':'var(--text3)'}">${l.strength?'✓':'○'} Strength</span>
           <span style="color:${l.movement?'var(--accent2)':'var(--text3)'}">${l.movement?'✓':'○'} Movement</span>
           <span style="color:${l.rest?'var(--accent2)':'var(--text3)'}">${l.rest?'✓':'○'} Rest</span>
@@ -1075,7 +1097,7 @@ function renderPipeline() {
           <div>
             <label>Stage</label>
             <select onchange="updateProspect('${p.id}','stage',this.value)" onclick="event.stopPropagation()">
-              ${['New Lead','Sample Offered','6-W Scheduled','Briefing Invited','Enrolled Mentor','Nurturing','Passed'].map(s=>`<option ${p.stage===s?'selected':''}>${s}</option>`).join('')}
+              ${["New Prospect", "Nurturing", "Sample", "6-W Conversation", "Patron Preso", "Open Account", "Trial", "Briefing", "Saturday", "MAP", "Interview", "Passed"].map(s=>`<option ${p.stage===s?'selected':''}>${s}</option>`).join('')}
             </select>
           </div>
           <div>
@@ -1112,8 +1134,8 @@ function renderPipeline() {
 
 function renderPipelineStats() {
   document.getElementById('pl-total').textContent = prospects.length;
-  document.getElementById('pl-active').textContent = prospects.filter(p => !['Nurturing','Passed'].includes(p.stage)).length;
-  document.getElementById('pl-mentors').textContent = prospects.filter(p => p.stage === 'Enrolled Mentor').length;
+  document.getElementById('pl-active').textContent = prospects.filter(p => p.stage !== 'Passed').length;
+  document.getElementById('pl-mentors').textContent = prospects.filter(p => p.stage === 'Interview').length;
 }
 
 function toggleProspect(id) {
