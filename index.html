@@ -539,11 +539,16 @@
 
   <div class="card" style="margin-top:14px">
     <div class="card-title">Save to Conversation History</div>
-    <label>Notes / Key takeaway from this conversation</label>
+    <label>What happened / What was said recently</label>
     <textarea id="saveConvNotes" placeholder="What was the outcome? What is the next step?"></textarea>
     <div class="btn-row">
-      <button class="btn btn-secondary btn-sm" onclick="saveConversation()">💾 Save Conversation</button>
+      <button class="btn btn-success btn-sm" onclick="saveConversation()">💾 Save Conversation</button>
     </div>
+  </div>
+
+  <div class="card" id="prospectHistoryCard" style="margin-top:14px;display:none">
+    <div class="card-title">📋 History with this Prospect</div>
+    <div id="prospectHistoryList" style="font-size:.78rem;color:var(--text2)"></div>
   </div>
 </div>
 
