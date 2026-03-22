@@ -552,7 +552,7 @@
   <div id="shippedStatus" class="shipped-status not-shipped">
     <div>
       <div class="shipped-label" id="shippedLabel">NOT SHIPPED</div>
-      <div style="font-size:.68rem;color:var(--text3);margin-top:2px" id="shippedSub">Open business + complete at least 1 GU action to ship</div>
+      <div style="font-size:.68rem;color:var(--text3);margin-top:2px" id="shippedSub">Complete 3 GU + 1 fitness + 2 discipline checks + Full/Floor Day to ship</div>
     </div>
     <button class="btn btn-sm" id="shippedToggleBtn" onclick="manualToggleShipped()">Mark Shipped</button>
   </div>
@@ -904,12 +904,16 @@ function toggleDiscipline(field) {
   const id = map[field];
   document.getElementById('ci-'+id).classList.toggle('checked', currentLog[field]);
   document.getElementById('ci-'+id).classList.toggle('discipline', true);
+  autoDetectShipped();
+  updateShippedUI();
   updateDiscStreak();
 }
 
 function setMVH(val) {
   currentLog.d_mvh = currentLog.d_mvh === val ? '' : val;
   renderMVH();
+  autoDetectShipped();
+  updateShippedUI();
 }
 
 function renderMVH() {
@@ -1082,9 +1086,11 @@ function toggleCheck(field) {
 }
 
 function autoDetectShipped() {
-  const guCount = [currentLog.gu_intro_made, currentLog.gu_exp_advanced, currentLog.business_closed, currentLog.five_reach_outs].filter(Boolean).length;
+  const guCount = [currentLog.business_opened, currentLog.gu_intro_made, currentLog.gu_exp_advanced, currentLog.business_closed, currentLog.five_reach_outs].filter(Boolean).length;
   const fitnessCount = [currentLog.strength, currentLog.movement, currentLog.rest].filter(Boolean).length;
-  if (guCount >= 3 && fitnessCount >= 1) {
+  const discCount = [currentLog.d_wake, currentLog.d_workout, currentLog.d_breakfast, currentLog.d_recovery].filter(Boolean).length;
+  const mvhSet = currentLog.d_mvh === 'full' || currentLog.d_mvh === 'floor';
+  if (guCount >= 3 && fitnessCount >= 1 && discCount >= 2 && mvhSet) {
     currentLog.shipped = 'YES';
   }
 }
@@ -1102,7 +1108,7 @@ function updateShippedUI() {
   document.getElementById('shippedLabel').textContent = shipped ? '✓ SHIPPED' : 'NOT SHIPPED';
   document.getElementById('shippedSub').textContent = shipped
     ? 'You shipped today. Keep investing your energy!'
-    : 'Complete 3 GU actions + 1 fitness action to ship';
+    : 'Complete 3 GU + 1 fitness + 2 discipline checks + Full/Floor Day to ship';
   document.getElementById('shippedToggleBtn').textContent = shipped ? 'Unmark' : 'Mark Shipped';
   document.getElementById('shippedToggleBtn').className = 'btn btn-sm ' + (shipped ? 'btn-secondary' : 'btn-success');
 }
