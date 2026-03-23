@@ -1,0 +1,30 @@
+name: Export Logs to JSON
+
+on:
+  schedule:
+    - cron: '0 6 * * *'  # Runs daily at 6am UTC (1am Chicago time)
+  workflow_dispatch:       # Allows manual trigger anytime
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Fetch logs from Supabase
+        run: |
+          mkdir -p data
+          curl -s \
+            "https://kkerejaviuqnaalbbnfs.supabase.co/rest/v1/shipped_logs?order=date.desc&limit=90" \
+            -H "apikey: ${{ secrets.PAT }}" \
+            -H "Authorization: Bearer ${{ secrets.PAT }}" \
+            -o data/logs.json
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add data/logs.json
+          git diff --staged --quiet || git commit -m "Daily log export $(date +%Y-%m-%d)"
+          git push
