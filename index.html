@@ -516,6 +516,10 @@
         <div class="check-box" id="cb-d3">✓</div>
         <span class="check-label">High-protein breakfast</span>
       </div>
+      <div class="check-item discipline" id="ci-d5" onclick="toggleDiscipline('d_affirm_am')">
+        <div class="check-box" id="cb-d5">✓</div>
+        <span class="check-label">Morning affirmations</span>
+      </div>
     </div>
 
     <div class="discipline-sub">Active Recovery (4pm Transition)</div>
@@ -523,6 +527,10 @@
       <div class="check-item discipline" id="ci-d4" onclick="toggleDiscipline('d_recovery')">
         <div class="check-box" id="cb-d4">✓</div>
         <span class="check-label">Transition ritual done (walk / stretch / magic)</span>
+      </div>
+      <div class="check-item discipline" id="ci-d6" onclick="toggleDiscipline('d_affirm_pm')">
+        <div class="check-box" id="cb-d6">✓</div>
+        <span class="check-label">Afternoon affirmations</span>
       </div>
     </div>
 
@@ -545,7 +553,14 @@
   <!-- Reflection -->
   <div class="card">
     <div class="card-title">Daily Reflection</div>
-    <textarea id="reflectionInput" placeholder="What moved the needle today? What would you do differently?"></textarea>
+    <label style="margin-top:0">🙏 What is something I am grateful for today?</label>
+    <textarea id="reflectionGrateful" placeholder="I am grateful for..." style="min-height:56px"></textarea>
+    <label style="margin-top:12px">✨ What is something good that happened?</label>
+    <textarea id="reflectionGood" placeholder="Something good that happened..." style="min-height:56px"></textarea>
+    <label style="margin-top:12px">🎯 What did I do to move the needle?</label>
+    <textarea id="reflectionNeedle" placeholder="I moved the needle by..." style="min-height:56px"></textarea>
+    <label style="margin-top:12px">🔄 What is something I can shift for tomorrow?</label>
+    <textarea id="reflectionShift" placeholder="Tomorrow I will shift..." style="min-height:56px"></textarea>
   </div>
 
   <!-- Shipped Status -->
@@ -855,7 +870,9 @@ function freshLog(date) {
     strength: false, movement: false, rest: false,
     // Discipline fields
     d_wake: false, d_workout: false, d_breakfast: false, d_recovery: false,
+    d_affirm_am: false, d_affirm_pm: false,
     d_mvh: '',
+    reflection_grateful: '', reflection_good: '', reflection_needle: '', reflection_shift: '',
     reflection: '', shipped: 'NO',
     reach_out_count: 0, samples_count: 0, sixw_count: 0, mentor_count: 0
   };
@@ -900,7 +917,7 @@ function onDateChange() {
 // ─────────────────────────────────────────────
 function toggleDiscipline(field) {
   currentLog[field] = !currentLog[field];
-  const map = {d_wake:'d1', d_workout:'d2', d_breakfast:'d3', d_recovery:'d4'};
+  const map = {d_wake:'d1', d_workout:'d2', d_breakfast:'d3', d_recovery:'d4', d_affirm_am:'d5', d_affirm_pm:'d6'};
   const id = map[field];
   document.getElementById('ci-'+id).classList.toggle('checked', currentLog[field]);
   document.getElementById('ci-'+id).classList.toggle('discipline', true);
@@ -993,7 +1010,7 @@ function renderLogForm() {
   });
 
   // Discipline checks
-  ['d_wake','d_workout','d_breakfast','d_recovery'].forEach((k,i) => {
+  ['d_wake','d_workout','d_breakfast','d_recovery','d_affirm_am','d_affirm_pm'].forEach((k,i) => {
     const id = 'ci-d'+(i+1);
     document.getElementById(id).classList.toggle('checked', !!currentLog[k]);
     document.getElementById(id).classList.toggle('discipline', true);
@@ -1005,7 +1022,10 @@ function renderLogForm() {
   renderROList();
   renderIntroList();
 
-  document.getElementById('reflectionInput').value = currentLog.reflection || '';
+  document.getElementById('reflectionGrateful').value = currentLog.reflection_grateful || '';
+  document.getElementById('reflectionGood').value = currentLog.reflection_good || '';
+  document.getElementById('reflectionNeedle').value = currentLog.reflection_needle || '';
+  document.getElementById('reflectionShift').value = currentLog.reflection_shift || '';
   updateShippedUI();
 }
 
@@ -1117,7 +1137,16 @@ function updateShippedUI() {
 // SAVE / LOAD LOGS
 // ─────────────────────────────────────────────
 async function saveLog() {
-  currentLog.reflection = document.getElementById('reflectionInput').value;
+  currentLog.reflection_grateful = document.getElementById('reflectionGrateful').value;
+  currentLog.reflection_good = document.getElementById('reflectionGood').value;
+  currentLog.reflection_needle = document.getElementById('reflectionNeedle').value;
+  currentLog.reflection_shift = document.getElementById('reflectionShift').value;
+  currentLog.reflection = [
+    currentLog.reflection_grateful ? '🙏 ' + currentLog.reflection_grateful : '',
+    currentLog.reflection_good ? '✨ ' + currentLog.reflection_good : '',
+    currentLog.reflection_needle ? '🎯 ' + currentLog.reflection_needle : '',
+    currentLog.reflection_shift ? '🔄 ' + currentLog.reflection_shift : ''
+  ].filter(Boolean).join(' | ');
   currentLog.reach_outs = currentLog.reach_outs.filter(r => r.trim());
   currentLog.people_introduced = currentLog.people_introduced.filter(p => p.name && p.name.trim());
   autoDetectShipped();
@@ -1221,6 +1250,8 @@ function renderHistory() {
             <span style="color:${l.d_workout?'var(--discipline)':'var(--text3)'}">${l.d_workout?'✓':'○'} Workout done</span>
             <span style="color:${l.d_breakfast?'var(--discipline)':'var(--text3)'}">${l.d_breakfast?'✓':'○'} Protein breakfast</span>
             <span style="color:${l.d_recovery?'var(--discipline)':'var(--text3)'}">${l.d_recovery?'✓':'○'} Transition ritual</span>
+            <span style="color:${l.d_affirm_am?'var(--discipline)':'var(--text3)'}">${l.d_affirm_am?'✓':'○'} AM affirmations</span>
+            <span style="color:${l.d_affirm_pm?'var(--discipline)':'var(--text3)'}">${l.d_affirm_pm?'✓':'○'} PM affirmations</span>
           </div>
           ${l.d_mvh ? `<div style="margin-top:4px;color:var(--discipline)">${l.d_mvh==='full'?'✦ Full day':'~ Floor day'}</div>` : ''}
         </div>` : ''}
@@ -1229,7 +1260,13 @@ function renderHistory() {
         </div>` : ''}
         ${piStr ? `<div style="margin-top:6px;font-size:.7rem;color:var(--text2)">Introduced: ${piStr}</div>` : ''}
         ${(l.reach_outs||[]).length ? `<div style="margin-top:6px;font-size:.7rem;color:var(--text2)">Reach-outs: ${l.reach_outs.join(', ')}</div>` : ''}
-        ${l.reflection ? `<div style="margin-top:8px;font-size:.75rem;color:var(--text2);font-style:italic">"${l.reflection.slice(0,160)}${l.reflection.length>160?'…':''}"</div>` : ''}
+        ${(l.reflection_grateful||l.reflection_good||l.reflection_needle||l.reflection_shift) ? `
+        <div style="margin-top:8px;font-size:.72rem;color:var(--text2);line-height:1.6">
+          ${l.reflection_grateful ? `<div>🙏 ${escHtml(l.reflection_grateful.slice(0,100))}${l.reflection_grateful.length>100?'…':''}</div>` : ''}
+          ${l.reflection_good ? `<div>✨ ${escHtml(l.reflection_good.slice(0,100))}${l.reflection_good.length>100?'…':''}</div>` : ''}
+          ${l.reflection_needle ? `<div>🎯 ${escHtml(l.reflection_needle.slice(0,100))}${l.reflection_needle.length>100?'…':''}</div>` : ''}
+          ${l.reflection_shift ? `<div>🔄 ${escHtml(l.reflection_shift.slice(0,100))}${l.reflection_shift.length>100?'…':''}</div>` : ''}
+        </div>` : ''}
       </div>
     </div>`;
   }).join('');
