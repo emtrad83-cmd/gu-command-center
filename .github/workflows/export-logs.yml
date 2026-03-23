@@ -17,8 +17,8 @@ jobs:
           mkdir -p data
           curl -s \
             "https://kkerejaviuqnaalbbnfs.supabase.co/rest/v1/shipped_logs?order=date.desc&limit=90" \
-            -H "apikey: ${{ secrets.PAT }}" \
-            -H "Authorization: Bearer ${{ secrets.PAT }}" \
+            -H "apikey: ${{ secrets.SUPABASE_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_KEY }}" \
             -o data/logs.json
 
       - name: Commit and push
