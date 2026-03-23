@@ -2,15 +2,17 @@ name: Export Logs to JSON
 
 on:
   schedule:
-    - cron: '0 6 * * *'  # Runs daily at 6am UTC (1am Chicago time)
-  workflow_dispatch:       # Allows manual trigger anytime
+    - cron: '0 6 * * *'
+  workflow_dispatch:
 
 jobs:
   export:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Fetch logs from Supabase
         run: |
