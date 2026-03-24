@@ -24,79 +24,35 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--text1); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
-
-  /* HEADER */
   .header {
     background: linear-gradient(135deg, #0d0d1e 0%, #151528 100%);
     border-bottom: 1px solid var(--border);
     padding: 14px 20px 0;
     position: sticky; top: 0; z-index: 100;
   }
-  .header-top {
-    display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;
-  }
+  .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
   .logo { font-size: .72rem; font-weight: 700; letter-spacing: .18em; color: var(--accent); text-transform: uppercase; }
-  .master-bar {
-    display: flex; align-items: center; gap: 10px; font-size: .7rem; color: var(--text2);
-  }
-  .master-badge {
-    background: linear-gradient(90deg, var(--gold), #e0a030);
-    color: #0a0a12; font-weight: 800; font-size: .62rem; letter-spacing: .1em;
-    padding: 3px 9px; border-radius: 20px; text-transform: uppercase;
-  }
+  .master-bar { display: flex; align-items: center; gap: 10px; font-size: .7rem; color: var(--text2); }
+  .master-badge { background: linear-gradient(90deg, var(--gold), #e0a030); color: #0a0a12; font-weight: 800; font-size: .62rem; letter-spacing: .1em; padding: 3px 9px; border-radius: 20px; text-transform: uppercase; }
   .master-steps { display: flex; gap: 6px; }
-  .master-step {
-    width: 28px; height: 6px; border-radius: 3px;
-    background: var(--bg3); border: 1px solid var(--border2);
-    transition: background .3s;
-  }
+  .master-step { width: 28px; height: 6px; border-radius: 3px; background: var(--bg3); border: 1px solid var(--border2); transition: background .3s; }
   .master-step.done { background: var(--gold); border-color: var(--gold); }
-
-  /* TABS */
   .tabs { display: flex; gap: 2px; }
-  .tab {
-    padding: 8px 16px; font-size: .72rem; font-weight: 600; letter-spacing: .06em;
-    color: var(--text3); border: none; background: transparent; cursor: pointer;
-    border-bottom: 2px solid transparent; transition: all .2s; text-transform: uppercase;
-  }
+  .tab { padding: 8px 16px; font-size: .72rem; font-weight: 600; letter-spacing: .06em; color: var(--text3); border: none; background: transparent; cursor: pointer; border-bottom: 2px solid transparent; transition: all .2s; text-transform: uppercase; }
   .tab:hover { color: var(--text2); }
   .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-
-  /* CONTENT */
   .content { padding: 20px; max-width: 800px; margin: 0 auto; }
   .section { display: none; }
   .section.active { display: block; }
-
-  /* CARDS */
-  .card {
-    background: var(--bg2); border: 1px solid var(--border);
-    border-radius: 10px; padding: 16px; margin-bottom: 14px;
-  }
-  .card-title {
-    font-size: .68rem; font-weight: 700; letter-spacing: .12em;
-    color: var(--text3); text-transform: uppercase; margin-bottom: 12px;
-  }
-
-  /* FORM ELEMENTS */
-  input[type=text], input[type=date], textarea, select {
-    width: 100%; background: var(--bg3); border: 1px solid var(--border);
-    color: var(--text1); padding: 9px 12px; border-radius: 6px;
-    font-size: .82rem; outline: none; transition: border .2s;
-    font-family: inherit;
-  }
-  input[type=text]:focus, input[type=date]:focus, textarea:focus, select:focus {
-    border-color: var(--accent);
-  }
+  .card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 14px; }
+  .card-title { font-size: .68rem; font-weight: 700; letter-spacing: .12em; color: var(--text3); text-transform: uppercase; margin-bottom: 12px; }
+  input[type=text], input[type=date], textarea, select { width: 100%; background: var(--bg3); border: 1px solid var(--border); color: var(--text1); padding: 9px 12px; border-radius: 6px; font-size: .82rem; outline: none; transition: border .2s; font-family: inherit; }
+  input[type=text]:focus, input[type=date]:focus, textarea:focus, select:focus { border-color: var(--accent); }
   textarea { resize: vertical; min-height: 70px; }
   select { cursor: pointer; }
   label { font-size: .72rem; color: var(--text2); display: block; margin-bottom: 4px; margin-top: 10px; }
   label:first-child { margin-top: 0; }
-
-  /* BUTTONS */
-  .btn {
-    padding: 9px 18px; border-radius: 6px; font-size: .78rem; font-weight: 600;
-    cursor: pointer; border: none; transition: all .2s; letter-spacing: .04em;
-  }
+  .btn { padding: 9px 18px; border-radius: 6px; font-size: .78rem; font-weight: 600; cursor: pointer; border: none; transition: all .2s; letter-spacing: .04em; }
   .btn-primary { background: var(--accent); color: #fff; }
   .btn-primary:hover { background: #7c74ff; }
   .btn-secondary { background: var(--bg3); color: var(--text2); border: 1px solid var(--border2); }
@@ -109,120 +65,52 @@
   .btn-gold { background: var(--gold); color: #0a0a12; }
   .btn-gold:hover { background: #f0d080; }
   .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
-
-  /* CHECKBOX GRID */
   .check-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .check-item {
-    display: flex; align-items: center; gap: 8px;
-    background: var(--bg3); border: 1px solid var(--border);
-    border-radius: 6px; padding: 8px 10px; cursor: pointer; transition: all .2s;
-  }
+  .check-item { display: flex; align-items: center; gap: 8px; background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; padding: 8px 10px; cursor: pointer; transition: all .2s; }
   .check-item.checked { border-color: var(--accent); background: rgba(108,99,255,.1); }
   .check-item.checked.fitness { border-color: var(--accent2); background: rgba(0,212,170,.08); }
   .check-item.checked.discipline { border-color: var(--discipline); background: rgba(200,168,75,.08); }
-  .check-box {
-    width: 16px; height: 16px; border: 2px solid var(--border2);
-    border-radius: 4px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
-    transition: all .2s; font-size: .65rem;
-  }
+  .check-box { width: 16px; height: 16px; border: 2px solid var(--border2); border-radius: 4px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all .2s; font-size: .65rem; }
   .check-item.checked .check-box { background: var(--accent); border-color: var(--accent); }
   .check-item.checked.fitness .check-box { background: var(--accent2); border-color: var(--accent2); }
   .check-item.checked.discipline .check-box { background: var(--discipline); border-color: var(--discipline); }
   .check-label { font-size: .75rem; color: var(--text2); }
   .check-item.checked .check-label { color: var(--text1); }
-
-  /* DISCIPLINE SECTION */
-  .discipline-card {
-    background: var(--bg2); border: 1px solid rgba(200,168,75,.25);
-    border-radius: 10px; padding: 16px; margin-bottom: 14px;
-  }
-  .discipline-title {
-    font-size: .68rem; font-weight: 700; letter-spacing: .12em;
-    color: var(--discipline); text-transform: uppercase; margin-bottom: 12px;
-    display: flex; align-items: center; gap: 8px;
-  }
-  .discipline-sub {
-    font-size: .68rem; font-weight: 700; letter-spacing: .1em;
-    color: var(--text3); text-transform: uppercase; margin-bottom: 8px; margin-top: 14px;
-  }
-  .mvh-row {
-    display: flex; gap: 8px; margin-bottom: 8px;
-  }
-  .mvh-btn {
-    flex: 1; padding: 9px; border-radius: 6px; border: 1px solid var(--border);
-    background: var(--bg3); color: var(--text3); font-size: .72rem;
-    font-weight: 700; letter-spacing: .08em; cursor: pointer; transition: all .2s;
-    text-transform: uppercase;
-  }
-  .mvh-btn.active-full {
-    border-color: var(--accent2); background: rgba(0,212,170,.1); color: var(--accent2);
-  }
-  .mvh-btn.active-floor {
-    border-color: var(--discipline); background: rgba(200,168,75,.1); color: var(--discipline);
-  }
-  .discipline-streak-box {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 12px 14px; background: rgba(0,0,0,.3);
-    border: 1px solid rgba(200,168,75,.2); border-radius: 8px; margin-top: 14px;
-  }
-  .discipline-streak-num {
-    font-size: 1.6rem; font-weight: 800; color: var(--discipline); line-height: 1;
-  }
-  .discipline-streak-label {
-    font-size: .62rem; color: var(--text3); text-transform: uppercase;
-    letter-spacing: .1em; margin-top: 3px;
-  }
-  .discipline-streak-rule {
-    font-size: .68rem; color: var(--text3); text-align: right; max-width: 160px; line-height: 1.5;
-  }
-
-  /* REACH OUTS */
+  .discipline-card { background: var(--bg2); border: 1px solid rgba(200,168,75,.25); border-radius: 10px; padding: 16px; margin-bottom: 14px; }
+  .discipline-title { font-size: .68rem; font-weight: 700; letter-spacing: .12em; color: var(--discipline); text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .discipline-sub { font-size: .68rem; font-weight: 700; letter-spacing: .1em; color: var(--text3); text-transform: uppercase; margin-bottom: 8px; margin-top: 14px; }
+  .mvh-row { display: flex; gap: 8px; margin-bottom: 8px; }
+  .mvh-btn { flex: 1; padding: 9px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg3); color: var(--text3); font-size: .72rem; font-weight: 700; letter-spacing: .08em; cursor: pointer; transition: all .2s; text-transform: uppercase; }
+  .mvh-btn.active-full { border-color: var(--accent2); background: rgba(0,212,170,.1); color: var(--accent2); }
+  .mvh-btn.active-floor { border-color: var(--discipline); background: rgba(200,168,75,.1); color: var(--discipline); }
+  .discipline-streak-box { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; background: rgba(0,0,0,.3); border: 1px solid rgba(200,168,75,.2); border-radius: 8px; margin-top: 14px; }
+  .discipline-streak-num { font-size: 1.6rem; font-weight: 800; color: var(--discipline); line-height: 1; }
+  .discipline-streak-label { font-size: .62rem; color: var(--text3); text-transform: uppercase; letter-spacing: .1em; margin-top: 3px; }
+  .discipline-streak-rule { font-size: .68rem; color: var(--text3); text-align: right; max-width: 160px; line-height: 1.5; }
   .reach-out-row { display: flex; gap: 8px; margin-bottom: 6px; align-items: center; }
   .reach-out-row input { flex: 1; }
   .remove-btn { background: none; border: none; color: var(--text3); cursor: pointer; font-size: 1rem; padding: 0 4px; }
   .remove-btn:hover { color: var(--accent3); }
-
-  /* SHIPPED STATUS */
-  .shipped-status {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 12px 16px; border-radius: 8px; margin-top: 12px;
-    border: 1px solid var(--border);
-  }
+  .shipped-status { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-radius: 8px; margin-top: 12px; border: 1px solid var(--border); }
   .shipped-status.shipped { background: rgba(0,212,170,.08); border-color: var(--accent2); }
   .shipped-status.not-shipped { background: rgba(255,101,132,.05); border-color: rgba(255,101,132,.3); }
   .shipped-label { font-size: .9rem; font-weight: 700; }
   .shipped-status.shipped .shipped-label { color: var(--accent2); }
   .shipped-status.not-shipped .shipped-label { color: var(--accent3); }
-
-  /* PIPELINE */
   .pipeline-filter { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
-  .filter-btn {
-    padding: 5px 12px; border-radius: 20px; font-size: .68rem; font-weight: 600;
-    cursor: pointer; border: 1px solid var(--border2); background: var(--bg3);
-    color: var(--text3); transition: all .2s; letter-spacing: .04em;
-  }
+  .filter-btn { padding: 5px 12px; border-radius: 20px; font-size: .68rem; font-weight: 600; cursor: pointer; border: 1px solid var(--border2); background: var(--bg3); color: var(--text3); transition: all .2s; letter-spacing: .04em; }
   .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
-
-  .prospect-card {
-    background: var(--bg2); border: 1px solid var(--border);
-    border-radius: 10px; padding: 14px; margin-bottom: 10px; cursor: pointer;
-    transition: all .2s;
-  }
+  .prospect-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 10px; cursor: pointer; transition: all .2s; }
   .prospect-card:hover { border-color: var(--border2); background: var(--bg3); }
   .prospect-card.open { border-color: var(--accent); }
   .prospect-header { display: flex; align-items: center; justify-content: space-between; }
   .prospect-name { font-size: .92rem; font-weight: 700; color: var(--text1); }
   .prospect-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
-  .stage-tag {
-    font-size: .62rem; font-weight: 700; letter-spacing: .08em;
-    padding: 2px 8px; border-radius: 10px; text-transform: uppercase;
-  }
+  .stage-tag { font-size: .62rem; font-weight: 700; letter-spacing: .08em; padding: 2px 8px; border-radius: 10px; text-transform: uppercase; }
   .warmth-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
   .prospect-detail { display: none; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
   .prospect-card.open .prospect-detail { display: block; }
   .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-
-  /* STAGE COLORS */
   .stage-new { background: rgba(108,99,255,.15); color: var(--accent); }
   .stage-sample { background: rgba(0,212,170,.12); color: var(--accent2); }
   .stage-sixw { background: rgba(240,192,96,.12); color: var(--gold); }
@@ -230,129 +118,56 @@
   .stage-mentor { background: rgba(0,212,170,.25); color: #00ffcc; }
   .stage-nurture { background: rgba(90,84,117,.3); color: var(--text2); }
   .stage-pass { background: rgba(255,101,132,.1); color: var(--accent3); }
-  .stage-gold { background: rgba(240,192,96,.2); color: var(--gold); }
-
-  /* WARMTH COLORS */
   .warm-hot { background: #ff6060; }
   .warm-warm { background: var(--warn); }
   .warm-cool { background: #60aaff; }
   .warm-cold { background: var(--text3); }
-
-  /* COACH */
-  .coach-select { margin-bottom: 14px; }
-  .coach-prospect-btn {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 6px 12px; border-radius: 6px; font-size: .75rem; font-weight: 600;
-    border: 1px solid var(--border2); background: var(--bg3); color: var(--text2);
-    cursor: pointer; margin: 4px; transition: all .2s;
-  }
+  .coach-prospect-btn { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 6px; font-size: .75rem; font-weight: 600; border: 1px solid var(--border2); background: var(--bg3); color: var(--text2); cursor: pointer; margin: 4px; transition: all .2s; }
   .coach-prospect-btn.selected { border-color: var(--accent); color: var(--accent); background: rgba(108,99,255,.1); }
-  .coach-msg-area { margin-top: 12px; }
-  .coach-output {
-    background: var(--bg3); border: 1px solid var(--border);
-    border-radius: 8px; padding: 14px; margin-top: 12px;
-    font-size: .82rem; line-height: 1.65; color: var(--text1);
-    white-space: pre-wrap; min-height: 80px;
-  }
+  .coach-output { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-top: 12px; font-size: .82rem; line-height: 1.65; color: var(--text1); white-space: pre-wrap; min-height: 80px; }
   .coach-output.loading { color: var(--text3); font-style: italic; }
-  .thinking-dots::after {
-    content: '...'; animation: dots 1.2s infinite;
-  }
+  .thinking-dots::after { content: '...'; animation: dots 1.2s infinite; }
   @keyframes dots { 0%,20%{content:'.'} 40%{content:'..'} 60%,100%{content:'...'} }
-
-  /* HISTORY */
-  .history-item {
-    background: var(--bg2); border: 1px solid var(--border);
-    border-radius: 8px; margin-bottom: 8px; overflow: hidden;
-  }
-  .history-header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 12px 14px; cursor: pointer;
-  }
+  .history-item { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 8px; overflow: hidden; }
+  .history-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; cursor: pointer; }
   .history-header:hover { background: var(--bg3); }
   .history-date { font-size: .82rem; font-weight: 600; color: var(--text1); }
   .history-body { display: none; padding: 12px 14px; border-top: 1px solid var(--border); }
   .history-item.open .history-body { display: block; }
-  .shipped-pill {
-    font-size: .6rem; font-weight: 700; letter-spacing: .1em;
-    padding: 2px 8px; border-radius: 10px; text-transform: uppercase;
-  }
+  .shipped-pill { font-size: .6rem; font-weight: 700; letter-spacing: .1em; padding: 2px 8px; border-radius: 10px; text-transform: uppercase; }
   .shipped-pill.yes { background: rgba(0,212,170,.15); color: var(--accent2); }
   .shipped-pill.no { background: rgba(255,101,132,.1); color: var(--accent3); }
-
-  /* REVIEWS */
   .review-btn-row { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
-  .review-output {
-    background: var(--bg3); border: 1px solid var(--border);
-    border-radius: 8px; padding: 16px; font-size: .84rem; line-height: 1.7;
-    color: var(--text1); white-space: pre-wrap; min-height: 100px;
-  }
-
-  /* STATS ROW */
+  .review-output { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 16px; font-size: .84rem; line-height: 1.7; color: var(--text1); white-space: pre-wrap; min-height: 100px; }
   .stats-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
-  .stat-box {
-    flex: 1; min-width: 80px; background: var(--bg3); border: 1px solid var(--border);
-    border-radius: 8px; padding: 10px 12px; text-align: center;
-  }
+  .stat-box { flex: 1; min-width: 80px; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; text-align: center; }
   .stat-val { font-size: 1.4rem; font-weight: 800; color: var(--accent); }
   .stat-val.green { color: var(--accent2); }
   .stat-val.gold { color: var(--gold); }
   .stat-val.discipline-color { color: var(--discipline); }
   .stat-lbl { font-size: .62rem; color: var(--text3); text-transform: uppercase; letter-spacing: .08em; margin-top: 2px; }
-
-  /* TOAST */
-  .toast {
-    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(60px);
-    background: var(--bg4); border: 1px solid var(--border2); color: var(--text1);
-    padding: 10px 20px; border-radius: 8px; font-size: .8rem;
-    transition: transform .3s; z-index: 9999; pointer-events: none;
-  }
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(60px); background: var(--bg4); border: 1px solid var(--border2); color: var(--text1); padding: 10px 20px; border-radius: 8px; font-size: .8rem; transition: transform .3s; z-index: 9999; pointer-events: none; }
   .toast.show { transform: translateX(-50%) translateY(0); }
   .toast.success { border-color: var(--accent2); color: var(--accent2); }
   .toast.error { border-color: var(--accent3); color: var(--accent3); }
-
-  /* ADD PROSPECT MODAL */
-  .modal-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,.7);
-    z-index: 200; display: none; align-items: center; justify-content: center; padding: 20px;
-  }
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 200; display: none; align-items: center; justify-content: center; padding: 20px; }
   .modal-overlay.open { display: flex; }
-  .modal {
-    background: var(--bg2); border: 1px solid var(--border2);
-    border-radius: 12px; padding: 20px; width: 100%; max-width: 460px; max-height: 90vh; overflow-y: auto;
-  }
+  .modal { background: var(--bg2); border: 1px solid var(--border2); border-radius: 12px; padding: 20px; width: 100%; max-width: 460px; max-height: 90vh; overflow-y: auto; }
   .modal-title { font-size: .9rem; font-weight: 700; margin-bottom: 16px; }
-  .modal-close {
-    float: right; background: none; border: none; color: var(--text3);
-    font-size: 1.2rem; cursor: pointer; line-height: 1;
-  }
+  .modal-close { float: right; background: none; border: none; color: var(--text3); font-size: 1.2rem; cursor: pointer; line-height: 1; }
   .modal-close:hover { color: var(--text1); }
-
-  /* CADENCE TRACKER */
-  .cadence-row {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 8px 0; border-bottom: 1px solid var(--border);
-  }
+  .cadence-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); }
   .cadence-row:last-child { border-bottom: none; }
   .cadence-label { font-size: .78rem; color: var(--text2); }
-  .cadence-count {
-    display: flex; align-items: center; gap: 8px;
-  }
+  .cadence-count { display: flex; align-items: center; gap: 8px; }
   .cadence-num { font-size: 1.1rem; font-weight: 800; color: var(--text1); min-width: 24px; text-align: center; }
   .cadence-target { font-size: .65rem; color: var(--text3); }
   .cadence-num.met { color: var(--accent2); }
-  .count-btn {
-    width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--border2);
-    background: var(--bg3); color: var(--text2); cursor: pointer; font-size: .9rem;
-    display: flex; align-items: center; justify-content: center; transition: all .2s;
-  }
+  .count-btn { width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--border2); background: var(--bg3); color: var(--text2); cursor: pointer; font-size: .9rem; display: flex; align-items: center; justify-content: center; transition: all .2s; }
   .count-btn:hover { background: var(--bg4); color: var(--text1); }
-
-  /* SCROLLBAR */
   ::-webkit-scrollbar { width: 5px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
-
   @media(max-width:500px) {
     .check-grid { grid-template-columns: 1fr; }
     .detail-grid { grid-template-columns: 1fr; }
@@ -363,7 +178,6 @@
 </head>
 <body>
 
-<!-- HEADER -->
 <div class="header">
   <div class="header-top">
     <div class="logo">⬡ GU Command Center</div>
@@ -387,10 +201,8 @@
 
 <div class="content">
 
-<!-- ===== DAILY LOG ===== -->
+<!-- DAILY LOG -->
 <div class="section active" id="sec-log">
-
-  <!-- Date & Cadence Header -->
   <div class="card">
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
       <div>
@@ -401,7 +213,6 @@
     </div>
   </div>
 
-  <!-- 5-3-1-6 Cadence -->
   <div class="card">
     <div class="card-title">5-3-1-6 Daily Cadence</div>
     <div class="cadence-row">
@@ -438,109 +249,58 @@
     </div>
   </div>
 
-  <!-- Business Actions -->
   <div class="card">
     <div class="card-title">Business Actions</div>
     <div class="check-grid">
-      <div class="check-item" id="ci-bo" onclick="toggleCheck('business_opened')">
-        <div class="check-box" id="cb-bo">✓</div>
-        <span class="check-label">Business Opened</span>
-      </div>
-      <div class="check-item" id="ci-gi" onclick="toggleCheck('gu_intro_made')">
-        <div class="check-box" id="cb-gi">✓</div>
-        <span class="check-label">GU Intro Made</span>
-      </div>
-      <div class="check-item" id="ci-ge" onclick="toggleCheck('gu_exp_advanced')">
-        <div class="check-box" id="cb-ge">✓</div>
-        <span class="check-label">GU Exp. Advanced</span>
-      </div>
-      <div class="check-item" id="ci-bc" onclick="toggleCheck('business_closed')">
-        <div class="check-box" id="cb-bc">✓</div>
-        <span class="check-label">Business Closed</span>
-      </div>
-      <div class="check-item" id="ci-ro5" onclick="toggleCheck('five_reach_outs')">
-        <div class="check-box" id="cb-ro5">✓</div>
-        <span class="check-label">5 Reach-Outs Done</span>
-      </div>
+      <div class="check-item" id="ci-bo" onclick="toggleCheck('business_opened')"><div class="check-box" id="cb-bo">✓</div><span class="check-label">Business Opened</span></div>
+      <div class="check-item" id="ci-gi" onclick="toggleCheck('gu_intro_made')"><div class="check-box" id="cb-gi">✓</div><span class="check-label">GU Intro Made</span></div>
+      <div class="check-item" id="ci-ge" onclick="toggleCheck('gu_exp_advanced')"><div class="check-box" id="cb-ge">✓</div><span class="check-label">GU Exp. Advanced</span></div>
+      <div class="check-item" id="ci-bc" onclick="toggleCheck('business_closed')"><div class="check-box" id="cb-bc">✓</div><span class="check-label">Business Closed</span></div>
+      <div class="check-item" id="ci-ro5" onclick="toggleCheck('five_reach_outs')"><div class="check-box" id="cb-ro5">✓</div><span class="check-label">5 Reach-Outs Done</span></div>
     </div>
   </div>
 
-  <!-- People Introduced -->
   <div class="card">
     <div class="card-title">People Introduced to GU</div>
     <div id="introList"></div>
     <button class="btn btn-secondary btn-sm" onclick="addIntroRow()" style="margin-top:8px">+ Add Person</button>
   </div>
 
-  <!-- Reach-Outs -->
   <div class="card">
     <div class="card-title">Reach-Out Names</div>
     <div id="roList"></div>
     <button class="btn btn-secondary btn-sm" onclick="addReachOutRow()" style="margin-top:8px">+ Add Name</button>
   </div>
 
-  <!-- Fitness -->
   <div class="card">
     <div class="card-title">Fitness & Recovery</div>
     <div class="check-grid">
-      <div class="check-item fitness" id="ci-str" onclick="toggleCheck('strength')">
-        <div class="check-box" id="cb-str">✓</div>
-        <span class="check-label">Strength Training</span>
-      </div>
-      <div class="check-item fitness" id="ci-mov" onclick="toggleCheck('movement')">
-        <div class="check-box" id="cb-mov">✓</div>
-        <span class="check-label">Movement / Cardio</span>
-      </div>
-      <div class="check-item fitness" id="ci-rest" onclick="toggleCheck('rest')">
-        <div class="check-box" id="cb-rest">✓</div>
-        <span class="check-label">Rest / Recovery</span>
-      </div>
+      <div class="check-item fitness" id="ci-str" onclick="toggleCheck('strength')"><div class="check-box" id="cb-str">✓</div><span class="check-label">Strength Training</span></div>
+      <div class="check-item fitness" id="ci-mov" onclick="toggleCheck('movement')"><div class="check-box" id="cb-mov">✓</div><span class="check-label">Movement / Cardio</span></div>
+      <div class="check-item fitness" id="ci-rest" onclick="toggleCheck('rest')"><div class="check-box" id="cb-rest">✓</div><span class="check-label">Rest / Recovery</span></div>
     </div>
   </div>
 
-  <!-- ⚡ DISCIPLINE CHECK-IN -->
   <div class="discipline-card">
     <div class="discipline-title">⚡ Discipline Check-In</div>
-
     <div class="discipline-sub">Morning Ritual</div>
     <div class="check-grid">
-      <div class="check-item discipline" id="ci-d1" onclick="toggleDiscipline('d_wake')">
-        <div class="check-box" id="cb-d1">✓</div>
-        <span class="check-label">Up at 5am — no snooze</span>
-      </div>
-      <div class="check-item discipline" id="ci-d2" onclick="toggleDiscipline('d_workout')">
-        <div class="check-box" id="cb-d2">✓</div>
-        <span class="check-label">Workout done (full or floor)</span>
-      </div>
-      <div class="check-item discipline" id="ci-d3" onclick="toggleDiscipline('d_breakfast')">
-        <div class="check-box" id="cb-d3">✓</div>
-        <span class="check-label">High-protein breakfast</span>
-      </div>
-      <div class="check-item discipline" id="ci-d5" onclick="toggleDiscipline('d_affirm_am')">
-        <div class="check-box" id="cb-d5">✓</div>
-        <span class="check-label">Morning affirmations</span>
-      </div>
+      <div class="check-item discipline" id="ci-d1" onclick="toggleDiscipline('d_wake')"><div class="check-box" id="cb-d1">✓</div><span class="check-label">Up at 5am — no snooze</span></div>
+      <div class="check-item discipline" id="ci-d2" onclick="toggleDiscipline('d_workout')"><div class="check-box" id="cb-d2">✓</div><span class="check-label">Workout done (full or floor)</span></div>
+      <div class="check-item discipline" id="ci-d3" onclick="toggleDiscipline('d_breakfast')"><div class="check-box" id="cb-d3">✓</div><span class="check-label">High-protein breakfast</span></div>
+      <div class="check-item discipline" id="ci-d5" onclick="toggleDiscipline('d_affirm_am')"><div class="check-box" id="cb-d5">✓</div><span class="check-label">Morning affirmations</span></div>
     </div>
-
     <div class="discipline-sub">Active Recovery (4pm Transition)</div>
     <div class="check-grid">
-      <div class="check-item discipline" id="ci-d4" onclick="toggleDiscipline('d_recovery')">
-        <div class="check-box" id="cb-d4">✓</div>
-        <span class="check-label">Transition ritual done (walk / stretch / magic)</span>
-      </div>
-      <div class="check-item discipline" id="ci-d6" onclick="toggleDiscipline('d_affirm_pm')">
-        <div class="check-box" id="cb-d6">✓</div>
-        <span class="check-label">Afternoon affirmations</span>
-      </div>
+      <div class="check-item discipline" id="ci-d4" onclick="toggleDiscipline('d_recovery')"><div class="check-box" id="cb-d4">✓</div><span class="check-label">Transition ritual done (walk / stretch / magic)</span></div>
+      <div class="check-item discipline" id="ci-d6" onclick="toggleDiscipline('d_affirm_pm')"><div class="check-box" id="cb-d6">✓</div><span class="check-label">Afternoon affirmations</span></div>
     </div>
-
     <div class="discipline-sub">Today's Effort Level</div>
     <div class="mvh-row">
       <button class="mvh-btn" id="mvh-full" onclick="setMVH('full')">✦ Full Day</button>
       <button class="mvh-btn" id="mvh-floor" onclick="setMVH('floor')">~ Floor Day (counts!)</button>
     </div>
     <div id="mvh-note" style="font-size:.68rem;color:var(--text3);font-style:italic;margin-bottom:4px">Floor days count. Showing up at the minimum is still a win.</div>
-
     <div class="discipline-streak-box">
       <div>
         <div class="discipline-streak-num" id="disc-streak-num">—</div>
@@ -550,7 +310,6 @@
     </div>
   </div>
 
-  <!-- Reflection -->
   <div class="card">
     <div class="card-title">Daily Reflection</div>
     <label style="margin-top:0">🙏 What is something I am grateful for today?</label>
@@ -563,7 +322,6 @@
     <textarea id="reflectionShift" placeholder="Tomorrow I will shift..." style="min-height:56px"></textarea>
   </div>
 
-  <!-- Shipped Status -->
   <div id="shippedStatus" class="shipped-status not-shipped">
     <div>
       <div class="shipped-label" id="shippedLabel">NOT SHIPPED</div>
@@ -578,7 +336,7 @@
   </div>
 </div>
 
-<!-- ===== COACH ===== -->
+<!-- COACH -->
 <div class="section" id="sec-coach">
   <div class="card">
     <div class="card-title">Select Prospect</div>
@@ -586,7 +344,6 @@
     <div style="font-size:.68rem;color:var(--text3);margin-top:4px">Or type a name below</div>
     <input type="text" id="coachProspectName" placeholder="Prospect name..." style="margin-top:8px"/>
   </div>
-
   <div class="card">
     <div class="card-title">Conversation Context</div>
     <label>Archetype</label>
@@ -623,10 +380,10 @@
       <option value="Vulnerable">Vulnerable</option>
       <option value="Defensive">Defensive</option>
     </select>
-    <label>What did they say? (paste their message or summarize)</label>
-    <textarea id="coachContext" placeholder="e.g. They said they are interested but busy with work and do not have time..."></textarea>
-    <label>What's the tension point you've detected (or want to surface)?</label>
-    <textarea id="coachTension" placeholder="e.g. Time compression, financial friction, identity loss..." style="min-height:50px"></textarea>
+    <label>What did they say?</label>
+    <textarea id="coachContext" placeholder="e.g. They said they are interested but busy..."></textarea>
+    <label>Tension point detected</label>
+    <textarea id="coachTension" placeholder="e.g. Time compression, financial friction..." style="min-height:50px"></textarea>
     <label>Goal for this response</label>
     <select id="coachGoal">
       <option value="Surface tension and deepen rapport">Surface tension and deepen rapport</option>
@@ -637,14 +394,11 @@
       <option value="Handle objection">Handle objection</option>
     </select>
   </div>
-
   <div class="btn-row">
     <button class="btn btn-primary" onclick="runCoach()">⚡ Get Coaching Response</button>
     <button class="btn btn-secondary" onclick="clearCoach()">Clear</button>
   </div>
-
   <div id="coachOutput" class="coach-output" style="display:none"></div>
-
   <div class="card" style="margin-top:14px">
     <div class="card-title">Save to Conversation History</div>
     <label>What happened / What was said recently</label>
@@ -653,14 +407,13 @@
       <button class="btn btn-success btn-sm" onclick="saveConversation()">💾 Save Conversation</button>
     </div>
   </div>
-
   <div class="card" id="prospectHistoryCard" style="margin-top:14px;display:none">
     <div class="card-title">📋 History with this Prospect</div>
     <div id="prospectHistoryList" style="font-size:.78rem;color:var(--text2)"></div>
   </div>
 </div>
 
-<!-- ===== PIPELINE ===== -->
+<!-- PIPELINE -->
 <div class="section" id="sec-pipeline">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
     <div class="stats-row" style="margin:0;flex:1">
@@ -670,26 +423,24 @@
     </div>
     <button class="btn btn-primary btn-sm" onclick="openAddProspect()">+ Add Prospect</button>
   </div>
-
   <div class="pipeline-filter">
     <button class="filter-btn active" onclick="filterPipeline('All',this)">All</button>
     <button class="filter-btn" onclick="filterPipeline('New Prospect',this)">New Prospect</button>
     <button class="filter-btn" onclick="filterPipeline('Nurturing',this)">Nurturing</button>
     <button class="filter-btn" onclick="filterPipeline('Sample',this)">Sample</button>
-    <button class="filter-btn" onclick="filterPipeline('6-W Conversation',this)">6-W Conversation</button>
-    <button class="filter-btn" onclick="filterPipeline('Patron Preso',this)">Patron Preso</button>
-    <button class="filter-btn" onclick="filterPipeline('Open Account',this)">Open Account</button>
+    <button class="filter-btn" onclick="filterPipeline('6-W Conversation',this)">6-W</button>
+    <button class="filter-btn" onclick="filterPipeline('Patron Preso',this)">Patron</button>
+    <button class="filter-btn" onclick="filterPipeline('Open Account',this)">Open</button>
     <button class="filter-btn" onclick="filterPipeline('Trial',this)">Trial</button>
     <button class="filter-btn" onclick="filterPipeline('Briefing',this)">Briefing</button>
     <button class="filter-btn" onclick="filterPipeline('Saturday',this)">Saturday</button>
     <button class="filter-btn" onclick="filterPipeline('MAP',this)">MAP</button>
     <button class="filter-btn" onclick="filterPipeline('Interview',this)">Interview</button>
   </div>
-
   <div id="pipelineList"></div>
 </div>
 
-<!-- ===== HISTORY ===== -->
+<!-- HISTORY -->
 <div class="section" id="sec-history">
   <div class="stats-row">
     <div class="stat-box"><div class="stat-val" id="hist-streak">0</div><div class="stat-lbl">GU Streak 🔥</div></div>
@@ -701,39 +452,30 @@
   <div id="historyList"></div>
 </div>
 
-<!-- ===== REVIEWS ===== -->
+<!-- REVIEWS -->
 <div class="section" id="sec-reviews">
   <div class="card">
     <div class="card-title">AI-Powered Review</div>
-    <p style="font-size:.78rem;color:var(--text2);margin-bottom:14px;line-height:1.6">
-      The AI coach will analyze all your data — shipped logs, pipeline activity, cadence numbers — and give you a personalized review with strengths, consistency patterns, areas of growth, and specific recommendations for the next period.
-    </p>
+    <p style="font-size:.78rem;color:var(--text2);margin-bottom:14px;line-height:1.6">The AI coach will analyze all your data and give you a personalized review with strengths, consistency patterns, areas of growth, and specific recommendations.</p>
     <div class="review-btn-row">
       <button class="btn btn-primary" onclick="runReview('week')">📊 Weekly Review</button>
       <button class="btn btn-gold" onclick="runReview('month')">📈 Monthly Review</button>
     </div>
   </div>
-
   <div id="reviewOutput" style="display:none" class="card">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
       <div class="card-title" id="reviewOutputTitle" style="margin:0">Review</div>
-      <button class="btn btn-success btn-sm" onclick="saveReview()" id="saveReviewBtn">💾 Save Review</button>
+      <button class="btn btn-success btn-sm" onclick="saveReview()">💾 Save Review</button>
     </div>
     <div id="reviewOutputContent" class="review-output"></div>
   </div>
-
-  <!-- Saved Reviews -->
   <div class="card">
     <div class="card-title">Saved Reviews</div>
     <div id="savedReviewsList" style="font-size:.78rem;color:var(--text2)">Loading...</div>
   </div>
-
-  <!-- Master Mentor Progress -->
   <div class="card">
     <div class="card-title">Master Mentor Tracker</div>
-    <p style="font-size:.75rem;color:var(--text2);margin-bottom:12px;line-height:1.5">
-      To reach Master Mentor you need: (1) enroll 1 new direct mentor, and (2) support one of your 3 current direct mentors in enrolling someone beneath them.
-    </p>
+    <p style="font-size:.75rem;color:var(--text2);margin-bottom:12px;line-height:1.5">To reach Master Mentor: (1) enroll 1 new direct mentor, and (2) support a current mentor to enroll someone.</p>
     <div style="display:flex;gap:12px;flex-wrap:wrap">
       <div style="flex:1;min-width:180px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px">
         <div style="font-size:.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Step 1</div>
@@ -745,7 +487,7 @@
       </div>
       <div style="flex:1;min-width:180px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px">
         <div style="font-size:.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Step 2</div>
-        <div style="font-size:.82rem;color:var(--text2);margin-bottom:8px">Support direct mentor to enroll someone</div>
+        <div style="font-size:.82rem;color:var(--text2);margin-bottom:8px">Support mentor to enroll someone</div>
         <div style="display:flex;gap:8px">
           <button class="btn btn-sm btn-secondary" onclick="setMasterStep(2,false)" id="mm2no">○ Not Yet</button>
           <button class="btn btn-sm btn-success" onclick="setMasterStep(2,true)" id="mm2yes">✓ Done</button>
@@ -753,8 +495,6 @@
       </div>
     </div>
   </div>
-
-  <!-- Conversation History Log -->
   <div class="card">
     <div class="card-title">Conversation History</div>
     <div id="convHistoryList" style="font-size:.78rem;color:var(--text2)">Loading...</div>
@@ -774,35 +514,19 @@
     <input type="text" id="newContact" placeholder="Phone / Instagram / email"/>
     <label>Stage</label>
     <select id="newStage">
-      <option>New Prospect</option>
-      <option>Nurturing</option>
-      <option>Sample</option>
-      <option>6-W Conversation</option>
-      <option>Patron Preso</option>
-      <option>Open Account</option>
-      <option>Trial</option>
-      <option>Briefing</option>
-      <option>Saturday</option>
-      <option>MAP</option>
-      <option>Interview</option>
-      <option>Passed</option>
+      <option>New Prospect</option><option>Nurturing</option><option>Sample</option>
+      <option>6-W Conversation</option><option>Patron Preso</option><option>Open Account</option>
+      <option>Trial</option><option>Briefing</option><option>Saturday</option>
+      <option>MAP</option><option>Interview</option><option>Passed</option>
     </select>
     <label>Warmth</label>
-    <select id="newWarmth">
-      <option>Hot</option>
-      <option>Warm</option>
-      <option>Cool</option>
-      <option>Cold</option>
-    </select>
+    <select id="newWarmth"><option>Hot</option><option>Warm</option><option>Cool</option><option>Cold</option></select>
     <label>Archetype</label>
     <select id="newArchetype">
       <option value="">Unknown</option>
-      <option>Caregiver under strain</option>
-      <option>Structural builder</option>
-      <option>Relational stabilizer</option>
-      <option>Momentum-driven recruiter</option>
-      <option>Burned-out high achiever</option>
-      <option>Identity-seeker</option>
+      <option>Caregiver under strain</option><option>Structural builder</option>
+      <option>Relational stabilizer</option><option>Momentum-driven recruiter</option>
+      <option>Burned-out high achiever</option><option>Identity-seeker</option>
     </select>
     <label>Tension Point</label>
     <input type="text" id="newTension" placeholder="e.g. Time compression, financial friction..."/>
@@ -815,17 +539,19 @@
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script>
 // ─────────────────────────────────────────────
-// SUPABASE CONFIG
+// CONFIG
 // ─────────────────────────────────────────────
 const SUPA_URL = 'https://kkerejaviuqnaalbbnfs.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtrZXJlamF2aXVxbmFhbGJibmZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1Mzc0MDAsImV4cCI6MjA4ODExMzQwMH0.aqqh3Qmh-L8-YiF9asZhY5xjlGdcd5L4q3arfDKIv1I';
 const CLAUDE_API = 'https://gu-proxy.emtrad83.workers.dev/v1/messages';
 
+// ─────────────────────────────────────────────
+// SUPABASE HELPER
+// ─────────────────────────────────────────────
 async function sb(path, opts={}) {
   const { prefer, headers: extraHeaders, ...fetchOpts } = opts;
   const r = await fetch(SUPA_URL + '/rest/v1/' + path, {
@@ -835,10 +561,13 @@ async function sb(path, opts={}) {
       'Authorization': 'Bearer ' + SUPA_KEY,
       'Content-Type': 'application/json',
       'Prefer': prefer || 'return=representation',
-      ...extraHeaders
+      ...(extraHeaders || {})
     }
   });
-  if (!r.ok) { const e = await r.text(); throw new Error(e); }
+  if (!r.ok) {
+    const e = await r.text();
+    throw new Error(e);
+  }
   const t = await r.text();
   return t ? JSON.parse(t) : [];
 }
@@ -857,22 +586,18 @@ let coachSelectedProspect = null;
 
 function getTodayStr() {
   const d = new Date();
-  const y = d.getFullYear();
-  const m = String(d.getMonth()+1).padStart(2,'0');
-  const dy = String(d.getDate()).padStart(2,'0');
-  return `${y}-${m}-${dy}`;
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
 
 function freshLog(date) {
   return {
-    date, business_opened: false, gu_intro_made: false,
-    gu_exp_advanced: false, business_closed: false, five_reach_outs: false,
+    date,
+    business_opened: false, gu_intro_made: false, gu_exp_advanced: false,
+    business_closed: false, five_reach_outs: false,
     reach_outs: [], people_introduced: [],
     strength: false, movement: false, rest: false,
-    // Discipline fields
     d_wake: false, d_workout: false, d_breakfast: false, d_recovery: false,
-    d_affirm_am: false, d_affirm_pm: false,
-    d_mvh: '',
+    d_affirm_am: false, d_affirm_pm: false, d_mvh: '',
     reflection_grateful: '', reflection_good: '', reflection_needle: '', reflection_shift: '',
     reflection: '', shipped: 'NO',
     reach_out_count: 0, samples_count: 0, sixw_count: 0, mentor_count: 0
@@ -899,8 +624,7 @@ function switchTab(tab) {
 // ─────────────────────────────────────────────
 function formatDateDisplay(str) {
   const [y,m,d] = str.split('-').map(Number);
-  const dt = new Date(y, m-1, d);
-  return dt.toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric', year:'numeric'});
+  return new Date(y, m-1, d).toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric', year:'numeric'});
 }
 
 function onDateChange() {
@@ -914,14 +638,14 @@ function onDateChange() {
 }
 
 // ─────────────────────────────────────────────
-// DISCIPLINE HELPERS
+// DISCIPLINE
 // ─────────────────────────────────────────────
 function toggleDiscipline(field) {
   currentLog[field] = !currentLog[field];
   const map = {d_wake:'d1', d_workout:'d2', d_breakfast:'d3', d_recovery:'d4', d_affirm_am:'d5', d_affirm_pm:'d6'};
   const id = map[field];
   document.getElementById('ci-'+id).classList.toggle('checked', currentLog[field]);
-  document.getElementById('ci-'+id).classList.toggle('discipline', true);
+  document.getElementById('ci-'+id).classList.add('discipline');
   autoDetectShipped();
   updateShippedUI();
   updateDiscStreak();
@@ -945,7 +669,6 @@ function renderMVH() {
 }
 
 function calcDiscStreak() {
-  // A discipline day = at least 2 of 4 morning/recovery checks done OR mvh is set
   let streak = 0;
   const today = getTodayStr();
   let check = today;
@@ -954,17 +677,12 @@ function calcDiscStreak() {
     const isToday = check === today;
     if (log) {
       const discChecks = [log.d_wake, log.d_workout, log.d_breakfast, log.d_recovery].filter(Boolean).length;
-      const hasMvh = !!log.d_mvh;
-      if (discChecks >= 2 || hasMvh) { streak++; }
-      else if (isToday) { /* don't break on today */ }
-      else { break; }
+      if (discChecks >= 2 || !!log.d_mvh) { streak++; }
+      else if (!isToday) { break; }
     } else if (isToday) {
-      // Today not yet saved — check currentLog
       const discChecks = [currentLog.d_wake, currentLog.d_workout, currentLog.d_breakfast, currentLog.d_recovery].filter(Boolean).length;
       if (discChecks >= 2 || !!currentLog.d_mvh) streak++;
-    } else {
-      break;
-    }
+    } else { break; }
     const d = new Date(check + 'T12:00:00');
     d.setDate(d.getDate()-1);
     check = d.toISOString().slice(0,10);
@@ -981,10 +699,9 @@ function updateDiscStreak() {
 }
 
 // ─────────────────────────────────────────────
-// DAILY LOG RENDER
+// LOG FORM RENDER
 // ─────────────────────────────────────────────
 function renderLogForm() {
-  // Cadence counts
   const rc = currentLog.reach_out_count || 0;
   const sc = currentLog.samples_count || 0;
   const sw = currentLog.sixw_count || 0;
@@ -997,29 +714,24 @@ function renderLogForm() {
   document.getElementById('sampCount').className = 'cadence-num' + (sc >= 3 ? ' met' : '');
   document.getElementById('sixwCount').className = 'cadence-num' + (sw >= 1 ? ' met' : '');
 
-  // Business checks
   ['business_opened','gu_intro_made','gu_exp_advanced','business_closed','five_reach_outs'].forEach(k => {
     const map = {business_opened:'bo',gu_intro_made:'gi',gu_exp_advanced:'ge',business_closed:'bc',five_reach_outs:'ro5'};
-    const id = map[k];
-    document.getElementById('ci-'+id).classList.toggle('checked', !!currentLog[k]);
+    document.getElementById('ci-'+map[k]).classList.toggle('checked', !!currentLog[k]);
   });
   ['strength','movement','rest'].forEach(k => {
     const map = {strength:'str',movement:'mov',rest:'rest'};
-    const id = map[k];
-    document.getElementById('ci-'+id).classList.toggle('checked', !!currentLog[k]);
-    document.getElementById('ci-'+id).classList.toggle('fitness', true);
+    const el = document.getElementById('ci-'+map[k]);
+    el.classList.toggle('checked', !!currentLog[k]);
+    el.classList.add('fitness');
+  });
+  ['d_wake','d_workout','d_breakfast','d_recovery','d_affirm_am','d_affirm_pm'].forEach((k,i) => {
+    const el = document.getElementById('ci-d'+(i+1));
+    el.classList.toggle('checked', !!currentLog[k]);
+    el.classList.add('discipline');
   });
 
-  // Discipline checks
-  ['d_wake','d_workout','d_breakfast','d_recovery','d_affirm_am','d_affirm_pm'].forEach((k,i) => {
-    const id = 'ci-d'+(i+1);
-    document.getElementById(id).classList.toggle('checked', !!currentLog[k]);
-    document.getElementById(id).classList.toggle('discipline', true);
-  });
   renderMVH();
   updateDiscStreak();
-
-  // Reach-outs
   renderROList();
   renderIntroList();
 
@@ -1032,9 +744,8 @@ function renderLogForm() {
 
 function renderROList() {
   const c = document.getElementById('roList');
-  const ros = currentLog.reach_outs || [];
   c.innerHTML = '';
-  ros.forEach((name, i) => {
+  (currentLog.reach_outs || []).forEach((name, i) => {
     const row = document.createElement('div');
     row.className = 'reach-out-row';
     row.innerHTML = `<input type="text" value="${escHtml(name)}" placeholder="Name" oninput="currentLog.reach_outs[${i}]=this.value"/>
@@ -1045,15 +756,14 @@ function renderROList() {
 
 function renderIntroList() {
   const c = document.getElementById('introList');
-  const pi = currentLog.people_introduced || [];
   c.innerHTML = '';
-  pi.forEach((p, i) => {
+  (currentLog.people_introduced || []).forEach((p, i) => {
     const row = document.createElement('div');
     row.style.cssText = 'display:flex;gap:6px;margin-bottom:6px;align-items:center;flex-wrap:wrap';
     row.innerHTML = `
       <input type="text" value="${escHtml(p.name||'')}" placeholder="Name" style="flex:1;min-width:100px" oninput="currentLog.people_introduced[${i}].name=this.value"/>
       <select style="width:140px" onchange="currentLog.people_introduced[${i}].stage=this.value">
-        ${["New Prospect", "Nurturing", "Sample", "6-W Conversation", "Patron Preso", "Open Account", "Trial", "Briefing", "Saturday", "MAP", "Interview"].map(s=>`<option ${p.stage===s?'selected':''}>${s}</option>`).join('')}
+        ${["New Prospect","Nurturing","Sample","6-W Conversation","Patron Preso","Open Account","Trial","Briefing","Saturday","MAP","Interview"].map(s=>`<option ${p.stage===s?'selected':''}>${s}</option>`).join('')}
       </select>
       <button class="remove-btn" onclick="removeIntro(${i})">✕</button>`;
     c.appendChild(row);
@@ -1065,22 +775,13 @@ function addReachOutRow() {
   currentLog.reach_outs.push('');
   renderROList();
 }
-
-function removeRO(i) {
-  currentLog.reach_outs.splice(i,1);
-  renderROList();
-}
-
+function removeRO(i) { currentLog.reach_outs.splice(i,1); renderROList(); }
 function addIntroRow() {
   if (!currentLog.people_introduced) currentLog.people_introduced = [];
   currentLog.people_introduced.push({name:'',stage:'New Prospect'});
   renderIntroList();
 }
-
-function removeIntro(i) {
-  currentLog.people_introduced.splice(i,1);
-  renderIntroList();
-}
+function removeIntro(i) { currentLog.people_introduced.splice(i,1); renderIntroList(); }
 
 function adjustCount(field, delta) {
   const map = {reachOut:'reach_out_count', samples:'samples_count', sixW:'sixw_count', mentors:'mentor_count'};
@@ -1090,18 +791,15 @@ function adjustCount(field, delta) {
   const el = document.getElementById(idMap[field]);
   el.textContent = currentLog[k];
   const targets = {reach_out_count:5, samples_count:3, sixw_count:1};
-  if (targets[k] !== undefined) {
-    el.className = 'cadence-num' + (currentLog[k] >= targets[k] ? ' met' : '');
-  }
+  if (targets[k] !== undefined) el.className = 'cadence-num' + (currentLog[k] >= targets[k] ? ' met' : '');
 }
 
 function toggleCheck(field) {
   currentLog[field] = !currentLog[field];
   const map = {business_opened:'bo',gu_intro_made:'gi',gu_exp_advanced:'ge',business_closed:'bc',five_reach_outs:'ro5',strength:'str',movement:'mov',rest:'rest'};
-  const id = map[field];
-  const isFit = ['strength','movement','rest'].includes(field);
-  document.getElementById('ci-'+id).classList.toggle('checked', currentLog[field]);
-  if (isFit) document.getElementById('ci-'+id).classList.add('fitness');
+  const el = document.getElementById('ci-'+map[field]);
+  el.classList.toggle('checked', currentLog[field]);
+  if (['strength','movement','rest'].includes(field)) el.classList.add('fitness');
   autoDetectShipped();
   updateShippedUI();
 }
@@ -1111,9 +809,7 @@ function autoDetectShipped() {
   const fitnessCount = [currentLog.strength, currentLog.movement, currentLog.rest].filter(Boolean).length;
   const discCount = [currentLog.d_wake, currentLog.d_workout, currentLog.d_breakfast, currentLog.d_recovery].filter(Boolean).length;
   const mvhSet = currentLog.d_mvh === 'full' || currentLog.d_mvh === 'floor';
-  if (guCount >= 3 && fitnessCount >= 1 && discCount >= 2 && mvhSet) {
-    currentLog.shipped = 'YES';
-  }
+  if (guCount >= 3 && fitnessCount >= 1 && discCount >= 2 && mvhSet) currentLog.shipped = 'YES';
 }
 
 function manualToggleShipped() {
@@ -1124,20 +820,18 @@ function manualToggleShipped() {
 function updateShippedUI() {
   autoDetectShipped();
   const shipped = currentLog.shipped === 'YES';
-  const el = document.getElementById('shippedStatus');
-  el.className = 'shipped-status ' + (shipped ? 'shipped' : 'not-shipped');
+  document.getElementById('shippedStatus').className = 'shipped-status ' + (shipped ? 'shipped' : 'not-shipped');
   document.getElementById('shippedLabel').textContent = shipped ? '✓ SHIPPED' : 'NOT SHIPPED';
-  document.getElementById('shippedSub').textContent = shipped
-    ? 'You shipped today. Keep investing your energy!'
-    : 'Complete 3 GU + 1 fitness + 2 discipline checks + Full/Floor Day to ship';
+  document.getElementById('shippedSub').textContent = shipped ? 'You shipped today. Keep investing your energy!' : 'Complete 3 GU + 1 fitness + 2 discipline checks + Full/Floor Day to ship';
   document.getElementById('shippedToggleBtn').textContent = shipped ? 'Unmark' : 'Mark Shipped';
   document.getElementById('shippedToggleBtn').className = 'btn btn-sm ' + (shipped ? 'btn-secondary' : 'btn-success');
 }
 
 // ─────────────────────────────────────────────
-// SAVE / LOAD LOGS
+// SAVE LOG — FIXED: PATCH first, POST if new
 // ─────────────────────────────────────────────
 async function saveLog() {
+  // Read reflection fields from DOM
   currentLog.reflection_grateful = document.getElementById('reflectionGrateful').value;
   currentLog.reflection_good = document.getElementById('reflectionGood').value;
   currentLog.reflection_needle = document.getElementById('reflectionNeedle').value;
@@ -1148,30 +842,50 @@ async function saveLog() {
     currentLog.reflection_needle ? '🎯 ' + currentLog.reflection_needle : '',
     currentLog.reflection_shift ? '🔄 ' + currentLog.reflection_shift : ''
   ].filter(Boolean).join(' | ');
-  currentLog.reach_outs = currentLog.reach_outs.filter(r => r.trim());
-  currentLog.people_introduced = currentLog.people_introduced.filter(p => p.name && p.name.trim());
-  autoDetectShipped();
-  try {
-const { id, created_at, ...logData } = currentLog;
 
-// Always use PATCH to update existing record by date
-try {
-  const res = await sb(`shipped_logs?date=eq.${logData.date}`, {
-    method: 'PATCH',
-    prefer: 'return=representation',
-    body: JSON.stringify(logData)
-  });
-  
-  // If no rows updated, insert new
-  if (!res || res.length === 0) {
-    await sb('shipped_logs', {
-      method: 'POST',
+  currentLog.reach_outs = (currentLog.reach_outs || []).filter(r => r.trim());
+  currentLog.people_introduced = (currentLog.people_introduced || []).filter(p => p.name && p.name.trim());
+  autoDetectShipped();
+
+  // Strip id and created_at — Supabase manages these
+  const { id, created_at, ...logData } = currentLog;
+
+  try {
+    let savedRecord = null;
+
+    // Always try PATCH first (update existing row by date)
+    const patched = await sb(`shipped_logs?date=eq.${logData.date}`, {
+      method: 'PATCH',
       prefer: 'return=representation',
       body: JSON.stringify(logData)
     });
+
+    if (patched && patched.length > 0) {
+      // Row existed and was updated
+      savedRecord = patched[0];
+    } else {
+      // No row for this date yet — insert new
+      const inserted = await sb('shipped_logs', {
+        method: 'POST',
+        prefer: 'return=representation',
+        body: JSON.stringify(logData)
+      });
+      savedRecord = Array.isArray(inserted) ? inserted[0] : inserted;
+    }
+
+    // Update in-memory logs array
+    const idx = logs.findIndex(l => l.date === currentDate);
+    if (idx >= 0) logs[idx] = savedRecord || currentLog;
+    else logs.unshift(savedRecord || currentLog);
+    logs.sort((a,b) => b.date.localeCompare(a.date));
+
+    renderStats();
+    updateDiscStreak();
+    showToast('Log saved!', 'success');
+  } catch(e) {
+    console.error('saveLog error:', e);
+    showToast('Save failed — check Supabase', 'error');
   }
-} catch(e) {
-  throw e;
 }
 
 function clearLog() {
@@ -1179,6 +893,9 @@ function clearLog() {
   renderLogForm();
 }
 
+// ─────────────────────────────────────────────
+// LOAD / STATS
+// ─────────────────────────────────────────────
 async function loadLogs() {
   try {
     logs = await sb('shipped_logs?order=date.desc&limit=90');
@@ -1194,16 +911,13 @@ function renderStats() {
   document.getElementById('hist-total').textContent = logs.length;
   document.getElementById('hist-shipped').textContent = shipped.length;
   document.getElementById('hist-ro').textContent = logs.reduce((s,l) => s + (l.reach_out_count||0) + (l.reach_outs||[]).length, 0);
-
-  // GU Streak
   let streak = 0;
   const today = getTodayStr();
   let check = today;
   for (let i = 0; i < 365; i++) {
     const log = logs.find(l => l.date === check);
     if (log && log.shipped === 'YES') { streak++; }
-    else if (check === today) { /* skip today if not shipped */ }
-    else break;
+    else if (check !== today) { break; }
     const d = new Date(check + 'T12:00:00');
     d.setDate(d.getDate()-1);
     check = d.toISOString().slice(0,10);
@@ -1249,7 +963,7 @@ function renderHistory() {
         ${discChecks > 0 || l.d_mvh ? `
         <div style="margin-top:10px;padding:8px 10px;background:rgba(200,168,75,.06);border:1px solid rgba(200,168,75,.15);border-radius:6px;font-size:.7rem">
           <div style="color:var(--discipline);font-weight:700;margin-bottom:4px;letter-spacing:.08em">⚡ DISCIPLINE</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;color:var(--text2)">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px">
             <span style="color:${l.d_wake?'var(--discipline)':'var(--text3)'}">${l.d_wake?'✓':'○'} Up at 5am</span>
             <span style="color:${l.d_workout?'var(--discipline)':'var(--text3)'}">${l.d_workout?'✓':'○'} Workout done</span>
             <span style="color:${l.d_breakfast?'var(--discipline)':'var(--text3)'}">${l.d_breakfast?'✓':'○'} Protein breakfast</span>
@@ -1259,17 +973,15 @@ function renderHistory() {
           </div>
           ${l.d_mvh ? `<div style="margin-top:4px;color:var(--discipline)">${l.d_mvh==='full'?'✦ Full day':'~ Floor day'}</div>` : ''}
         </div>` : ''}
-        ${l.reach_out_count||l.samples_count||l.sixw_count ? `<div style="margin-top:8px;font-size:.7rem;color:var(--text2)">
-          Reach-outs: <b>${l.reach_out_count||0}</b> · Samples: <b>${l.samples_count||0}</b> · 6-W: <b>${l.sixw_count||0}</b>
-        </div>` : ''}
+        ${l.reach_out_count||l.samples_count||l.sixw_count ? `<div style="margin-top:8px;font-size:.7rem;color:var(--text2)">Reach-outs: <b>${l.reach_out_count||0}</b> · Samples: <b>${l.samples_count||0}</b> · 6-W: <b>${l.sixw_count||0}</b></div>` : ''}
         ${piStr ? `<div style="margin-top:6px;font-size:.7rem;color:var(--text2)">Introduced: ${piStr}</div>` : ''}
         ${(l.reach_outs||[]).length ? `<div style="margin-top:6px;font-size:.7rem;color:var(--text2)">Reach-outs: ${l.reach_outs.join(', ')}</div>` : ''}
         ${(l.reflection_grateful||l.reflection_good||l.reflection_needle||l.reflection_shift) ? `
         <div style="margin-top:8px;font-size:.72rem;color:var(--text2);line-height:1.6">
-          ${l.reflection_grateful ? `<div>🙏 ${escHtml(l.reflection_grateful.slice(0,100))}${l.reflection_grateful.length>100?'…':''}</div>` : ''}
-          ${l.reflection_good ? `<div>✨ ${escHtml(l.reflection_good.slice(0,100))}${l.reflection_good.length>100?'…':''}</div>` : ''}
-          ${l.reflection_needle ? `<div>🎯 ${escHtml(l.reflection_needle.slice(0,100))}${l.reflection_needle.length>100?'…':''}</div>` : ''}
-          ${l.reflection_shift ? `<div>🔄 ${escHtml(l.reflection_shift.slice(0,100))}${l.reflection_shift.length>100?'…':''}</div>` : ''}
+          ${l.reflection_grateful ? `<div>🙏 ${escHtml(l.reflection_grateful.slice(0,120))}${l.reflection_grateful.length>120?'…':''}</div>` : ''}
+          ${l.reflection_good ? `<div>✨ ${escHtml(l.reflection_good.slice(0,120))}${l.reflection_good.length>120?'…':''}</div>` : ''}
+          ${l.reflection_needle ? `<div>🎯 ${escHtml(l.reflection_needle.slice(0,120))}${l.reflection_needle.length>120?'…':''}</div>` : ''}
+          ${l.reflection_shift ? `<div>🔄 ${escHtml(l.reflection_shift.slice(0,120))}${l.reflection_shift.length>120?'…':''}</div>` : ''}
         </div>` : ''}
       </div>
     </div>`;
@@ -1282,10 +994,7 @@ function renderHistory() {
 async function loadProspects() {
   try {
     prospects = await sb('prospects?order=created_at.desc');
-  } catch(e) {
-    console.error('loadProspects:', e);
-    prospects = [];
-  }
+  } catch(e) { console.error('loadProspects:', e); prospects = []; }
   renderPipeline();
   renderCoachProspects();
   renderPipelineStats();
@@ -1294,56 +1003,43 @@ async function loadProspects() {
 async function upsertProspect(p) {
   try {
     if (p.id && typeof p.id === 'string' && p.id.includes('-')) {
-      const res = await sb(`prospects?id=eq.${p.id}`, {
-        method: 'PATCH', prefer: 'return=representation', body: JSON.stringify(p)
-      });
+      const res = await sb(`prospects?id=eq.${p.id}`, { method: 'PATCH', prefer: 'return=representation', body: JSON.stringify(p) });
       return Array.isArray(res) ? res[0] : res;
     } else {
       const {id, ...data} = p;
-      const res = await sb('prospects', {
-        method: 'POST', prefer: 'return=representation', body: JSON.stringify(data)
-      });
+      const res = await sb('prospects', { method: 'POST', prefer: 'return=representation', body: JSON.stringify(data) });
       return Array.isArray(res) ? res[0] : res;
     }
-  } catch(e) {
-    console.error('upsertProspect:', e);
-    return null;
-  }
+  } catch(e) { console.error('upsertProspect:', e); return null; }
 }
 
 function renderPipeline() {
   renderPipelineStats();
   const c = document.getElementById('pipelineList');
-  let filtered = pipelineFilter === 'All' ? prospects : prospects.filter(p => p.stage === pipelineFilter);
+  const filtered = pipelineFilter === 'All' ? prospects : prospects.filter(p => p.stage === pipelineFilter);
   if (!filtered.length) {
-    c.innerHTML = `<div style="text-align:center;color:var(--text3);padding:40px;font-size:.8rem">
-      ${prospects.length ? 'No prospects in this stage.' : 'No prospects yet. Add your first one!'}</div>`;
+    c.innerHTML = `<div style="text-align:center;color:var(--text3);padding:40px;font-size:.8rem">${prospects.length ? 'No prospects in this stage.' : 'No prospects yet. Add your first one!'}</div>`;
     return;
   }
-  c.innerHTML = filtered.map(p => {
-    const stageClass = stageCSS(p.stage);
-    const warmthClass = warmthCSS(p.warmth);
-    return `
+  c.innerHTML = filtered.map(p => `
     <div class="prospect-card" id="pc-${p.id}" onclick="toggleProspect('${p.id}')">
       <div class="prospect-header">
         <div>
           <div class="prospect-name">${escHtml(p.name)}</div>
           <div class="prospect-meta">
-            <span class="stage-tag ${stageClass}">${p.stage||'New Lead'}</span>
-            <div class="warmth-dot ${warmthClass}" title="${p.warmth}"></div>
+            <span class="stage-tag ${stageCSS(p.stage)}">${p.stage||'New Lead'}</span>
+            <div class="warmth-dot ${warmthCSS(p.warmth)}" title="${p.warmth}"></div>
             ${p.archetype ? `<span style="font-size:.65rem;color:var(--text3)">${p.archetype}</span>` : ''}
           </div>
         </div>
-        <div style="font-size:.65rem;color:var(--text3);text-align:right">
-          ${p.last_conversation ? formatShortDate(p.last_conversation) : 'No contact'}
-        </div>
+        <div style="font-size:.65rem;color:var(--text3);text-align:right">${p.last_conversation ? formatShortDate(p.last_conversation) : 'No contact'}</div>
       </div>
       <div class="prospect-detail" id="pd-${p.id}">
         <div class="detail-grid">
           <div>
             <label>Stage</label>
             <select onchange="updateProspect('${p.id}','stage',this.value)" onclick="event.stopPropagation()">
-              ${["New Prospect", "Nurturing", "Sample", "6-W Conversation", "Patron Preso", "Open Account", "Trial", "Briefing", "Saturday", "MAP", "Interview", "Passed"].map(s=>`<option ${p.stage===s?'selected':''}>${s}</option>`).join('')}
+              ${["New Prospect","Nurturing","Sample","6-W Conversation","Patron Preso","Open Account","Trial","Briefing","Saturday","MAP","Interview","Passed"].map(s=>`<option ${p.stage===s?'selected':''}>${s}</option>`).join('')}
             </select>
           </div>
           <div>
@@ -1374,8 +1070,7 @@ function renderPipeline() {
           <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteProspect('${p.id}')">Delete</button>
         </div>
       </div>
-    </div>`;
-  }).join('');
+    </div>`).join('');
 }
 
 function renderPipelineStats() {
@@ -1384,10 +1079,7 @@ function renderPipelineStats() {
   document.getElementById('pl-mentors').textContent = prospects.filter(p => p.stage === 'Interview').length;
 }
 
-function toggleProspect(id) {
-  document.getElementById('pc-'+id).classList.toggle('open');
-}
-
+function toggleProspect(id) { document.getElementById('pc-'+id).classList.toggle('open'); }
 function updateProspect(id, field, value) {
   const p = prospects.find(x => String(x.id) === String(id));
   if (p) p[field] = value;
@@ -1402,9 +1094,7 @@ async function saveProspect(id) {
     if (idx >= 0) prospects[idx] = saved;
     showToast('Saved!', 'success');
     renderPipeline();
-  } else {
-    showToast('Save failed', 'error');
-  }
+  } else { showToast('Save failed', 'error'); }
 }
 
 async function deleteProspect(id) {
@@ -1412,12 +1102,9 @@ async function deleteProspect(id) {
   try {
     await sb(`prospects?id=eq.${id}`, {method:'DELETE', prefer:''});
     prospects = prospects.filter(p => String(p.id) !== String(id));
-    renderPipeline();
-    renderCoachProspects();
+    renderPipeline(); renderCoachProspects();
     showToast('Deleted', 'success');
-  } catch(e) {
-    showToast('Delete failed', 'error');
-  }
+  } catch(e) { showToast('Delete failed', 'error'); }
 }
 
 function coachThis(id) {
@@ -1456,14 +1143,11 @@ async function saveNewProspect() {
     archetype: document.getElementById('newArchetype').value,
     tension_point: document.getElementById('newTension').value.trim(),
     notes: document.getElementById('newNotes').value.trim(),
-    last_conversation: '',
-    reach_out_count: 1
+    last_conversation: '', reach_out_count: 1
   };
   const saved = await upsertProspect(p);
   prospects.unshift(saved || {...p, id: Date.now()});
-  renderPipeline();
-  renderCoachProspects();
-  closeAddProspect();
+  renderPipeline(); renderCoachProspects(); closeAddProspect();
   showToast(`${name} added to Pipeline`, 'success');
   ['newName','newContact','newTension','newNotes'].forEach(id => document.getElementById(id).value='');
 }
@@ -1474,8 +1158,7 @@ async function saveNewProspect() {
 function renderCoachProspects() {
   const c = document.getElementById('coachProspectBtns');
   c.innerHTML = prospects.filter(p => p.stage !== 'Passed').map(p =>
-    `<button class="coach-prospect-btn ${coachSelectedProspect && coachSelectedProspect.id === p.id ? 'selected' : ''}"
-      onclick="selectCoachProspect('${p.id}')">
+    `<button class="coach-prospect-btn ${coachSelectedProspect && coachSelectedProspect.id === p.id ? 'selected' : ''}" onclick="selectCoachProspect('${p.id}')">
       <div class="warmth-dot ${warmthCSS(p.warmth)}" style="width:6px;height:6px"></div>
       ${escHtml(p.name)}
     </button>`
@@ -1502,57 +1185,18 @@ async function runCoach() {
   const context = document.getElementById('coachContext').value.trim();
   const tension = document.getElementById('coachTension').value.trim();
   const goal = document.getElementById('coachGoal').value;
-
   const out = document.getElementById('coachOutput');
   out.style.display = 'block';
   out.className = 'coach-output loading';
   out.innerHTML = '<span class="thinking-dots">Thinking</span>';
-
-  const priorHistory = convHistory
-    .filter(h => h.prospect_name && h.prospect_name.toLowerCase() === name.toLowerCase())
-    .slice(0, 8)
-    .reverse();
-  const historyStr = priorHistory.length
-    ? priorHistory.map(h => `[${h.date}] Stage: ${h.stage||''} | Notes: ${h.notes||''} | Context: ${h.context||''}`).join('\n')
-    : 'No prior conversations logged.';
-
-  const prompt = `You are Evan's personal GU coach. Not an assistant. Not an analyst. A coach who knows Evan, knows the game, and talks to him like a real person.
-
-Who Evan is: Chicago educator, 17+ years in special ed, now Climate & Culture Coordinator. GU Senior Mentor pushing toward Master Mentor. His whole philosophy is "Give more to gain more." He's not a salesperson — he's someone who genuinely believes in what he's doing and is learning to trust that. He uses the 6-W conversation to find real tension, not manufacture it.
-
-Here's the situation with ${name}:
-- Archetype: ${archetype || 'unknown'}
-- Where they are in the pipeline: ${stage}
-- Their emotional temperature right now: ${temp}
-- What's going on / what they said: ${context || 'not provided'}
-- Tension point Evan has detected: ${tension || 'not identified yet'}
-- What Evan is trying to do: ${goal}
-
-What's happened before with ${name}:
-${historyStr}
-
-Now here's how you respond — and this is important:
-
-Do NOT use headers. Do NOT use bullet points. Do NOT write a report. Talk to Evan like you're sitting across from him. Think out loud with him. Read what's actually happening with this person based on their archetype and temperature, and tell Evan what you're seeing. Then give him the actual words — a real message or line he can use that sounds like HIM, not like a script. Something natural, warm, confident, with no pressure behind it.
-
-If something from the prior history matters — if an approach didn't work, if there was a moment of real connection, if the tension shifted — bring that in. Don't repeat what's already been tried. Build on it.
-
-Keep it tight. Evan doesn't need a wall of text. He needs clarity and a move.
-
-End with one sentence on what to watch for when ${name} responds.`;
-
+  const priorHistory = convHistory.filter(h => h.prospect_name && h.prospect_name.toLowerCase() === name.toLowerCase()).slice(0,8).reverse();
+  const historyStr = priorHistory.length ? priorHistory.map(h => `[${h.date}] Stage: ${h.stage||''} | Notes: ${h.notes||''} | Context: ${h.context||''}`).join('\n') : 'No prior conversations logged.';
+  const prompt = `You are Evan's personal GU coach. Not an assistant. Not an analyst. A coach who knows Evan, knows the game, and talks to him like a real person.\n\nWho Evan is: Chicago educator, 17+ years in special ed, now Climate & Culture Coordinator. GU Senior Mentor pushing toward Master Mentor. His whole philosophy is "Give more to gain more." He's not a salesperson — he's someone who genuinely believes in what he's doing and is learning to trust that. He uses the 6-W conversation to find real tension, not manufacture it.\n\nHere's the situation with ${name}:\n- Archetype: ${archetype || 'unknown'}\n- Where they are in the pipeline: ${stage}\n- Their emotional temperature right now: ${temp}\n- What's going on / what they said: ${context || 'not provided'}\n- Tension point Evan has detected: ${tension || 'not identified yet'}\n- What Evan is trying to do: ${goal}\n\nWhat's happened before with ${name}:\n${historyStr}\n\nDo NOT use headers. Do NOT use bullet points. Talk to Evan like you're sitting across from him. Think out loud with him. Read what's actually happening with this person and tell Evan what you're seeing. Then give him the actual words — a real message or line he can use that sounds like HIM, not like a script. Keep it tight. End with one sentence on what to watch for when ${name} responds.`;
   try {
     const res = await fetch(CLAUDE_API, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        messages: [{role:'user', content: prompt}]
-      })
+      headers: {'Content-Type': 'application/json', 'anthropic-version': '2023-06-01'},
+      body: JSON.stringify({model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{role:'user', content: prompt}]})
     });
     const data = await res.json();
     const text = data.content?.map(b => b.text||'').join('') || 'No response received.';
@@ -1562,7 +1206,7 @@ End with one sentence on what to watch for when ${name} responds.`;
     renderProspectHistory(name);
   } catch(e) {
     out.className = 'coach-output';
-    out.textContent = 'DEBUG: ' + e.message + ' | ' + CLAUDE_API;
+    out.textContent = 'Error: ' + e.message;
   }
 }
 
@@ -1581,18 +1225,14 @@ async function saveConversation() {
   const notes = document.getElementById('saveConvNotes').value.trim();
   if (!name) { showToast('Select a prospect first', 'error'); return; }
   const entry = {
-    prospect_name: name,
-    date: getTodayStr(),
+    prospect_name: name, date: getTodayStr(),
     stage: document.getElementById('coachStage').value,
     tension_point: document.getElementById('coachTension').value.trim(),
-    notes,
-    context: document.getElementById('coachContext').value.trim(),
+    notes, context: document.getElementById('coachContext').value.trim(),
     coaching_output: window._lastCoachOutput || ''
   };
   try {
-    const res = await sb('conversation_history', {
-      method: 'POST', prefer: 'return=representation', body: JSON.stringify(entry)
-    });
+    const res = await sb('conversation_history', { method: 'POST', prefer: 'return=representation', body: JSON.stringify(entry) });
     convHistory.unshift(Array.isArray(res) ? res[0] : entry);
     showToast('Conversation saved!', 'success');
     document.getElementById('saveConvNotes').value = '';
@@ -1602,26 +1242,17 @@ async function saveConversation() {
       await upsertProspect(coachSelectedProspect);
     }
     renderProspectHistory(name);
-  } catch(e) {
-    showToast('Failed to save conversation', 'error');
-  }
+  } catch(e) { showToast('Failed to save conversation', 'error'); }
 }
 
 async function loadConvHistory() {
-  try {
-    convHistory = await sb('conversation_history?order=date.desc&limit=50');
-  } catch(e) {
-    console.error('loadConvHistory:', e);
-    convHistory = [];
-  }
+  try { convHistory = await sb('conversation_history?order=date.desc&limit=50'); }
+  catch(e) { console.error('loadConvHistory:', e); convHistory = []; }
 }
 
 function renderConvHistory() {
   const c = document.getElementById('convHistoryList');
-  if (!convHistory.length) {
-    c.innerHTML = '<div style="color:var(--text3)">No conversations saved yet. Use the Coach tab to log conversations.</div>';
-    return;
-  }
+  if (!convHistory.length) { c.innerHTML = '<div style="color:var(--text3)">No conversations saved yet.</div>'; return; }
   c.innerHTML = convHistory.map(h => `
     <div style="padding:10px 0;border-bottom:1px solid var(--border)">
       <div style="display:flex;justify-content:space-between;align-items:center">
@@ -1633,25 +1264,22 @@ function renderConvHistory() {
         ${h.tension_point ? `<span style="color:var(--text3);margin-left:6px">⚡ ${escHtml(h.tension_point)}</span>` : ''}
       </div>
       ${h.notes ? `<div style="margin-top:6px;font-size:.74rem;color:var(--text2)">${escHtml(h.notes)}</div>` : ''}
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
 function renderProspectHistory(name) {
   const card = document.getElementById('prospectHistoryCard');
   const list = document.getElementById('prospectHistoryList');
   if (!name) { card.style.display = 'none'; return; }
-  const history = convHistory
-    .filter(h => h.prospect_name && h.prospect_name.toLowerCase() === name.toLowerCase())
-    .slice(0, 20);
+  const history = convHistory.filter(h => h.prospect_name && h.prospect_name.toLowerCase() === name.toLowerCase()).slice(0,20);
   if (!history.length) { card.style.display = 'none'; return; }
   card.style.display = 'block';
   list.innerHTML = history.map(h => {
-    const tensionHtml = h.tension_point ? '<div style="font-size:.7rem;color:var(--warn);margin-bottom:3px">⚡ ' + escHtml(h.tension_point) + '</div>' : '';
-    const contextHtml = h.context ? '<div style="font-size:.72rem;color:var(--text2);margin-bottom:3px"><b>Context:</b> ' + escHtml(h.context.slice(0,120)) + (h.context.length>120?'…':'') + '</div>' : '';
-    const notesHtml = h.notes ? '<div style="font-size:.72rem;color:var(--text1)"><b>Notes:</b> ' + escHtml(h.notes) + '</div>' : '';
+    const tensionHtml = h.tension_point ? `<div style="font-size:.7rem;color:var(--warn);margin-bottom:3px">⚡ ${escHtml(h.tension_point)}</div>` : '';
+    const contextHtml = h.context ? `<div style="font-size:.72rem;color:var(--text2);margin-bottom:3px"><b>Context:</b> ${escHtml(h.context.slice(0,120))}${h.context.length>120?'…':''}</div>` : '';
+    const notesHtml = h.notes ? `<div style="font-size:.72rem;color:var(--text1)"><b>Notes:</b> ${escHtml(h.notes)}</div>` : '';
     const coachHtml = h.coaching_output ? '<div style="font-size:.7rem;color:var(--text3);margin-top:4px;font-style:italic">Coach response saved ✓</div>' : '';
-    return '<div style="padding:10px 0;border-bottom:1px solid var(--border)"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><span class="stage-tag ' + stageCSS(h.stage) + '" style="font-size:.6rem">' + (h.stage||'') + '</span><span style="font-size:.65rem;color:var(--text3)">' + formatDateDisplay(h.date) + '</span></div>' + tensionHtml + contextHtml + notesHtml + coachHtml + '</div>';
+    return `<div style="padding:10px 0;border-bottom:1px solid var(--border)"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><span class="stage-tag ${stageCSS(h.stage)}" style="font-size:.6rem">${h.stage||''}</span><span style="font-size:.65rem;color:var(--text3)">${formatDateDisplay(h.date)}</span></div>${tensionHtml}${contextHtml}${notesHtml}${coachHtml}</div>`;
   }).join('');
 }
 
@@ -1665,7 +1293,6 @@ async function runReview(period) {
   out.style.display = 'block';
   title.textContent = period === 'week' ? 'Weekly Review' : 'Monthly Review';
   content.textContent = 'Analyzing your data...';
-
   const days = period === 'week' ? 7 : 30;
   const cutoff = new Date();
   cutoff.setDate(cutoff.getDate() - days);
@@ -1676,82 +1303,23 @@ async function runReview(period) {
   const totalRO = periodLogs.reduce((s,l) => s + (l.reach_out_count||0), 0);
   const totalSamples = periodLogs.reduce((s,l) => s + (l.samples_count||0), 0);
   const totalSixW = periodLogs.reduce((s,l) => s + (l.sixw_count||0), 0);
-  const strengthDays = periodLogs.filter(l => l.strength).length;
-  const movDays = periodLogs.filter(l => l.movement).length;
-
-  // Discipline stats
   const discFullDays = periodLogs.filter(l => l.d_mvh === 'full').length;
   const discFloorDays = periodLogs.filter(l => l.d_mvh === 'floor').length;
   const discWakeDays = periodLogs.filter(l => l.d_wake).length;
   const discWorkoutDays = periodLogs.filter(l => l.d_workout).length;
   const discRecoveryDays = periodLogs.filter(l => l.d_recovery).length;
-
   const stageBreakdown = {};
   prospects.forEach(p => { stageBreakdown[p.stage] = (stageBreakdown[p.stage]||0)+1; });
-
-  const prompt = `You are Evan's personal GU coach. Review his ${period === 'week' ? 'last 7 days' : 'last 30 days'} of data and give him a powerful, specific, personalized review.
-
-CONTEXT ABOUT EVAN:
-- Climate & Culture Coordinator / Dean of Students at a Chicago elementary school (first year in this role after 19 years teaching special ed)
-- GU Senior Mentor advancing toward Master Mentor (needs: 1 new direct mentor enrolled + support a current mentor to enroll someone)
-- Goal: $10,000/month income via GU within 1 year
-- Daily system: 5-3-1-6 (5 reach-outs, 3 samples, 1 six-W conversation)
-- "Give more to gain more" is his core philosophy
-- Home workout setup: Vitruvian Trainer+ and cardio machine
-- Target schedule: 5am wake/workout, 4:20pm GU outreach window, 9pm bed
-
-${period.toUpperCase()} DATA SUMMARY:
-- Days logged: ${periodLogs.length} of ${days}
-- Days SHIPPED: ${shipped} of ${periodLogs.length}
-- Total Reach-Outs: ${totalRO} (goal: ${days === 7 ? 35 : 150})
-- Total Samples Offered: ${totalSamples} (goal: ${days === 7 ? 21 : 90})
-- Total 6-W Conversations: ${totalSixW} (goal: ${days === 7 ? 7 : 30})
-- Strength Training Days: ${strengthDays}
-- Movement/Cardio Days: ${movDays}
-- Conversations logged: ${periodConvs.length}
-- Pipeline breakdown: ${JSON.stringify(stageBreakdown)}
-- Total prospects: ${prospects.length}
-
-DISCIPLINE CHECK-IN DATA:
-- Full days logged: ${discFullDays}
-- Floor days logged: ${discFloorDays}
-- Days up at 5am: ${discWakeDays}
-- Days workout completed: ${discWorkoutDays}
-- Days transition ritual done: ${discRecoveryDays}
-
-REFLECTIONS FROM LOGS:
-${periodLogs.filter(l=>l.reflection).slice(0,5).map(l=>`[${l.date}]: "${l.reflection}"`).join('\n') || 'None recorded'}
-
-Write a review with these sections:
-1. **Overall Assessment** — How was this ${period === 'week' ? 'week' : 'month'} in 2-3 sentences. Be honest and direct.
-2. **Strengths** — What Evan did well, with specific data points
-3. **Consistency Patterns** — What patterns (positive or negative) show up in the data
-4. **Discipline System** — Comment specifically on his morning rituals, 4pm transition, and full vs floor day breakdown. Celebrate floor days as wins.
-5. **Areas of Growth** — 2-3 specific things to strengthen, with actionable guidance
-6. **Master Mentor Focus** — Specific guidance on moving toward Master Mentor this ${period === 'week' ? 'next week' : 'next month'}
-7. **Your One Priority** — The single most important thing to focus on in the next ${period === 'week' ? '7' : '30'} days
-
-Use strengths-based language. Be a coach who believes in Evan — direct, specific, never generic. Reference actual numbers from his data.`;
-
+  const prompt = `You are Evan's personal GU coach. Review his ${period === 'week' ? 'last 7 days' : 'last 30 days'} of data and give him a powerful, specific, personalized review.\n\nCONTEXT ABOUT EVAN:\n- Climate & Culture Coordinator at a Chicago elementary school (first year after 19 years teaching special ed)\n- GU Senior Mentor advancing toward Master Mentor\n- Goal: $10,000/month income via GU within 1 year\n- Daily system: 5-3-1-6\n- "Give more to gain more" is his core philosophy\n\n${period.toUpperCase()} DATA:\n- Days logged: ${periodLogs.length} of ${days}\n- Days SHIPPED: ${shipped}\n- Reach-Outs: ${totalRO} (goal: ${days===7?35:150})\n- Samples: ${totalSamples} (goal: ${days===7?21:90})\n- 6-W: ${totalSixW} (goal: ${days===7?7:30})\n- Conversations logged: ${periodConvs.length}\n- Pipeline: ${JSON.stringify(stageBreakdown)}\n\nDISCIPLINE:\n- Full days: ${discFullDays}, Floor days: ${discFloorDays}\n- Up at 5am: ${discWakeDays}, Workout: ${discWorkoutDays}, Transition: ${discRecoveryDays}\n\nREFLECTIONS:\n${periodLogs.filter(l=>l.reflection).slice(0,5).map(l=>`[${l.date}]: "${l.reflection}"`).join('\n') || 'None recorded'}\n\nWrite sections: 1) Overall Assessment 2) Strengths 3) Consistency Patterns 4) Discipline System 5) Areas of Growth 6) Master Mentor Focus 7) Your One Priority. Be direct, specific, reference actual numbers. Celebrate floor days as wins.`;
   try {
     const res = await fetch(CLAUDE_API, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        messages: [{role:'user', content: prompt}]
-      })
+      headers: {'Content-Type': 'application/json', 'anthropic-version': '2023-06-01'},
+      body: JSON.stringify({model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{role:'user', content: prompt}]})
     });
     const data = await res.json();
-    const text = data.content?.map(b => b.text||'').join('') || 'No response.';
-    content.textContent = text;
-  } catch(e) {
-    content.textContent = 'Error reaching Claude API. Check connection.';
-  }
+    content.textContent = data.content?.map(b => b.text||'').join('') || 'No response.';
+  } catch(e) { content.textContent = 'Error reaching Claude API.'; }
 }
 
 let savedReviews = [];
@@ -1759,44 +1327,25 @@ let savedReviews = [];
 async function saveReview() {
   const title = document.getElementById('reviewOutputTitle').textContent;
   const content2 = document.getElementById('reviewOutputContent').textContent;
-  if (!content2 || content2 === 'Analyzing your data...') {
-    showToast('Generate a review first', 'error'); return;
-  }
-  const entry = {
-    date: getTodayStr(),
-    period: title.includes('Weekly') ? 'week' : 'month',
-    title,
-    content: content2
-  };
+  if (!content2 || content2 === 'Analyzing your data...') { showToast('Generate a review first', 'error'); return; }
   try {
-    const res = await sb('reviews', {
-      method: 'POST', prefer: 'return=representation', body: JSON.stringify(entry)
-    });
-    savedReviews.unshift(Array.isArray(res) ? res[0] : entry);
+    const res = await sb('reviews', { method: 'POST', prefer: 'return=representation', body: JSON.stringify({date: getTodayStr(), period: title.includes('Weekly') ? 'week' : 'month', title, content: content2}) });
+    savedReviews.unshift(Array.isArray(res) ? res[0] : {title, content: content2, date: getTodayStr()});
     renderSavedReviews();
     showToast('Review saved!', 'success');
-  } catch(e) {
-    showToast('Failed to save review', 'error');
-  }
+  } catch(e) { showToast('Failed to save review', 'error'); }
 }
 
 async function loadSavedReviews() {
-  try {
-    savedReviews = await sb('reviews?order=date.desc&limit=20');
-  } catch(e) {
-    console.error('loadSavedReviews:', e);
-    savedReviews = [];
-  }
+  try { savedReviews = await sb('reviews?order=date.desc&limit=20'); }
+  catch(e) { console.error('loadSavedReviews:', e); savedReviews = []; }
   renderSavedReviews();
 }
 
 function renderSavedReviews() {
   const c = document.getElementById('savedReviewsList');
   if (!c) return;
-  if (!savedReviews.length) {
-    c.innerHTML = '<div style="color:var(--text3)">No saved reviews yet. Generate and save a weekly or monthly review above.</div>';
-    return;
-  }
+  if (!savedReviews.length) { c.innerHTML = '<div style="color:var(--text3)">No saved reviews yet.</div>'; return; }
   c.innerHTML = savedReviews.map((r,i) => `
     <div style="border-bottom:1px solid var(--border);padding:10px 0">
       <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer" onclick="document.getElementById('rv-body-${i}').style.display=document.getElementById('rv-body-${i}').style.display==='none'?'block':'none'">
@@ -1807,8 +1356,7 @@ function renderSavedReviews() {
         <span style="font-size:.7rem;color:var(--accent)">▼</span>
       </div>
       <div id="rv-body-${i}" style="display:none;margin-top:10px;font-size:.78rem;color:var(--text2);line-height:1.65;white-space:pre-wrap">${escHtml(r.content||'')}</div>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
 // ─────────────────────────────────────────────
@@ -1828,8 +1376,7 @@ function updateMasterUI() {
   document.getElementById('masterLabel').textContent = `${count}/2 steps`;
   ['mm1yes','mm1no','mm2yes','mm2no'].forEach(id => {
     const el = document.getElementById(id);
-    if (!el) return;
-    el.style.opacity = '0.5';
+    if (el) el.style.opacity = '0.5';
   });
   document.getElementById(masterSteps.s1 ? 'mm1yes' : 'mm1no').style.opacity = '1';
   document.getElementById(masterSteps.s2 ? 'mm2yes' : 'mm2no').style.opacity = '1';
@@ -1839,29 +1386,20 @@ function updateMasterUI() {
 // HELPERS
 // ─────────────────────────────────────────────
 function stageCSS(stage) {
-  const map = {
-    'New Lead':'stage-new','Sample Offered':'stage-sample','6-W Scheduled':'stage-sixw',
-    'Briefing Invited':'stage-briefing','Enrolled Mentor':'stage-mentor',
-    'Nurturing':'stage-nurture','Passed':'stage-pass'
-  };
+  const map = {'New Lead':'stage-new','Sample Offered':'stage-sample','6-W Scheduled':'stage-sixw','Briefing Invited':'stage-briefing','Enrolled Mentor':'stage-mentor','Nurturing':'stage-nurture','Passed':'stage-pass'};
   return map[stage] || 'stage-new';
 }
-
 function warmthCSS(w) {
-  const map = {Hot:'warm-hot', Warm:'warm-warm', Cool:'warm-cool', Cold:'warm-cold'};
-  return map[w] || 'warm-warm';
+  return {Hot:'warm-hot', Warm:'warm-warm', Cool:'warm-cool', Cold:'warm-cold'}[w] || 'warm-warm';
 }
-
 function escHtml(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
-
 function formatShortDate(str) {
   if (!str) return '';
   const [y,m,d] = str.split('-').map(Number);
   return new Date(y, m-1, d).toLocaleDateString('en-US', {month:'short', day:'numeric'});
 }
-
 function showToast(msg, type='') {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -1876,20 +1414,15 @@ async function init() {
   const today = getTodayStr();
   document.getElementById('logDatePicker').value = today;
   document.getElementById('logDateDisplay').textContent = formatDateDisplay(today);
-
   try {
     const ms = JSON.parse(localStorage.getItem('masterSteps') || '{}');
     masterSteps.s1 = !!ms.s1;
     masterSteps.s2 = !!ms.s2;
   } catch(e) {}
   updateMasterUI();
-
   await Promise.all([loadLogs(), loadProspects(), loadConvHistory(), loadSavedReviews()]);
-
   const todayLog = logs.find(l => l.date === today);
-  if (todayLog) currentLog = JSON.parse(JSON.stringify(todayLog));
-  else currentLog = freshLog(today);
-
+  currentLog = todayLog ? JSON.parse(JSON.stringify(todayLog)) : freshLog(today);
   renderLogForm();
   renderStats();
 }
