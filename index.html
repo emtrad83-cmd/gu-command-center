@@ -1153,23 +1153,25 @@ async function saveLog() {
   autoDetectShipped();
   try {
 const { id, created_at, ...logData } = currentLog;
-const res = await sb('shipped_logs?on_conflict=date', {
-  method: 'POST',
-  prefer: 'resolution=merge-duplicates,return=representation',
-  body: JSON.stringify(logData)
-});
-    const saved = Array.isArray(res) ? res[0] : res;
-    const idx = logs.findIndex(l => l.date === currentDate);
-    if (idx >= 0) logs[idx] = saved || currentLog;
-    else logs.unshift(saved || currentLog);
-    logs.sort((a,b) => b.date.localeCompare(a.date));
-    renderStats();
-    updateDiscStreak();
-    showToast('Log saved!', 'success');
-  } catch(e) {
-    console.error(e);
-    showToast('Save failed — check Supabase', 'error');
+
+// Always use PATCH to update existing record by date
+try {
+  const res = await sb(`shipped_logs?date=eq.${logData.date}`, {
+    method: 'PATCH',
+    prefer: 'return=representation',
+    body: JSON.stringify(logData)
+  });
+  
+  // If no rows updated, insert new
+  if (!res || res.length === 0) {
+    await sb('shipped_logs', {
+      method: 'POST',
+      prefer: 'return=representation',
+      body: JSON.stringify(logData)
+    });
   }
+} catch(e) {
+  throw e;
 }
 
 function clearLog() {
