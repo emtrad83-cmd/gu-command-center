@@ -827,16 +827,21 @@ const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsI
 const CLAUDE_API = 'https://gu-proxy.emtrad83.workers.dev/v1/messages';
 
 async function sb(path, opts={}) {
+  const { prefer, headers: extraHeaders, ...fetchOpts } = opts;
   const r = await fetch(SUPA_URL + '/rest/v1/' + path, {
+    ...fetchOpts,
     headers: {
       'apikey': SUPA_KEY,
       'Authorization': 'Bearer ' + SUPA_KEY,
       'Content-Type': 'application/json',
-      'Prefer': opts.prefer || 'return=representation',
-      ...opts.headers
-    },
-    ...opts
+      'Prefer': prefer || 'return=representation',
+      ...extraHeaders
+    }
   });
+  if (!r.ok) { const e = await r.text(); throw new Error(e); }
+  const t = await r.text();
+  return t ? JSON.parse(t) : [];
+}
   if (!r.ok) { const e = await r.text(); throw new Error(e); }
   const t = await r.text();
   return t ? JSON.parse(t) : [];
