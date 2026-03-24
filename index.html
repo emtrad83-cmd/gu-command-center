@@ -826,7 +826,7 @@ const SUPA_URL = 'https://kkerejaviuqnaalbbnfs.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtrZXJlamF2aXVxbmFhbGJibmZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1Mzc0MDAsImV4cCI6MjA4ODExMzQwMH0.aqqh3Qmh-L8-YiF9asZhY5xjlGdcd5L4q3arfDKIv1I';
 const CLAUDE_API = 'https://gu-proxy.emtrad83.workers.dev/v1/messages';
 
-async function sb(path, opts={}) {
+aasync function sb(path, opts={}) {
   const { prefer, headers: extraHeaders, ...fetchOpts } = opts;
   const r = await fetch(SUPA_URL + '/rest/v1/' + path, {
     ...fetchOpts,
@@ -838,10 +838,6 @@ async function sb(path, opts={}) {
       ...extraHeaders
     }
   });
-  if (!r.ok) { const e = await r.text(); throw new Error(e); }
-  const t = await r.text();
-  return t ? JSON.parse(t) : [];
-}
   if (!r.ok) { const e = await r.text(); throw new Error(e); }
   const t = await r.text();
   return t ? JSON.parse(t) : [];
