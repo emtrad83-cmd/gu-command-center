@@ -1151,11 +1151,24 @@ async function saveLog() {
   currentLog.people_introduced = currentLog.people_introduced.filter(p => p.name && p.name.trim());
   autoDetectShipped();
   try {
-    const res = await sb('shipped_logs?on_conflict=date', {
-      method: 'POST',
-      prefer: 'resolution=merge-duplicates,return=representation',
+  // Try to update existing record first
+const existing = await sb(`shipped_logs?date=eq.${currentLog.date}`, {
+      method: 'PATCH',
+      prefer: 'return=representation',
       body: JSON.stringify(currentLog)
     });
+
+let res;
+if (existing && existing.length > 0) {
+  res = existing;
+} else {
+  // No existing record — insert new
+  res = await sb('shipped_logs', {
+    method: 'POST',
+    prefer: 'return=representation',
+    body: JSON.stringify(currentLog)
+  });
+}
     const saved = Array.isArray(res) ? res[0] : res;
     const idx = logs.findIndex(l => l.date === currentDate);
     if (idx >= 0) logs[idx] = saved || currentLog;
