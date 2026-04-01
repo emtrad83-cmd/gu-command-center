@@ -2,8 +2,10 @@ name: Export Logs to JSON
 
 on:
   schedule:
-    - cron: '45 0 * * *'
+    - cron: '0 6 * * *'
   workflow_dispatch:
+  repository_dispatch:
+    types: [log-saved]
 
 jobs:
   export:
