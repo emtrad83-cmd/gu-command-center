@@ -882,6 +882,9 @@ async function saveLog() {
     renderStats();
     updateDiscStreak();
     showToast('Log saved!', 'success');
+    // Trigger GitHub export so JSON stays in sync
+    fetch('https://gu-proxy.emtrad83.workers.dev/trigger-export', { method: 'POST' })
+      .catch(err => console.log('Export trigger skipped:', err));
 
   } catch(e) {
     console.error('saveLog error:', e);
