@@ -883,16 +883,6 @@ async function saveLog() {
     updateDiscStreak();
     showToast('Log saved!', 'success');
 
-// Trigger GitHub export
-fetch('https://api.github.com/repos/emtrad83-cmd/daily-shipped/dispatches', {
-  method: 'POST',
-  headers: {
-    'Authorization': 'token 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',
-    'Accept': 'application/vnd.github.v3+json',
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({ event_type: 'log-saved' })
-});
   } catch(e) {
     console.error('saveLog error:', e);
     showToast('Save failed — check Supabase', 'error');
