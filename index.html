@@ -451,12 +451,12 @@ cursor: default; transition: all .2s; position: relative;
     </div>
   </div>
   <div class="tabs">
-    <button class="tab active" onclick="switchTab('dash')">Dashboard</button>
-    <button class="tab" onclick="switchTab('log')">Daily Log</button>
-    <button class="tab" onclick="switchTab('pipeline')">Pipeline</button>
-    <button class="tab" onclick="switchTab('history')">History</button>
-    <button class="tab" onclick="switchTab('reviews')">Reviews</button>
-    <button class="tab" onclick="switchTab('identity')">Identity</button>
+    <button class="tab active" data-tab="dash" onclick="switchTab('dash')">Dashboard</button>
+    <button class="tab" data-tab="log" onclick="switchTab('log')">Daily Log</button>
+    <button class="tab" data-tab="pipeline" onclick="switchTab('pipeline')">Pipeline</button>
+    <button class="tab" data-tab="history" onclick="switchTab('history')">History</button>
+    <button class="tab" data-tab="reviews" onclick="switchTab('reviews')">Reviews</button>
+    <button class="tab" data-tab="identity" onclick="switchTab('identity')">Identity</button>
   </div>
 </div>
 
@@ -1108,7 +1108,7 @@ function freshLog(date) {
 // ─────────────────────────────────────────────
 function switchTab(tab) {
   document.querySelectorAll('.tab').forEach(t => {
-    t.classList.toggle('active', t.getAttribute('onclick') === `switchTab('${tab}')`);
+    t.classList.toggle('active', t.getAttribute('data-tab') === tab);
   });
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.getElementById('sec-' + tab).classList.add('active');
