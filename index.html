@@ -1214,7 +1214,7 @@ function renderWeekStrip() {
     const dayNum = new Date(dayStr + 'T12:00:00').getDate();
     return `<div style="flex:1;min-width:36px;background:${bg};border:1px solid ${border};border-radius:8px;padding:8px 4px;text-align:center;${isToday?'box-shadow:0 0 0 2px var(--accent);':''}">
       <div style="font-family:var(--font-mono);font-size:.54rem;color:var(--text3);text-transform:uppercase;letter-spacing:.04em">${dayName}</div>
-      <div style="font-family:var(--font-display);font-size:.8rem;font-weight:700;color:${isToday?'var(--accent)':'var(--text2)';}">${dayNum}</div>
+      <div style="font-family:var(--font-display);font-size:.8rem;font-weight:700;color:${isToday?'var(--accent)':'var(--text2)'}">${dayNum}</div>
       <div style="font-size:.7rem;color:${textColor};margin-top:2px">${label || (isFuture?'':'-')}</div>
     </div>`;
   }).join('');
@@ -1994,9 +1994,12 @@ return `<div class="bevel-history-item"> <div style="display:flex;align-items:ce
 }).join(’’);
 }
 
+function renderIdentityHistory() {
 const c = document.getElementById(‘identityHistoryList’);
-if (!identityEntries.length) { c.innerHTML = ‘<div style="color:var(--text3)">No entries yet. Start your first daily vote above.</div>’; return; }
-c.innerHTML = identityEntries.map(e => ` <div class="identity-history-item"> <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"> <div class="identity-history-date">${formatDateDisplay(e.date)}</div> <span style="font-family:var(--font-mono);font-size:.56rem;padding:1px 6px;border-radius:8px;background:${e.type==='weekly'?'rgba(124,110,255,.15)':'rgba(212,168,67,.1)'};color:${e.type==='weekly'?'var(--accent)':'var(--disc)'}">${e.type==='weekly'?'WEEKLY':'DAILY'}</span> </div> <div class="identity-history-text">${escHtml(e.content||'')}</div> </div>`).join(’’);
+if (!c) return;
+const nonBevel = identityEntries.filter(e => e.type !== ‘bevel’);
+if (!nonBevel.length) { c.innerHTML = ‘<div style="color:var(--text3)">No entries yet. Start your first daily vote above.</div>’; return; }
+c.innerHTML = nonBevel.map(e => ` <div class="identity-history-item"> <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"> <div class="identity-history-date">${formatDateDisplay(e.date)}</div> <span style="font-family:var(--font-mono);font-size:.56rem;padding:1px 6px;border-radius:8px;background:${e.type==='weekly'?'rgba(124,110,255,.15)':'rgba(212,168,67,.1)'};color:${e.type==='weekly'?'var(--accent)':'var(--disc)'}">${e.type==='weekly'?'WEEKLY':'DAILY'}</span> </div> <div class="identity-history-text">${escHtml(e.content||'')}</div> </div>`).join(’’);
 }
 
 // ─────────────────────────────────────────────
