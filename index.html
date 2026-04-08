@@ -1,180 +1,440 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
 <title>GU Command Center</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
   :root {
-    --bg: #0a0a12;
-    --bg2: #111120;
-    --bg3: #18182a;
-    --bg4: #1e1e30;
-    --border: #2a2a42;
-    --border2: #353550;
-    --accent: #6c63ff;
-    --accent2: #00d4aa;
-    --accent3: #ff6584;
-    --text1: #f0eaff;
-    --text2: #a09ab8;
-    --text3: #5a5475;
-    --gold: #f0c060;
+    --bg: #07070f;
+    --bg2: #0e0e1a;
+    --bg3: #141424;
+    --bg4: #1a1a2e;
+    --border: #1e1e32;
+    --border2: #2a2a42;
+    --accent: #7c6eff;
+    --accent-glow: rgba(124,110,255,0.15);
+    --accent2: #00e5b0;
+    --accent2-glow: rgba(0,229,176,0.12);
+    --accent3: #ff5f7e;
+    --gold: #f5c842;
+    --gold-glow: rgba(245,200,66,0.12);
     --warn: #ff8c42;
-    --discipline: #c8a84b;
+    --disc: #d4a843;
+    --disc-glow: rgba(212,168,67,0.12);
+    --text1: #eeeaff;
+    --text2: #8a84a8;
+    --text3: #3d3858;
+    --font-display: 'Syne', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+    --font-body: 'Inter', sans-serif;
+    --bevel: #4a9eff;
+    --bevel-glow: rgba(74,158,255,0.12);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text1); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
-  .header {
-    background: linear-gradient(135deg, #0d0d1e 0%, #151528 100%);
-    border-bottom: 1px solid var(--border);
-    padding: 14px 20px 0;
-    position: sticky; top: 0; z-index: 100;
-  }
-  .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-  .logo { font-size: .72rem; font-weight: 700; letter-spacing: .18em; color: var(--accent); text-transform: uppercase; }
-  .master-bar { display: flex; align-items: center; gap: 10px; font-size: .7rem; color: var(--text2); }
-  .master-badge { background: linear-gradient(90deg, var(--gold), #e0a030); color: #0a0a12; font-weight: 800; font-size: .62rem; letter-spacing: .1em; padding: 3px 9px; border-radius: 20px; text-transform: uppercase; }
-  .master-steps { display: flex; gap: 6px; }
-  .master-step { width: 28px; height: 6px; border-radius: 3px; background: var(--bg3); border: 1px solid var(--border2); transition: background .3s; }
-  .master-step.done { background: var(--gold); border-color: var(--gold); }
-  .tabs { display: flex; gap: 2px; }
-  .tab { padding: 8px 16px; font-size: .72rem; font-weight: 600; letter-spacing: .06em; color: var(--text3); border: none; background: transparent; cursor: pointer; border-bottom: 2px solid transparent; transition: all .2s; text-transform: uppercase; }
-  .tab:hover { color: var(--text2); }
-  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-  .content { padding: 20px; max-width: 800px; margin: 0 auto; }
-  .section { display: none; }
-  .section.active { display: block; }
-  .card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 14px; }
-  .card-title { font-size: .68rem; font-weight: 700; letter-spacing: .12em; color: var(--text3); text-transform: uppercase; margin-bottom: 12px; }
-  input[type=text], input[type=date], textarea, select { width: 100%; background: var(--bg3); border: 1px solid var(--border); color: var(--text1); padding: 9px 12px; border-radius: 6px; font-size: .82rem; outline: none; transition: border .2s; font-family: inherit; }
-  input[type=text]:focus, input[type=date]:focus, textarea:focus, select:focus { border-color: var(--accent); }
-  textarea { resize: vertical; min-height: 70px; }
-  select { cursor: pointer; }
-  label { font-size: .72rem; color: var(--text2); display: block; margin-bottom: 4px; margin-top: 10px; }
-  label:first-child { margin-top: 0; }
-  .btn { padding: 9px 18px; border-radius: 6px; font-size: .78rem; font-weight: 600; cursor: pointer; border: none; transition: all .2s; letter-spacing: .04em; }
-  .btn-primary { background: var(--accent); color: #fff; }
-  .btn-primary:hover { background: #7c74ff; }
-  .btn-secondary { background: var(--bg3); color: var(--text2); border: 1px solid var(--border2); }
-  .btn-secondary:hover { background: var(--bg4); color: var(--text1); }
-  .btn-success { background: var(--accent2); color: #0a0a12; }
-  .btn-success:hover { background: #00e8bb; }
-  .btn-danger { background: #cc3355; color: #fff; }
-  .btn-danger:hover { background: #dd4466; }
-  .btn-sm { padding: 5px 12px; font-size: .7rem; }
-  .btn-gold { background: var(--gold); color: #0a0a12; }
-  .btn-gold:hover { background: #f0d080; }
-  .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
-  .check-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .check-item { display: flex; align-items: center; gap: 8px; background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; padding: 8px 10px; cursor: pointer; transition: all .2s; }
-  .check-item.checked { border-color: var(--accent); background: rgba(108,99,255,.1); }
-  .check-item.checked.fitness { border-color: var(--accent2); background: rgba(0,212,170,.08); }
-  .check-item.checked.discipline { border-color: var(--discipline); background: rgba(200,168,75,.08); }
-  .check-box { width: 16px; height: 16px; border: 2px solid var(--border2); border-radius: 4px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all .2s; font-size: .65rem; }
-  .check-item.checked .check-box { background: var(--accent); border-color: var(--accent); }
-  .check-item.checked.fitness .check-box { background: var(--accent2); border-color: var(--accent2); }
-  .check-item.checked.discipline .check-box { background: var(--discipline); border-color: var(--discipline); }
-  .check-label { font-size: .75rem; color: var(--text2); }
-  .check-item.checked .check-label { color: var(--text1); }
-  .discipline-card { background: var(--bg2); border: 1px solid rgba(200,168,75,.25); border-radius: 10px; padding: 16px; margin-bottom: 14px; }
-  .discipline-title { font-size: .68rem; font-weight: 700; letter-spacing: .12em; color: var(--discipline); text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-  .discipline-sub { font-size: .68rem; font-weight: 700; letter-spacing: .1em; color: var(--text3); text-transform: uppercase; margin-bottom: 8px; margin-top: 14px; }
-  .mvh-row { display: flex; gap: 8px; margin-bottom: 8px; }
-  .mvh-btn { flex: 1; padding: 9px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg3); color: var(--text3); font-size: .72rem; font-weight: 700; letter-spacing: .08em; cursor: pointer; transition: all .2s; text-transform: uppercase; }
-  .mvh-btn.active-full { border-color: var(--accent2); background: rgba(0,212,170,.1); color: var(--accent2); }
-  .mvh-btn.active-floor { border-color: var(--discipline); background: rgba(200,168,75,.1); color: var(--discipline); }
-  .discipline-streak-box { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; background: rgba(0,0,0,.3); border: 1px solid rgba(200,168,75,.2); border-radius: 8px; margin-top: 14px; }
-  .discipline-streak-num { font-size: 1.6rem; font-weight: 800; color: var(--discipline); line-height: 1; }
-  .discipline-streak-label { font-size: .62rem; color: var(--text3); text-transform: uppercase; letter-spacing: .1em; margin-top: 3px; }
-  .discipline-streak-rule { font-size: .68rem; color: var(--text3); text-align: right; max-width: 160px; line-height: 1.5; }
-  .reach-out-row { display: flex; gap: 8px; margin-bottom: 6px; align-items: center; }
-  .reach-out-row input { flex: 1; }
-  .remove-btn { background: none; border: none; color: var(--text3); cursor: pointer; font-size: 1rem; padding: 0 4px; }
-  .remove-btn:hover { color: var(--accent3); }
-  .shipped-status { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-radius: 8px; margin-top: 12px; border: 1px solid var(--border); }
-  .shipped-status.shipped { background: rgba(0,212,170,.08); border-color: var(--accent2); }
-  .shipped-status.not-shipped { background: rgba(255,101,132,.05); border-color: rgba(255,101,132,.3); }
-  .shipped-label { font-size: .9rem; font-weight: 700; }
-  .shipped-status.shipped .shipped-label { color: var(--accent2); }
-  .shipped-status.not-shipped .shipped-label { color: var(--accent3); }
-  .pipeline-filter { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
-  .filter-btn { padding: 5px 12px; border-radius: 20px; font-size: .68rem; font-weight: 600; cursor: pointer; border: 1px solid var(--border2); background: var(--bg3); color: var(--text3); transition: all .2s; letter-spacing: .04em; }
-  .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .prospect-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 10px; cursor: pointer; transition: all .2s; }
-  .prospect-card:hover { border-color: var(--border2); background: var(--bg3); }
-  .prospect-card.open { border-color: var(--accent); }
-  .prospect-header { display: flex; align-items: center; justify-content: space-between; }
-  .prospect-name { font-size: .92rem; font-weight: 700; color: var(--text1); }
-  .prospect-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
-  .stage-tag { font-size: .62rem; font-weight: 700; letter-spacing: .08em; padding: 2px 8px; border-radius: 10px; text-transform: uppercase; }
-  .warmth-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-  .prospect-detail { display: none; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
-  .prospect-card.open .prospect-detail { display: block; }
-  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .stage-new { background: rgba(108,99,255,.15); color: var(--accent); }
-  .stage-sample { background: rgba(0,212,170,.12); color: var(--accent2); }
-  .stage-sixw { background: rgba(240,192,96,.12); color: var(--gold); }
-  .stage-briefing { background: rgba(255,140,66,.12); color: var(--warn); }
-  .stage-mentor { background: rgba(0,212,170,.25); color: #00ffcc; }
-  .stage-nurture { background: rgba(90,84,117,.3); color: var(--text2); }
-  .stage-pass { background: rgba(255,101,132,.1); color: var(--accent3); }
-  .warm-hot { background: #ff6060; }
-  .warm-warm { background: var(--warn); }
-  .warm-cool { background: #60aaff; }
-  .warm-cold { background: var(--text3); }
-  .coach-prospect-btn { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 6px; font-size: .75rem; font-weight: 600; border: 1px solid var(--border2); background: var(--bg3); color: var(--text2); cursor: pointer; margin: 4px; transition: all .2s; }
-  .coach-prospect-btn.selected { border-color: var(--accent); color: var(--accent); background: rgba(108,99,255,.1); }
-  .coach-output { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-top: 12px; font-size: .82rem; line-height: 1.65; color: var(--text1); white-space: pre-wrap; min-height: 80px; }
-  .coach-output.loading { color: var(--text3); font-style: italic; }
-  .thinking-dots::after { content: '...'; animation: dots 1.2s infinite; }
-  @keyframes dots { 0%,20%{content:'.'} 40%{content:'..'} 60%,100%{content:'...'} }
-  .history-item { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 8px; overflow: hidden; }
-  .history-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; cursor: pointer; }
-  .history-header:hover { background: var(--bg3); }
-  .history-date { font-size: .82rem; font-weight: 600; color: var(--text1); }
-  .history-body { display: none; padding: 12px 14px; border-top: 1px solid var(--border); }
-  .history-item.open .history-body { display: block; }
-  .shipped-pill { font-size: .6rem; font-weight: 700; letter-spacing: .1em; padding: 2px 8px; border-radius: 10px; text-transform: uppercase; }
-  .shipped-pill.yes { background: rgba(0,212,170,.15); color: var(--accent2); }
-  .shipped-pill.no { background: rgba(255,101,132,.1); color: var(--accent3); }
-  .review-btn-row { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
-  .review-output { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 16px; font-size: .84rem; line-height: 1.7; color: var(--text1); white-space: pre-wrap; min-height: 100px; }
-  .stats-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
-  .stat-box { flex: 1; min-width: 80px; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; text-align: center; }
-  .stat-val { font-size: 1.4rem; font-weight: 800; color: var(--accent); }
-  .stat-val.green { color: var(--accent2); }
-  .stat-val.gold { color: var(--gold); }
-  .stat-val.discipline-color { color: var(--discipline); }
-  .stat-lbl { font-size: .62rem; color: var(--text3); text-transform: uppercase; letter-spacing: .08em; margin-top: 2px; }
-  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(60px); background: var(--bg4); border: 1px solid var(--border2); color: var(--text1); padding: 10px 20px; border-radius: 8px; font-size: .8rem; transition: transform .3s; z-index: 9999; pointer-events: none; }
-  .toast.show { transform: translateX(-50%) translateY(0); }
-  .toast.success { border-color: var(--accent2); color: var(--accent2); }
-  .toast.error { border-color: var(--accent3); color: var(--accent3); }
-  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 200; display: none; align-items: center; justify-content: center; padding: 20px; }
-  .modal-overlay.open { display: flex; }
-  .modal { background: var(--bg2); border: 1px solid var(--border2); border-radius: 12px; padding: 20px; width: 100%; max-width: 460px; max-height: 90vh; overflow-y: auto; }
-  .modal-title { font-size: .9rem; font-weight: 700; margin-bottom: 16px; }
-  .modal-close { float: right; background: none; border: none; color: var(--text3); font-size: 1.2rem; cursor: pointer; line-height: 1; }
-  .modal-close:hover { color: var(--text1); }
-  .cadence-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); }
-  .cadence-row:last-child { border-bottom: none; }
-  .cadence-label { font-size: .78rem; color: var(--text2); }
-  .cadence-count { display: flex; align-items: center; gap: 8px; }
-  .cadence-num { font-size: 1.1rem; font-weight: 800; color: var(--text1); min-width: 24px; text-align: center; }
-  .cadence-target { font-size: .65rem; color: var(--text3); }
-  .cadence-num.met { color: var(--accent2); }
-  .count-btn { width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--border2); background: var(--bg3); color: var(--text2); cursor: pointer; font-size: .9rem; display: flex; align-items: center; justify-content: center; transition: all .2s; }
-  .count-btn:hover { background: var(--bg4); color: var(--text1); }
-  ::-webkit-scrollbar { width: 5px; }
-  ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
-  @media(max-width:500px) {
-    .check-grid { grid-template-columns: 1fr; }
-    .detail-grid { grid-template-columns: 1fr; }
-    .header-top { flex-direction: column; align-items: flex-start; gap: 8px; }
-    .master-bar { flex-wrap: wrap; }
-  }
+  body { background: var(--bg); color: var(--text1); font-family: var(--font-body); min-height: 100vh; }
+
+/* ── NOISE TEXTURE OVERLAY ── */
+body::before {
+content: ‘’;
+position: fixed; inset: 0;
+background-image: url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 256 256’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘noise’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.9’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23noise)’ opacity=‘0.04’/%3E%3C/svg%3E”);
+pointer-events: none; z-index: 0; opacity: 0.4;
+}
+
+/* ── HEADER ── */
+.header {
+background: linear-gradient(180deg, #0a0a18 0%, var(–bg) 100%);
+border-bottom: 1px solid var(–border);
+padding: 12px 20px 0;
+position: sticky; top: 0; z-index: 100;
+backdrop-filter: blur(12px);
+}
+.header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.logo {
+font-family: var(–font-display);
+font-size: .72rem; font-weight: 800;
+letter-spacing: .2em; color: var(–accent);
+text-transform: uppercase;
+}
+.master-bar { display: flex; align-items: center; gap: 10px; font-size: .68rem; color: var(–text2); }
+.master-badge {
+background: linear-gradient(90deg, var(–gold), #e8a820);
+color: #07070f; font-family: var(–font-display);
+font-weight: 800; font-size: .6rem;
+letter-spacing: .12em; padding: 3px 10px;
+border-radius: 20px; text-transform: uppercase;
+}
+.master-steps { display: flex; gap: 5px; }
+.master-step { width: 24px; height: 5px; border-radius: 3px; background: var(–bg3); border: 1px solid var(–border2); transition: background .4s; }
+.master-step.done { background: var(–gold); border-color: var(–gold); box-shadow: 0 0 8px rgba(245,200,66,.4); }
+
+/* ── TABS ── */
+.tabs { display: flex; gap: 0; overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+padding: 8px 14px; font-family: var(–font-display);
+font-size: .65rem; font-weight: 700;
+letter-spacing: .1em; color: var(–text3);
+border: none; background: transparent; cursor: pointer;
+border-bottom: 2px solid transparent;
+transition: all .2s; text-transform: uppercase; white-space: nowrap;
+}
+.tab:hover { color: var(–text2); }
+.tab.active { color: var(–accent); border-bottom-color: var(–accent); }
+
+/* ── LAYOUT ── */
+.content { padding: 16px; max-width: 800px; margin: 0 auto; position: relative; z-index: 1; }
+.section { display: none; }
+.section.active { display: block; }
+
+/* ── CARDS ── */
+.card {
+background: var(–bg2); border: 1px solid var(–border);
+border-radius: 12px; padding: 16px; margin-bottom: 12px;
+}
+.card-title {
+font-family: var(–font-mono); font-size: .62rem;
+font-weight: 500; letter-spacing: .14em;
+color: var(–text3); text-transform: uppercase; margin-bottom: 12px;
+}
+.card-title-accent { color: var(–accent); }
+.card-title-green { color: var(–accent2); }
+.card-title-gold { color: var(–disc); }
+
+/* ── INPUTS ── */
+input[type=text], input[type=date], textarea, select {
+width: 100%; background: var(–bg3); border: 1px solid var(–border);
+color: var(–text1); padding: 9px 12px; border-radius: 8px;
+font-size: .82rem; outline: none; transition: border .2s;
+font-family: var(–font-body);
+}
+input[type=text]:focus, input[type=date]:focus, textarea:focus, select:focus { border-color: var(–accent); }
+textarea { resize: vertical; min-height: 70px; }
+select { cursor: pointer; }
+label { font-size: .7rem; color: var(–text2); display: block; margin-bottom: 4px; margin-top: 10px; font-family: var(–font-mono); letter-spacing: .06em; }
+label:first-child { margin-top: 0; }
+
+/* ── BUTTONS ── */
+.btn { padding: 9px 18px; border-radius: 8px; font-size: .75rem; font-weight: 600; cursor: pointer; border: none; transition: all .2s; letter-spacing: .04em; font-family: var(–font-body); }
+.btn-primary { background: var(–accent); color: #fff; }
+.btn-primary:hover { background: #9080ff; box-shadow: 0 0 16px var(–accent-glow); }
+.btn-secondary { background: var(–bg3); color: var(–text2); border: 1px solid var(–border2); }
+.btn-secondary:hover { background: var(–bg4); color: var(–text1); }
+.btn-success { background: var(–accent2); color: #07070f; font-weight: 700; }
+.btn-success:hover { background: #00ffcc; box-shadow: 0 0 16px var(–accent2-glow); }
+.btn-danger { background: #cc3355; color: #fff; }
+.btn-danger:hover { background: #dd4466; }
+.btn-gold { background: var(–gold); color: #07070f; font-weight: 700; }
+.btn-gold:hover { background: #ffd84a; box-shadow: 0 0 16px var(–gold-glow); }
+.btn-sm { padding: 5px 12px; font-size: .68rem; }
+.btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+
+/* ── CHECKBOXES ── */
+.check-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.check-item {
+display: flex; align-items: center; gap: 8px;
+background: var(–bg3); border: 1px solid var(–border);
+border-radius: 8px; padding: 9px 11px;
+cursor: pointer; transition: all .2s;
+}
+.check-item:hover { border-color: var(–border2); }
+.check-item.checked { border-color: var(–accent); background: var(–accent-glow); }
+.check-item.checked.fitness { border-color: var(–accent2); background: var(–accent2-glow); }
+.check-item.checked.discipline { border-color: var(–disc); background: var(–disc-glow); }
+.check-box {
+width: 16px; height: 16px; border: 2px solid var(–border2);
+border-radius: 4px; flex-shrink: 0;
+display: flex; align-items: center; justify-content: center;
+transition: all .2s; font-size: .6rem; color: transparent;
+}
+.check-item.checked .check-box { background: var(–accent); border-color: var(–accent); color: #fff; }
+.check-item.checked.fitness .check-box { background: var(–accent2); border-color: var(–accent2); color: #07070f; }
+.check-item.checked.discipline .check-box { background: var(–disc); border-color: var(–disc); color: #07070f; }
+.check-label { font-size: .74rem; color: var(–text2); line-height: 1.3; }
+.check-item.checked .check-label { color: var(–text1); }
+
+/* ── DISCIPLINE CARD ── */
+.discipline-card {
+background: var(–bg2);
+border: 1px solid rgba(212,168,67,.2);
+border-radius: 12px; padding: 16px; margin-bottom: 12px;
+}
+.discipline-title {
+font-family: var(–font-display); font-size: .7rem; font-weight: 800;
+letter-spacing: .14em; color: var(–disc);
+text-transform: uppercase; margin-bottom: 12px;
+display: flex; align-items: center; gap: 8px;
+}
+.discipline-sub {
+font-family: var(–font-mono); font-size: .62rem;
+font-weight: 500; letter-spacing: .1em;
+color: var(–text3); text-transform: uppercase;
+margin-bottom: 8px; margin-top: 14px;
+}
+.mvh-row { display: flex; gap: 8px; margin-bottom: 8px; }
+.mvh-btn {
+flex: 1; padding: 10px; border-radius: 8px;
+border: 1px solid var(–border); background: var(–bg3);
+color: var(–text3); font-family: var(–font-display);
+font-size: .68rem; font-weight: 700; letter-spacing: .1em;
+cursor: pointer; transition: all .2s; text-transform: uppercase;
+}
+.mvh-btn.active-full { border-color: var(–accent2); background: var(–accent2-glow); color: var(–accent2); }
+.mvh-btn.active-floor { border-color: var(–disc); background: var(–disc-glow); color: var(–disc); }
+.mvh-note { font-size: .68rem; color: var(–text3); font-style: italic; margin-bottom: 4px; font-family: var(–font-mono); }
+.disc-streak-box {
+display: flex; align-items: center; justify-content: space-between;
+padding: 12px 14px; background: rgba(0,0,0,.3);
+border: 1px solid rgba(212,168,67,.15); border-radius: 10px; margin-top: 14px;
+}
+.disc-streak-num { font-family: var(–font-display); font-size: 1.8rem; font-weight: 800; color: var(–disc); line-height: 1; }
+.disc-streak-label { font-family: var(–font-mono); font-size: .58rem; color: var(–text3); text-transform: uppercase; letter-spacing: .1em; margin-top: 3px; }
+.disc-streak-rule { font-size: .65rem; color: var(–text3); text-align: right; max-width: 160px; line-height: 1.5; }
+
+/* ── REACH OUT / INTRO ROWS ── */
+.reach-out-row { display: flex; gap: 8px; margin-bottom: 6px; align-items: center; }
+.reach-out-row input { flex: 1; }
+.remove-btn { background: none; border: none; color: var(–text3); cursor: pointer; font-size: 1rem; padding: 0 4px; transition: color .2s; }
+.remove-btn:hover { color: var(–accent3); }
+
+/* ── SHIPPED STATUS ── */
+.shipped-status {
+display: flex; align-items: center; justify-content: space-between;
+padding: 14px 16px; border-radius: 10px; margin-top: 12px;
+border: 1px solid var(–border); transition: all .3s;
+}
+.shipped-status.shipped { background: var(–accent2-glow); border-color: var(–accent2); }
+.shipped-status.not-shipped { background: rgba(255,95,126,.05); border-color: rgba(255,95,126,.2); }
+.shipped-label { font-family: var(–font-display); font-size: .88rem; font-weight: 800; letter-spacing: .06em; }
+.shipped-status.shipped .shipped-label { color: var(–accent2); }
+.shipped-status.not-shipped .shipped-label { color: var(–accent3); }
+
+/* ── CADENCE ── */
+.cadence-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid var(–border); }
+.cadence-row:last-child { border-bottom: none; }
+.cadence-label { font-size: .78rem; color: var(–text2); }
+.cadence-target { font-size: .65rem; color: var(–text3); }
+.cadence-count { display: flex; align-items: center; gap: 8px; }
+.cadence-num { font-family: var(–font-display); font-size: 1.1rem; font-weight: 800; color: var(–text1); min-width: 24px; text-align: center; transition: color .2s; }
+.cadence-num.met { color: var(–accent2); }
+.count-btn {
+width: 28px; height: 28px; border-radius: 50%;
+border: 1px solid var(–border2); background: var(–bg3);
+color: var(–text2); cursor: pointer; font-size: .9rem;
+display: flex; align-items: center; justify-content: center; transition: all .2s;
+}
+.count-btn:hover { background: var(–bg4); color: var(–text1); }
+
+/* ── PIPELINE ── */
+.pipeline-filter { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+.filter-btn {
+padding: 5px 12px; border-radius: 20px; font-size: .66rem;
+font-weight: 600; cursor: pointer; border: 1px solid var(–border2);
+background: var(–bg3); color: var(–text3); transition: all .2s; letter-spacing: .04em;
+font-family: var(–font-mono);
+}
+.filter-btn.active { background: var(–accent); border-color: var(–accent); color: #fff; }
+.prospect-card {
+background: var(–bg2); border: 1px solid var(–border);
+border-radius: 12px; padding: 14px; margin-bottom: 10px;
+cursor: pointer; transition: all .2s;
+}
+.prospect-card:hover { border-color: var(–border2); }
+.prospect-card.open { border-color: var(–accent); }
+.prospect-header { display: flex; align-items: center; justify-content: space-between; }
+.prospect-name { font-family: var(–font-display); font-size: .9rem; font-weight: 700; color: var(–text1); }
+.prospect-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+.stage-tag { font-family: var(–font-mono); font-size: .6rem; font-weight: 500; letter-spacing: .08em; padding: 2px 8px; border-radius: 10px; text-transform: uppercase; }
+.warmth-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.prospect-detail { display: none; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(–border); }
+.prospect-card.open .prospect-detail { display: block; }
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.stage-new { background: rgba(124,110,255,.15); color: var(–accent); }
+.stage-sample { background: rgba(0,229,176,.12); color: var(–accent2); }
+.stage-sixw { background: rgba(245,200,66,.12); color: var(–gold); }
+.stage-briefing { background: rgba(255,140,66,.12); color: var(–warn); }
+.stage-mentor { background: rgba(0,229,176,.25); color: #00ffcc; }
+.stage-nurture { background: rgba(90,84,117,.3); color: var(–text2); }
+.stage-pass { background: rgba(255,95,126,.1); color: var(–accent3); }
+.warm-hot { background: #ff5050; }
+.warm-warm { background: var(–warn); }
+.warm-cool { background: #60aaff; }
+.warm-cold { background: var(–text3); }
+
+/* ── HISTORY ── */
+.history-item { background: var(–bg2); border: 1px solid var(–border); border-radius: 10px; margin-bottom: 8px; overflow: hidden; }
+.history-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; cursor: pointer; transition: background .2s; }
+.history-header:hover { background: var(–bg3); }
+.history-date { font-family: var(–font-display); font-size: .8rem; font-weight: 700; color: var(–text1); }
+.history-body { display: none; padding: 12px 14px; border-top: 1px solid var(–border); }
+.history-item.open .history-body { display: block; }
+.shipped-pill { font-family: var(–font-mono); font-size: .58rem; font-weight: 500; letter-spacing: .1em; padding: 2px 8px; border-radius: 10px; text-transform: uppercase; }
+.shipped-pill.yes { background: rgba(0,229,176,.15); color: var(–accent2); }
+.shipped-pill.no { background: rgba(255,95,126,.1); color: var(–accent3); }
+
+/* ── REVIEWS ── */
+.review-btn-row { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+.review-output { background: var(–bg3); border: 1px solid var(–border); border-radius: 10px; padding: 16px; font-size: .84rem; line-height: 1.75; color: var(–text1); white-space: pre-wrap; min-height: 100px; }
+
+/* ── STATS ── */
+.stats-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+.stat-box { flex: 1; min-width: 70px; background: var(–bg3); border: 1px solid var(–border); border-radius: 10px; padding: 10px 12px; text-align: center; }
+.stat-val { font-family: var(–font-display); font-size: 1.4rem; font-weight: 800; color: var(–accent); }
+.stat-val.green { color: var(–accent2); }
+.stat-val.gold { color: var(–gold); }
+.stat-val.disc { color: var(–disc); }
+.stat-lbl { font-family: var(–font-mono); font-size: .58rem; color: var(–text3); text-transform: uppercase; letter-spacing: .08em; margin-top: 2px; }
+
+/* ── DASHBOARD ── */
+.identity-anchor {
+background: linear-gradient(135deg, rgba(124,110,255,.08) 0%, rgba(0,229,176,.05) 100%);
+border: 1px solid rgba(124,110,255,.2);
+border-radius: 12px; padding: 18px; margin-bottom: 12px; text-align: center;
+}
+.identity-anchor-label { font-family: var(–font-mono); font-size: .58rem; color: var(–text3); letter-spacing: .14em; text-transform: uppercase; margin-bottom: 8px; }
+.identity-anchor-text { font-family: var(–font-display); font-size: 1rem; font-weight: 800; color: var(–text1); line-height: 1.4; }
+.identity-anchor-sub { font-size: .72rem; color: var(–text2); margin-top: 6px; line-height: 1.5; }
+.dash-streak-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+.streak-card {
+background: var(–bg2); border: 1px solid var(–border);
+border-radius: 12px; padding: 14px; text-align: center;
+}
+.streak-card.accent { border-color: rgba(124,110,255,.25); background: var(–accent-glow); }
+.streak-card.green { border-color: rgba(0,229,176,.2); background: var(–accent2-glow); }
+.streak-card.gold-card { border-color: rgba(245,200,66,.2); background: var(–gold-glow); }
+.streak-card.disc-card { border-color: rgba(212,168,67,.2); background: var(–disc-glow); }
+.streak-num { font-family: var(–font-display); font-size: 2rem; font-weight: 800; line-height: 1; }
+.streak-num.purple { color: var(–accent); }
+.streak-num.green { color: var(–accent2); }
+.streak-num.gold { color: var(–gold); }
+.streak-num.disc { color: var(–disc); }
+.streak-label { font-family: var(–font-mono); font-size: .58rem; color: var(–text3); text-transform: uppercase; letter-spacing: .1em; margin-top: 4px; }
+.today-checks { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 12px; }
+.today-check-item { background: var(–bg3); border: 1px solid var(–border); border-radius: 8px; padding: 8px; text-align: center; transition: all .3s; }
+.today-check-item.done { border-color: var(–disc); background: var(–disc-glow); }
+.today-check-icon { font-size: .9rem; margin-bottom: 2px; }
+.today-check-label { font-family: var(–font-mono); font-size: .55rem; color: var(–text3); text-transform: uppercase; letter-spacing: .06em; }
+.today-check-item.done .today-check-label { color: var(–disc); }
+.master-tracker {
+background: var(–bg2); border: 1px solid rgba(245,200,66,.2);
+border-radius: 12px; padding: 16px; margin-bottom: 12px;
+}
+.master-tracker-title { font-family: var(–font-mono); font-size: .62rem; letter-spacing: .14em; color: var(–gold); text-transform: uppercase; margin-bottom: 12px; }
+.master-step-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(–border); }
+.master-step-row:last-child { border-bottom: none; }
+.master-step-dot { width: 10px; height: 10px; border-radius: 50%; background: var(–bg3); border: 2px solid var(–border2); flex-shrink: 0; transition: all .3s; }
+.master-step-dot.done { background: var(–gold); border-color: var(–gold); box-shadow: 0 0 8px rgba(245,200,66,.4); }
+.master-step-text { font-size: .76rem; color: var(–text2); flex: 1; }
+.master-step-text.done { color: var(–gold); }
+.dash-shipped-banner {
+border-radius: 12px; padding: 14px 16px; margin-bottom: 12px;
+display: flex; align-items: center; justify-content: space-between;
+transition: all .3s;
+}
+.dash-shipped-banner.shipped { background: var(–accent2-glow); border: 1px solid var(–accent2); }
+.dash-shipped-banner.not-shipped { background: rgba(255,95,126,.05); border: 1px solid rgba(255,95,126,.2); }
+.dash-shipped-text { font-family: var(–font-display); font-size: .88rem; font-weight: 800; }
+.dash-shipped-banner.shipped .dash-shipped-text { color: var(–accent2); }
+.dash-shipped-banner.not-shipped .dash-shipped-text { color: var(–accent3); }
+.dash-shipped-sub { font-size: .68rem; color: var(–text2); margin-top: 2px; }
+
+/* ── IDENTITY TAB ── */
+.identity-section { margin-bottom: 20px; }
+.identity-section-title { font-family: var(–font-display); font-size: .72rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(–text2); margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(–border); }
+.vote-counter-wrap { text-align: center; padding: 20px; }
+.vote-num { font-family: var(–font-display); font-size: 3.5rem; font-weight: 800; color: var(–accent); line-height: 1; }
+.vote-label { font-family: var(–font-mono); font-size: .62rem; color: var(–text3); text-transform: uppercase; letter-spacing: .12em; margin-top: 6px; }
+.vote-sub { font-size: .72rem; color: var(–text2); margin-top: 8px; line-height: 1.5; }
+.heatmap-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.heatmap-day {
+aspect-ratio: 1; border-radius: 4px;
+background: var(–bg3); border: 1px solid var(–border);
+cursor: default; transition: all .2s; position: relative;
+}
+.heatmap-day.full { background: var(–accent2); border-color: var(–accent2); box-shadow: 0 0 6px var(–accent2-glow); }
+.heatmap-day.floor { background: var(–disc); border-color: var(–disc); box-shadow: 0 0 6px var(–disc-glow); }
+.heatmap-day.miss { background: rgba(255,95,126,.15); border-color: rgba(255,95,126,.2); }
+.heatmap-day.today { border-color: var(–accent) !important; box-shadow: 0 0 0 2px var(–accent-glow); }
+.heatmap-labels { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 4px; }
+.heatmap-label { font-family: var(–font-mono); font-size: .54rem; color: var(–text3); text-align: center; letter-spacing: .06em; text-transform: uppercase; }
+.goal-anchor-card { background: var(–bg3); border: 1px solid var(–border); border-radius: 10px; padding: 12px 14px; margin-bottom: 8px; display: flex; align-items: center; gap: 12px; }
+.goal-anchor-icon { font-size: 1.2rem; flex-shrink: 0; }
+.goal-anchor-title { font-family: var(–font-display); font-size: .78rem; font-weight: 700; color: var(–text1); }
+.goal-anchor-desc { font-size: .7rem; color: var(–text2); margin-top: 2px; line-height: 1.4; }
+.roadblock-prompt { font-size: .8rem; color: var(–text2); margin-bottom: 8px; line-height: 1.5; font-style: italic; }
+.identity-vote-quick { background: var(–bg3); border: 1px solid var(–border); border-radius: 10px; padding: 14px; margin-bottom: 10px; }
+.identity-vote-q { font-size: .78rem; color: var(–text2); margin-bottom: 6px; line-height: 1.5; }
+.weekly-reflection-card { background: var(–bg2); border: 1px solid rgba(124,110,255,.2); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+.weekly-reflection-title { font-family: var(–font-display); font-size: .7rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(–accent); margin-bottom: 4px; }
+.weekly-reflection-sub { font-size: .68rem; color: var(–text3); margin-bottom: 14px; font-family: var(–font-mono); }
+.identity-history-item { padding: 10px 0; border-bottom: 1px solid var(–border); }
+.identity-history-date { font-family: var(–font-mono); font-size: .62rem; color: var(–text3); margin-bottom: 4px; }
+.identity-history-text { font-size: .76rem; color: var(–text2); line-height: 1.5; }
+/* ── BEVEL ── */
+.bevel-card { background: var(–bg2); border: 1px solid rgba(74,158,255,.2); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+.bevel-title { font-family: var(–font-display); font-size: .7rem; font-weight: 800; letter-spacing: .14em; color: var(–bevel); text-transform: uppercase; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+.bevel-sub { font-family: var(–font-mono); font-size: .6rem; color: var(–text3); margin-bottom: 14px; letter-spacing: .06em; }
+.bevel-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.bevel-metric { background: var(–bg3); border: 1px solid var(–border); border-radius: 10px; padding: 12px; }
+.bevel-metric-label { font-family: var(–font-mono); font-size: .6rem; color: var(–text3); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 6px; }
+.bevel-metric-input { display: flex; align-items: center; gap: 8px; }
+.bevel-num-input { width: 64px; background: var(–bg4); border: 1px solid var(–border2); color: var(–text1); padding: 6px 8px; border-radius: 6px; font-family: var(–font-display); font-size: 1rem; font-weight: 800; text-align: center; outline: none; transition: border .2s; }
+.bevel-num-input:focus { border-color: var(–bevel); }
+.bevel-pct { font-family: var(–font-mono); font-size: .7rem; color: var(–text3); }
+.bevel-bar-wrap { flex: 1; height: 6px; background: var(–bg); border-radius: 3px; overflow: hidden; }
+.bevel-bar { height: 100%; border-radius: 3px; transition: width .4s ease, background .4s ease; }
+.stress-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+.stress-mini { background: var(–bg3); border: 1px solid var(–border); border-radius: 8px; padding: 10px; text-align: center; }
+.stress-mini-label { font-family: var(–font-mono); font-size: .56rem; color: var(–text3); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 4px; }
+.stress-mini-val { font-family: var(–font-display); font-size: 1.1rem; font-weight: 800; color: var(–text1); }
+.stress-level-row { display: flex; gap: 6px; margin-bottom: 12px; }
+.stress-level-btn { flex: 1; padding: 7px; border-radius: 7px; border: 1px solid var(–border); background: var(–bg3); font-family: var(–font-mono); font-size: .62rem; font-weight: 500; letter-spacing: .08em; cursor: pointer; text-transform: uppercase; transition: all .2s; color: var(–text3); }
+.stress-level-btn.active-low { border-color: var(–accent2); background: var(–accent2-glow); color: var(–accent2); }
+.stress-level-btn.active-medium { border-color: var(–warn); background: rgba(255,140,66,.1); color: var(–warn); }
+.stress-level-btn.active-high { border-color: var(–accent3); background: rgba(255,95,126,.1); color: var(–accent3); }
+.bevel-history-item { padding: 10px 0; border-bottom: 1px solid var(–border); }
+.bevel-history-metrics { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+.bevel-history-metric { font-family: var(–font-mono); font-size: .66rem; }
+.legend-row { display: flex; gap: 14px; margin-bottom: 10px; flex-wrap: wrap; }  .legend-item { display: flex; align-items: center; gap: 5px; font-family: var(–font-mono); font-size: .6rem; color: var(–text3); text-transform: uppercase; letter-spacing: .06em; }
+.legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+.legend-dot.full { background: var(–accent2); }
+.legend-dot.floor { background: var(–disc); }
+.legend-dot.miss { background: rgba(255,95,126,.3); }
+.legend-dot.empty { background: var(–bg3); border: 1px solid var(–border); }
+
+/* ── MODAL ── */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 200; display: none; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); }
+.modal-overlay.open { display: flex; }
+.modal { background: var(–bg2); border: 1px solid var(–border2); border-radius: 14px; padding: 20px; width: 100%; max-width: 460px; max-height: 90vh; overflow-y: auto; }
+.modal-title { font-family: var(–font-display); font-size: .9rem; font-weight: 800; margin-bottom: 16px; }
+.modal-close { float: right; background: none; border: none; color: var(–text3); font-size: 1.2rem; cursor: pointer; line-height: 1; }
+.modal-close:hover { color: var(–text1); }
+
+/* ── TOAST ── */
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(60px); background: var(–bg4); border: 1px solid var(–border2); color: var(–text1); padding: 10px 20px; border-radius: 10px; font-size: .78rem; transition: transform .3s; z-index: 9999; pointer-events: none; font-family: var(–font-mono); letter-spacing: .04em; }
+.toast.show { transform: translateX(-50%) translateY(0); }
+.toast.success { border-color: var(–accent2); color: var(–accent2); }
+.toast.error { border-color: var(–accent3); color: var(–accent3); }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(–bg); }
+::-webkit-scrollbar-thumb { background: var(–border2); border-radius: 2px; }
+
+/* ── RESPONSIVE ── */
+@media(max-width:500px) {
+.check-grid { grid-template-columns: 1fr; }
+.detail-grid { grid-template-columns: 1fr; }
+.header-top { flex-direction: column; align-items: flex-start; gap: 8px; }
+.master-bar { flex-wrap: wrap; }
+.today-checks { grid-template-columns: 1fr 1fr; }
+.dash-streak-grid { grid-template-columns: 1fr 1fr; }
+}
 </style>
+
 </head>
 <body>
 
@@ -187,34 +447,113 @@
         <div class="master-step" id="ms1" title="Enroll 1 direct mentor"></div>
         <div class="master-step" id="ms2" title="Support a direct mentor to enroll someone"></div>
       </div>
-      <span id="masterLabel" style="font-size:.65rem;color:var(--text3)">0/2 steps</span>
+      <span id="masterLabel" style="font-family:var(--font-mono);font-size:.62rem;color:var(--text3)">0/2</span>
     </div>
   </div>
   <div class="tabs">
-    <button class="tab active" onclick="switchTab('log')">Daily Log</button>
-    <button class="tab" onclick="switchTab('coach')">Coach</button>
+    <button class="tab active" onclick="switchTab('dash')">Dashboard</button>
+    <button class="tab" onclick="switchTab('log')">Daily Log</button>
     <button class="tab" onclick="switchTab('pipeline')">Pipeline</button>
     <button class="tab" onclick="switchTab('history')">History</button>
     <button class="tab" onclick="switchTab('reviews')">Reviews</button>
+    <button class="tab" onclick="switchTab('identity')">Identity</button>
   </div>
 </div>
 
 <div class="content">
 
+<!-- ═══════════════════════════════════════════ -->
+
+<!-- DASHBOARD -->
+
+<!-- ═══════════════════════════════════════════ -->
+
+<div class="section active" id="sec-dash">
+
+  <div class="identity-anchor">
+    <div class="identity-anchor-label">Your Identity</div>
+    <div class="identity-anchor-text">I am someone who acts before I feel ready.</div>
+    <div class="identity-anchor-sub">Every action today is a vote for who you're becoming. Discipline is not what you do — it's who you are.</div>
+  </div>
+
+  <div id="dashShippedBanner" class="dash-shipped-banner not-shipped">
+    <div>
+      <div class="dash-shipped-text" id="dashShippedText">NOT SHIPPED YET</div>
+      <div class="dash-shipped-sub" id="dashShippedSub">Complete your log to ship today</div>
+    </div>
+    <span style="font-size:1.4rem" id="dashShippedIcon">○</span>
+  </div>
+
+  <div class="dash-streak-grid">
+    <div class="streak-card accent">
+      <div class="streak-num purple" id="dash-gu-streak">—</div>
+      <div class="streak-label">GU Streak 🔥</div>
+    </div>
+    <div class="streak-card disc-card">
+      <div class="streak-num disc" id="dash-disc-streak">—</div>
+      <div class="streak-label">Discipline 🏅</div>
+    </div>
+    <div class="streak-card green">
+      <div class="streak-num green" id="dash-shipped-count">—</div>
+      <div class="streak-label">Shipped Days</div>
+    </div>
+    <div class="streak-card gold-card">
+      <div class="streak-num gold" id="dash-vote-count">—</div>
+      <div class="streak-label">Identity Votes</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title card-title-gold">Today's Discipline Checks</div>
+    <div class="today-checks" id="dashDisciplineChecks">
+      <div class="today-check-item" id="dash-d-wake"><div class="today-check-icon">⏰</div><div class="today-check-label">5am Wake</div></div>
+      <div class="today-check-item" id="dash-d-workout"><div class="today-check-icon">💪</div><div class="today-check-label">Workout</div></div>
+      <div class="today-check-item" id="dash-d-breakfast"><div class="today-check-icon">🥗</div><div class="today-check-label">Protein</div></div>
+      <div class="today-check-item" id="dash-d-affirm"><div class="today-check-icon">🌟</div><div class="today-check-label">Affirmations</div></div>
+      <div class="today-check-item" id="dash-d-recovery"><div class="today-check-icon">🌿</div><div class="today-check-label">Transition</div></div>
+      <div class="today-check-item" id="dash-d-mvh"><div class="today-check-icon">✦</div><div class="today-check-label">Day Declared</div></div>
+    </div>
+  </div>
+
+  <div class="master-tracker">
+    <div class="master-tracker-title">⚡ Master Mentor Progress</div>
+    <div class="master-step-row">
+      <div class="master-step-dot" id="dash-ms1"></div>
+      <div class="master-step-text" id="dash-ms1-text">Enroll 1 new direct mentor</div>
+    </div>
+    <div class="master-step-row">
+      <div class="master-step-dot" id="dash-ms2"></div>
+      <div class="master-step-text" id="dash-ms2-text">Support a mentor to enroll someone</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title card-title-accent">This Week at a Glance</div>
+    <div id="dashWeekStrip" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+
 <!-- DAILY LOG -->
-<div class="section active" id="sec-log">
+
+<!-- ═══════════════════════════════════════════ -->
+
+<div class="section" id="sec-log">
+
   <div class="card">
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
       <div>
-        <div style="font-size:1rem;font-weight:800;color:var(--text1)" id="logDateDisplay">—</div>
-        <div style="font-size:.68rem;color:var(--text3);margin-top:2px">Daily Shipped Log</div>
+        <div style="font-family:var(--font-display);font-size:1rem;font-weight:800;color:var(--text1)" id="logDateDisplay">—</div>
+        <div style="font-family:var(--font-mono);font-size:.62rem;color:var(--text3);margin-top:2px;letter-spacing:.08em">DAILY SHIPPED LOG</div>
       </div>
       <input type="date" id="logDatePicker" style="width:auto;font-size:.75rem;" onchange="onDateChange()"/>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title">5-3-1-6 Daily Cadence</div>
+    <div class="card-title card-title-accent">5-3-1-6 Daily Cadence</div>
     <div class="cadence-row">
       <span class="cadence-label">Reach-Outs <span class="cadence-target">(goal: 5)</span></span>
       <div class="cadence-count">
@@ -250,7 +589,7 @@
   </div>
 
   <div class="card">
-    <div class="card-title">Business Actions</div>
+    <div class="card-title card-title-accent">Business Actions</div>
     <div class="check-grid">
       <div class="check-item" id="ci-bo" onclick="toggleCheck('business_opened')"><div class="check-box" id="cb-bo">✓</div><span class="check-label">Business Opened</span></div>
       <div class="check-item" id="ci-gi" onclick="toggleCheck('gu_intro_made')"><div class="check-box" id="cb-gi">✓</div><span class="check-label">GU Intro Made</span></div>
@@ -273,9 +612,9 @@
   </div>
 
   <div class="card">
-    <div class="card-title">Fitness & Recovery</div>
+    <div class="card-title card-title-green">Fitness & Recovery</div>
     <div class="check-grid">
-      <div class="check-item fitness" id="ci-str" onclick="toggleCheck('strength')"><div class="check-box" id="cb-str">✓</div><span class="check-label">Strength Training</span></div>
+      <div class="check-item fitness" id="ci-str" onclick="toggleCheck('strength')"><div class="check-box" id="cb-str">✓</div><span class="check-label">Strength / Vitruvian</span></div>
       <div class="check-item fitness" id="ci-mov" onclick="toggleCheck('movement')"><div class="check-box" id="cb-mov">✓</div><span class="check-label">Movement / Cardio</span></div>
       <div class="check-item fitness" id="ci-rest" onclick="toggleCheck('rest')"><div class="check-box" id="cb-rest">✓</div><span class="check-label">Rest / Recovery</span></div>
     </div>
@@ -283,49 +622,56 @@
 
   <div class="discipline-card">
     <div class="discipline-title">⚡ Discipline Check-In</div>
-    <div class="discipline-sub">Morning Ritual</div>
-    <div class="check-grid">
-      <div class="check-item discipline" id="ci-d1" onclick="toggleDiscipline('d_wake')"><div class="check-box" id="cb-d1">✓</div><span class="check-label">Up at 5am — no snooze</span></div>
-      <div class="check-item discipline" id="ci-d2" onclick="toggleDiscipline('d_workout')"><div class="check-box" id="cb-d2">✓</div><span class="check-label">Workout done (full or floor)</span></div>
-      <div class="check-item discipline" id="ci-d3" onclick="toggleDiscipline('d_breakfast')"><div class="check-box" id="cb-d3">✓</div><span class="check-label">High-protein breakfast</span></div>
-      <div class="check-item discipline" id="ci-d5" onclick="toggleDiscipline('d_affirm_am')"><div class="check-box" id="cb-d5">✓</div><span class="check-label">Morning affirmations</span></div>
-    </div>
-    <div class="discipline-sub">Active Recovery (4pm Transition)</div>
-    <div class="check-grid">
-      <div class="check-item discipline" id="ci-d4" onclick="toggleDiscipline('d_recovery')"><div class="check-box" id="cb-d4">✓</div><span class="check-label">Transition ritual done (walk / stretch / magic)</span></div>
-      <div class="check-item discipline" id="ci-d6" onclick="toggleDiscipline('d_affirm_pm')"><div class="check-box" id="cb-d6">✓</div><span class="check-label">Afternoon affirmations</span></div>
-    </div>
-    <div class="discipline-sub">Today's Effort Level</div>
-    <div class="mvh-row">
-      <button class="mvh-btn" id="mvh-full" onclick="setMVH('full')">✦ Full Day</button>
-      <button class="mvh-btn" id="mvh-floor" onclick="setMVH('floor')">~ Floor Day (counts!)</button>
-    </div>
-    <div id="mvh-note" style="font-size:.68rem;color:var(--text3);font-style:italic;margin-bottom:4px">Floor days count. Showing up at the minimum is still a win.</div>
-    <div class="discipline-streak-box">
-      <div>
-        <div class="discipline-streak-num" id="disc-streak-num">—</div>
-        <div class="discipline-streak-label">Discipline Streak</div>
-      </div>
-      <div class="discipline-streak-rule">Separate from GU streak.<br>Never 2 misses in a row.</div>
-    </div>
+
+```
+<div class="discipline-sub">Morning Ritual</div>
+<div class="check-grid">
+  <div class="check-item discipline" id="ci-d1" onclick="toggleDiscipline('d_wake')"><div class="check-box" id="cb-d1">✓</div><span class="check-label">Up at 5am — no snooze</span></div>
+  <div class="check-item discipline" id="ci-d2" onclick="toggleDiscipline('d_workout')"><div class="check-box" id="cb-d2">✓</div><span class="check-label">Workout done</span></div>
+  <div class="check-item discipline" id="ci-d3" onclick="toggleDiscipline('d_breakfast')"><div class="check-box" id="cb-d3">✓</div><span class="check-label">High-protein breakfast</span></div>
+  <div class="check-item discipline" id="ci-d5" onclick="toggleDiscipline('d_affirm_am')"><div class="check-box" id="cb-d5">✓</div><span class="check-label">Morning affirmations</span></div>
+</div>
+
+<div class="discipline-sub">Active Recovery (4pm Transition)</div>
+<div class="check-grid">
+  <div class="check-item discipline" id="ci-d4" onclick="toggleDiscipline('d_recovery')"><div class="check-box" id="cb-d4">✓</div><span class="check-label">Transition ritual (walk / stretch / magic)</span></div>
+  <div class="check-item discipline" id="ci-d6" onclick="toggleDiscipline('d_affirm_pm')"><div class="check-box" id="cb-d6">✓</div><span class="check-label">Afternoon affirmations</span></div>
+</div>
+
+<div class="discipline-sub">Today's Effort Level</div>
+<div class="mvh-row">
+  <button class="mvh-btn" id="mvh-full" onclick="setMVH('full')">✦ Full Day</button>
+  <button class="mvh-btn" id="mvh-floor" onclick="setMVH('floor')">~ Floor Day (counts!)</button>
+</div>
+<div id="mvh-note" class="mvh-note">Floor days count. Showing up at the minimum is still a win.</div>
+
+<div class="disc-streak-box">
+  <div>
+    <div class="disc-streak-num" id="disc-streak-num">—</div>
+    <div class="disc-streak-label">Discipline Streak</div>
+  </div>
+  <div class="disc-streak-rule">Separate from GU streak.<br>Never 2 misses in a row.</div>
+</div>
+```
+
   </div>
 
   <div class="card">
     <div class="card-title">Daily Reflection</div>
-    <label style="margin-top:0">🙏 What is something I am grateful for today?</label>
-    <textarea id="reflectionGrateful" placeholder="I am grateful for..." style="min-height:56px"></textarea>
-    <label style="margin-top:12px">✨ What is something good that happened?</label>
-    <textarea id="reflectionGood" placeholder="Something good that happened..." style="min-height:56px"></textarea>
-    <label style="margin-top:12px">🎯 What did I do to move the needle?</label>
-    <textarea id="reflectionNeedle" placeholder="I moved the needle by..." style="min-height:56px"></textarea>
-    <label style="margin-top:12px">🔄 What is something I can shift for tomorrow?</label>
-    <textarea id="reflectionShift" placeholder="Tomorrow I will shift..." style="min-height:56px"></textarea>
+    <label>🙏 What am I grateful for today?</label>
+    <textarea id="reflectionGrateful" placeholder="I am grateful for..."></textarea>
+    <label>✨ What good happened today?</label>
+    <textarea id="reflectionGood" placeholder="Something good..."></textarea>
+    <label>🎯 What did I do to move the needle?</label>
+    <textarea id="reflectionNeedle" placeholder="I moved the needle by..."></textarea>
+    <label>🔄 What will I shift tomorrow?</label>
+    <textarea id="reflectionShift" placeholder="Tomorrow I will shift..."></textarea>
   </div>
 
   <div id="shippedStatus" class="shipped-status not-shipped">
     <div>
       <div class="shipped-label" id="shippedLabel">NOT SHIPPED</div>
-      <div style="font-size:.68rem;color:var(--text3);margin-top:2px" id="shippedSub">Complete 3 GU + 1 fitness + 2 discipline checks + Full/Floor Day to ship</div>
+      <div style="font-size:.68rem;color:var(--text3);margin-top:2px;font-family:var(--font-mono)" id="shippedSub">3 GU + 1 fitness + 2 discipline + Full/Floor to ship</div>
     </div>
     <button class="btn btn-sm" id="shippedToggleBtn" onclick="manualToggleShipped()">Mark Shipped</button>
   </div>
@@ -336,84 +682,12 @@
   </div>
 </div>
 
-<!-- COACH -->
-<div class="section" id="sec-coach">
-  <div class="card">
-    <div class="card-title">Select Prospect</div>
-    <div id="coachProspectBtns" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px"></div>
-    <div style="font-size:.68rem;color:var(--text3);margin-top:4px">Or type a name below</div>
-    <input type="text" id="coachProspectName" placeholder="Prospect name..." style="margin-top:8px"/>
-  </div>
-  <div class="card">
-    <div class="card-title">Conversation Context</div>
-    <label>Archetype</label>
-    <select id="coachArchetype">
-      <option value="">— Select archetype —</option>
-      <option value="Caregiver under strain">Caregiver under strain</option>
-      <option value="Structural builder">Structural builder</option>
-      <option value="Relational stabilizer">Relational stabilizer</option>
-      <option value="Momentum-driven recruiter">Momentum-driven recruiter</option>
-      <option value="Burned-out high achiever">Burned-out high achiever</option>
-      <option value="Identity-seeker">Identity-seeker</option>
-    </select>
-    <label>Current Stage</label>
-    <select id="coachStage">
-      <option value="New Prospect">New Prospect</option>
-      <option value="Nurturing">Nurturing</option>
-      <option value="Sample">Sample</option>
-      <option value="6-W Conversation">6-W Conversation</option>
-      <option value="Patron Preso">Patron Preso</option>
-      <option value="Open Account">Open Account</option>
-      <option value="Trial">Trial</option>
-      <option value="Briefing">Briefing</option>
-      <option value="Saturday">Saturday</option>
-      <option value="MAP">MAP</option>
-      <option value="Interview">Interview</option>
-    </select>
-    <label>Emotional Temperature</label>
-    <select id="coachTemp">
-      <option value="Open">Open</option>
-      <option value="Curious">Curious</option>
-      <option value="Guarded">Guarded</option>
-      <option value="Skeptical">Skeptical</option>
-      <option value="Evaluating">Evaluating</option>
-      <option value="Vulnerable">Vulnerable</option>
-      <option value="Defensive">Defensive</option>
-    </select>
-    <label>What did they say?</label>
-    <textarea id="coachContext" placeholder="e.g. They said they are interested but busy..."></textarea>
-    <label>Tension point detected</label>
-    <textarea id="coachTension" placeholder="e.g. Time compression, financial friction..." style="min-height:50px"></textarea>
-    <label>Goal for this response</label>
-    <select id="coachGoal">
-      <option value="Surface tension and deepen rapport">Surface tension and deepen rapport</option>
-      <option value="Move to sample offer">Move to sample offer</option>
-      <option value="Schedule 6-W conversation">Schedule 6-W conversation</option>
-      <option value="Invite to briefing/Junto">Invite to briefing/Junto</option>
-      <option value="Re-engage after silence">Re-engage after silence</option>
-      <option value="Handle objection">Handle objection</option>
-    </select>
-  </div>
-  <div class="btn-row">
-    <button class="btn btn-primary" onclick="runCoach()">⚡ Get Coaching Response</button>
-    <button class="btn btn-secondary" onclick="clearCoach()">Clear</button>
-  </div>
-  <div id="coachOutput" class="coach-output" style="display:none"></div>
-  <div class="card" style="margin-top:14px">
-    <div class="card-title">Save to Conversation History</div>
-    <label>What happened / What was said recently</label>
-    <textarea id="saveConvNotes" placeholder="What was the outcome? What is the next step?"></textarea>
-    <div class="btn-row">
-      <button class="btn btn-success btn-sm" onclick="saveConversation()">💾 Save Conversation</button>
-    </div>
-  </div>
-  <div class="card" id="prospectHistoryCard" style="margin-top:14px;display:none">
-    <div class="card-title">📋 History with this Prospect</div>
-    <div id="prospectHistoryList" style="font-size:.78rem;color:var(--text2)"></div>
-  </div>
-</div>
+<!-- ═══════════════════════════════════════════ -->
 
 <!-- PIPELINE -->
+
+<!-- ═══════════════════════════════════════════ -->
+
 <div class="section" id="sec-pipeline">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
     <div class="stats-row" style="margin:0;flex:1">
@@ -425,7 +699,7 @@
   </div>
   <div class="pipeline-filter">
     <button class="filter-btn active" onclick="filterPipeline('All',this)">All</button>
-    <button class="filter-btn" onclick="filterPipeline('New Prospect',this)">New Prospect</button>
+    <button class="filter-btn" onclick="filterPipeline('New Prospect',this)">New</button>
     <button class="filter-btn" onclick="filterPipeline('Nurturing',this)">Nurturing</button>
     <button class="filter-btn" onclick="filterPipeline('Sample',this)">Sample</button>
     <button class="filter-btn" onclick="filterPipeline('6-W Conversation',this)">6-W</button>
@@ -440,11 +714,16 @@
   <div id="pipelineList"></div>
 </div>
 
+<!-- ═══════════════════════════════════════════ -->
+
 <!-- HISTORY -->
+
+<!-- ═══════════════════════════════════════════ -->
+
 <div class="section" id="sec-history">
   <div class="stats-row">
     <div class="stat-box"><div class="stat-val" id="hist-streak">0</div><div class="stat-lbl">GU Streak 🔥</div></div>
-    <div class="stat-box"><div class="stat-val discipline-color" id="hist-disc-streak">0</div><div class="stat-lbl">Discipline 🏅</div></div>
+    <div class="stat-box"><div class="stat-val disc" id="hist-disc-streak">0</div><div class="stat-lbl">Discipline 🏅</div></div>
     <div class="stat-box"><div class="stat-val green" id="hist-shipped">0</div><div class="stat-lbl">Shipped</div></div>
     <div class="stat-box"><div class="stat-val" id="hist-total">0</div><div class="stat-lbl">Total Logs</div></div>
     <div class="stat-box"><div class="stat-val gold" id="hist-ro">0</div><div class="stat-lbl">Total R/O</div></div>
@@ -452,11 +731,16 @@
   <div id="historyList"></div>
 </div>
 
+<!-- ═══════════════════════════════════════════ -->
+
 <!-- REVIEWS -->
+
+<!-- ═══════════════════════════════════════════ -->
+
 <div class="section" id="sec-reviews">
   <div class="card">
-    <div class="card-title">AI-Powered Review</div>
-    <p style="font-size:.78rem;color:var(--text2);margin-bottom:14px;line-height:1.6">The AI coach will analyze all your data and give you a personalized review with strengths, consistency patterns, areas of growth, and specific recommendations.</p>
+    <div class="card-title card-title-accent">AI-Powered Review</div>
+    <p style="font-size:.78rem;color:var(--text2);margin-bottom:14px;line-height:1.65">The AI coach analyzes all your data — GU cadence, discipline streaks, identity votes, fitness, reflections — and gives you a direct, personalized breakdown.</p>
     <div class="review-btn-row">
       <button class="btn btn-primary" onclick="runReview('week')">📊 Weekly Review</button>
       <button class="btn btn-gold" onclick="runReview('month')">📈 Monthly Review</button>
@@ -464,7 +748,7 @@
   </div>
   <div id="reviewOutput" style="display:none" class="card">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-      <div class="card-title" id="reviewOutputTitle" style="margin:0">Review</div>
+      <div class="card-title card-title-accent" id="reviewOutputTitle" style="margin:0">Review</div>
       <button class="btn btn-success btn-sm" onclick="saveReview()">💾 Save Review</button>
     </div>
     <div id="reviewOutputContent" class="review-output"></div>
@@ -474,19 +758,19 @@
     <div id="savedReviewsList" style="font-size:.78rem;color:var(--text2)">Loading...</div>
   </div>
   <div class="card">
-    <div class="card-title">Master Mentor Tracker</div>
+    <div class="card-title card-title-gold">Master Mentor Tracker</div>
     <p style="font-size:.75rem;color:var(--text2);margin-bottom:12px;line-height:1.5">To reach Master Mentor: (1) enroll 1 new direct mentor, and (2) support a current mentor to enroll someone.</p>
     <div style="display:flex;gap:12px;flex-wrap:wrap">
-      <div style="flex:1;min-width:180px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px">
-        <div style="font-size:.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Step 1</div>
+      <div style="flex:1;min-width:180px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px">
+        <div style="font-family:var(--font-mono);font-size:.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Step 1</div>
         <div style="font-size:.82rem;color:var(--text2);margin-bottom:8px">Enroll 1 new direct mentor</div>
         <div style="display:flex;gap:8px">
           <button class="btn btn-sm btn-secondary" onclick="setMasterStep(1,false)" id="mm1no">○ Not Yet</button>
           <button class="btn btn-sm btn-success" onclick="setMasterStep(1,true)" id="mm1yes">✓ Done</button>
         </div>
       </div>
-      <div style="flex:1;min-width:180px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px">
-        <div style="font-size:.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Step 2</div>
+      <div style="flex:1;min-width:180px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px">
+        <div style="font-family:var(--font-mono);font-size:.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Step 2</div>
         <div style="font-size:.82rem;color:var(--text2);margin-bottom:8px">Support mentor to enroll someone</div>
         <div style="display:flex;gap:8px">
           <button class="btn btn-sm btn-secondary" onclick="setMasterStep(2,false)" id="mm2no">○ Not Yet</button>
@@ -501,9 +785,226 @@
   </div>
 </div>
 
+<!-- ═══════════════════════════════════════════ -->
+
+<!-- IDENTITY -->
+
+<!-- ═══════════════════════════════════════════ -->
+
+<div class="section" id="sec-identity">
+
+  <!-- IDENTITY VOTES -->
+
+  <div class="card">
+    <div class="card-title card-title-accent">Identity Vote Counter</div>
+    <div class="vote-counter-wrap">
+      <div class="vote-num" id="identityVoteNum">0</div>
+      <div class="vote-label">Total Votes Cast</div>
+      <div class="vote-sub">Every discipline check you complete is a vote for the person you're becoming. Votes never expire.</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:4px">
+      <div class="stat-box"><div class="stat-val disc" id="id-full-days">0</div><div class="stat-lbl">Full Days</div></div>
+      <div class="stat-box"><div class="stat-val" style="color:var(--disc)" id="id-floor-days">0</div><div class="stat-lbl">Floor Days</div></div>
+      <div class="stat-box"><div class="stat-val green" id="id-disc-streak">0</div><div class="stat-lbl">Streak</div></div>
+    </div>
+  </div>
+
+  <!-- 28-DAY HEATMAP -->
+
+  <div class="card">
+    <div class="card-title card-title-gold">28-Day Discipline Heatmap</div>
+    <div class="legend-row">
+      <div class="legend-item"><div class="legend-dot full"></div>Full Day</div>
+      <div class="legend-item"><div class="legend-dot floor"></div>Floor Day</div>
+      <div class="legend-item"><div class="legend-dot miss"></div>Miss</div>
+      <div class="legend-item"><div class="legend-dot empty"></div>No Log</div>
+    </div>
+    <div class="heatmap-labels">
+      <div class="heatmap-label">Su</div>
+      <div class="heatmap-label">Mo</div>
+      <div class="heatmap-label">Tu</div>
+      <div class="heatmap-label">We</div>
+      <div class="heatmap-label">Th</div>
+      <div class="heatmap-label">Fr</div>
+      <div class="heatmap-label">Sa</div>
+    </div>
+    <div class="heatmap-grid" id="heatmapGrid"></div>
+    <div style="font-family:var(--font-mono);font-size:.6rem;color:var(--text3);margin-top:10px;text-align:center">Rule: Never two misses in a row.</div>
+  </div>
+
+  <!-- BEVEL RECOVERY LOG -->
+
+  <div class="bevel-card">
+    <div class="bevel-title">📡 Bevel Recovery Log</div>
+    <div class="bevel-sub">Log each morning — builds your recovery-to-discipline correlation over time</div>
+
+```
+<div class="bevel-metrics">
+  <div class="bevel-metric">
+    <div class="bevel-metric-label">Recovery %</div>
+    <div class="bevel-metric-input">
+      <input type="number" class="bevel-num-input" id="bevelRecovery" min="0" max="100" placeholder="72" oninput="updateBevelBar('recovery',this.value)"/>
+      <span class="bevel-pct">%</span>
+      <div class="bevel-bar-wrap"><div class="bevel-bar" id="bevel-bar-recovery" style="width:0%"></div></div>
+    </div>
+  </div>
+  <div class="bevel-metric">
+    <div class="bevel-metric-label">Sleep %</div>
+    <div class="bevel-metric-input">
+      <input type="number" class="bevel-num-input" id="bevelSleep" min="0" max="100" placeholder="77" oninput="updateBevelBar('sleep',this.value)"/>
+      <span class="bevel-pct">%</span>
+      <div class="bevel-bar-wrap"><div class="bevel-bar" id="bevel-bar-sleep" style="width:0%"></div></div>
+    </div>
+  </div>
+  <div class="bevel-metric">
+    <div class="bevel-metric-label">Strain %</div>
+    <div class="bevel-metric-input">
+      <input type="number" class="bevel-num-input" id="bevelStrain" min="0" max="100" placeholder="3" oninput="updateBevelBar('strain',this.value)"/>
+      <span class="bevel-pct">%</span>
+      <div class="bevel-bar-wrap"><div class="bevel-bar" id="bevel-bar-strain" style="width:0%"></div></div>
+    </div>
+  </div>
+  <div class="bevel-metric">
+    <div class="bevel-metric-label">Stress (current)</div>
+    <div class="bevel-metric-input">
+      <input type="number" class="bevel-num-input" id="bevelStressCurrent" min="0" max="100" placeholder="52" oninput="updateBevelBar('stress',this.value)"/>
+      <div class="bevel-bar-wrap"><div class="bevel-bar" id="bevel-bar-stress" style="width:0%"></div></div>
+    </div>
+  </div>
+</div>
+
+<div style="font-family:var(--font-mono);font-size:.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Stress Breakdown</div>
+<div class="stress-row">
+  <div class="stress-mini">
+    <div class="stress-mini-label">Highest</div>
+    <input type="number" class="bevel-num-input" id="bevelStressHigh" min="0" max="100" placeholder="57" style="width:100%;font-size:.88rem"/>
+  </div>
+  <div class="stress-mini">
+    <div class="stress-mini-label">Lowest</div>
+    <input type="number" class="bevel-num-input" id="bevelStressLow" min="0" max="100" placeholder="5" style="width:100%;font-size:.88rem"/>
+  </div>
+  <div class="stress-mini">
+    <div class="stress-mini-label">Average</div>
+    <input type="number" class="bevel-num-input" id="bevelStressAvg" min="0" max="100" placeholder="29" style="width:100%;font-size:.88rem"/>
+  </div>
+</div>
+
+<div style="font-family:var(--font-mono);font-size:.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Overall Stress Level</div>
+<div class="stress-level-row">
+  <button class="stress-level-btn" id="slb-low" onclick="setBevelStressLevel('low')">Low</button>
+  <button class="stress-level-btn" id="slb-medium" onclick="setBevelStressLevel('medium')">Medium</button>
+  <button class="stress-level-btn" id="slb-high" onclick="setBevelStressLevel('high')">High</button>
+</div>
+
+<label style="margin-top:0">Note (optional) — anything that may explain today's numbers</label>
+<textarea id="bevelNote" placeholder="e.g. Bad sleep, stressful day at school, felt tired all morning..." style="min-height:50px;margin-top:6px"></textarea>
+
+<div class="btn-row" style="margin-top:12px">
+  <button class="btn btn-sm" style="background:var(--bevel);color:#07070f;font-weight:700" onclick="saveBevelLog()">💾 Save Bevel Log</button>
+</div>
+
+<div style="margin-top:16px">
+  <div style="font-family:var(--font-mono);font-size:.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Recent Logs</div>
+  <div id="bevelHistoryList" style="font-size:.74rem;color:var(--text2)">No Bevel logs yet.</div>
+</div>
+```
+
+  </div>
+
+  <!-- GOAL ANCHORS -->
+
+  <div class="card">
+    <div class="card-title card-title-gold">Goal Anchors</div>
+    <div class="goal-anchor-card">
+      <div class="goal-anchor-icon">🏋️</div>
+      <div>
+        <div class="goal-anchor-title">Lose 10–15 lbs</div>
+        <div class="goal-anchor-desc">5am workout + high-protein meals every day. The body follows the mind.</div>
+      </div>
+    </div>
+    <div class="goal-anchor-card">
+      <div class="goal-anchor-icon">🏆</div>
+      <div>
+        <div class="goal-anchor-title">Master Mentor</div>
+        <div class="goal-anchor-desc">1 new direct mentor enrolled. 1 existing mentor supported to enroll. That's it.</div>
+      </div>
+    </div>
+    <div class="goal-anchor-card">
+      <div class="goal-anchor-icon">💰</div>
+      <div>
+        <div class="goal-anchor-title">Team EVAN Income Goal</div>
+        <div class="goal-anchor-desc">GU + Team EVAN becomes primary income. Build the system daily.</div>
+      </div>
+    </div>
+    <div class="goal-anchor-card">
+      <div class="goal-anchor-icon">🎩</div>
+      <div>
+        <div class="goal-anchor-title">Magic Performance</div>
+        <div class="goal-anchor-desc">Full routine performed confidently in public in 2026. Practice is daily discipline too.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAILY IDENTITY VOTE -->
+
+  <div class="weekly-reflection-card">
+    <div class="weekly-reflection-title">Daily Identity Vote</div>
+    <div class="weekly-reflection-sub">Quick check-in — 2 minutes max</div>
+
+```
+<div class="identity-vote-quick">
+  <div class="identity-vote-q">What story did I tell myself today that kept me small?</div>
+  <textarea id="dailyVote1" placeholder="Be honest. No one's watching." style="min-height:54px"></textarea>
+</div>
+<div class="identity-vote-quick" style="margin-top:8px">
+  <div class="identity-vote-q">What did I do today that voted for the disciplined version of me?</div>
+  <textarea id="dailyVote2" placeholder="Even one thing counts." style="min-height:54px"></textarea>
+</div>
+<div class="identity-vote-quick" style="margin-top:8px">
+  <div class="identity-vote-q">Tomorrow, I commit to one thing before I feel ready:</div>
+  <textarea id="dailyVote3" placeholder="Make it specific." style="min-height:54px"></textarea>
+</div>
+<div class="btn-row">
+  <button class="btn btn-primary" onclick="saveDailyVote()">💾 Save Daily Vote</button>
+</div>
+```
+
+  </div>
+
+  <!-- WEEKLY ROADBLOCK REFLECTION -->
+
+  <div class="weekly-reflection-card">
+    <div class="weekly-reflection-title">Weekly Roadblock Reflection</div>
+    <div class="weekly-reflection-sub">Sunday reset — go deep, 10 minutes</div>
+
+```
+<label>What pattern showed up most this week that is not serving me?</label>
+<textarea id="weeklyR1" placeholder="Look for the repeating thing..." style="min-height:64px"></textarea>
+<label>Where did I choose comfort over commitment?</label>
+<textarea id="weeklyR2" placeholder="Be specific about the moment..." style="min-height:64px"></textarea>
+<label>What does the disciplined version of me do differently next week?</label>
+<textarea id="weeklyR3" placeholder="Make it a behavior, not a feeling..." style="min-height:64px"></textarea>
+<label>What identity am I voting for this week?</label>
+<textarea id="weeklyR4" placeholder="Complete this: I am someone who..." style="min-height:54px"></textarea>
+<div class="btn-row">
+  <button class="btn btn-gold" onclick="saveWeeklyReflection()">💾 Save Weekly Reflection</button>
+</div>
+```
+
+  </div>
+
+  <!-- IDENTITY JOURNAL HISTORY -->
+
+  <div class="card">
+    <div class="card-title">Identity Journal</div>
+    <div id="identityHistoryList" style="font-size:.78rem;color:var(--text2)">No entries yet.</div>
+  </div>
+
+</div>
 </div><!-- end content -->
 
 <!-- ADD PROSPECT MODAL -->
+
 <div class="modal-overlay" id="addProspectModal">
   <div class="modal">
     <button class="modal-close" onclick="closeAddProspect()">×</button>
@@ -564,10 +1065,7 @@ async function sb(path, opts={}) {
       ...(extraHeaders || {})
     }
   });
-  if (!r.ok) {
-    const e = await r.text();
-    throw new Error(e);
-  }
+  if (!r.ok) { const e = await r.text(); throw new Error(e); }
   const t = await r.text();
   return t ? JSON.parse(t) : [];
 }
@@ -578,11 +1076,12 @@ async function sb(path, opts={}) {
 let logs = [];
 let prospects = [];
 let convHistory = [];
+let identityEntries = [];
 let currentDate = getTodayStr();
 let currentLog = freshLog(currentDate);
 let pipelineFilter = 'All';
 let masterSteps = {s1: false, s2: false};
-let coachSelectedProspect = null;
+let savedReviews = [];
 
 function getTodayStr() {
   const d = new Date();
@@ -616,15 +1115,23 @@ function switchTab(tab) {
   if (tab === 'history') renderHistory();
   if (tab === 'pipeline') renderPipeline();
   if (tab === 'reviews') { renderConvHistory(); renderSavedReviews(); }
-  if (tab === 'coach') renderCoachProspects();
+  if (tab === 'identity') { renderHeatmap(); renderIdentityStats(); renderIdentityHistory(); renderBevelHistory(); }
+  if (tab === 'dash') renderDashboard();
 }
 
 // ─────────────────────────────────────────────
 // DATE
 // ─────────────────────────────────────────────
 function formatDateDisplay(str) {
+  if (!str) return '';
   const [y,m,d] = str.split('-').map(Number);
   return new Date(y, m-1, d).toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric', year:'numeric'});
+}
+
+function formatShortDate(str) {
+  if (!str) return '';
+  const [y,m,d] = str.split('-').map(Number);
+  return new Date(y, m-1, d).toLocaleDateString('en-US', {month:'short', day:'numeric'});
 }
 
 function onDateChange() {
@@ -638,14 +1145,93 @@ function onDateChange() {
 }
 
 // ─────────────────────────────────────────────
+// DASHBOARD
+// ─────────────────────────────────────────────
+function renderDashboard() {
+  // Shipped banner
+  const shipped = currentLog.shipped === 'YES';
+  const banner = document.getElementById('dashShippedBanner');
+  banner.className = 'dash-shipped-banner ' + (shipped ? 'shipped' : 'not-shipped');
+  document.getElementById('dashShippedText').textContent = shipped ? '✓ SHIPPED TODAY' : 'NOT SHIPPED YET';
+  document.getElementById('dashShippedSub').textContent = shipped ? 'You invested in yourself today.' : 'Complete your Daily Log to ship today';
+  document.getElementById('dashShippedIcon').textContent = shipped ? '✓' : '○';
+
+  // Streaks
+  const guStreak = calcGUStreak();
+  const discStreak = calcDiscStreak();
+  const shippedCount = logs.filter(l => l.shipped === 'YES').length;
+  const voteCount = calcIdentityVotes();
+  document.getElementById('dash-gu-streak').textContent = guStreak;
+  document.getElementById('dash-disc-streak').textContent = discStreak;
+  document.getElementById('dash-shipped-count').textContent = shippedCount;
+  document.getElementById('dash-vote-count').textContent = voteCount;
+
+  // Today's discipline checks
+  const checks = [
+    {id:'dash-d-wake', field:'d_wake'},
+    {id:'dash-d-workout', field:'d_workout'},
+    {id:'dash-d-breakfast', field:'d_breakfast'},
+    {id:'dash-d-affirm', field:'d_affirm_am'},
+    {id:'dash-d-recovery', field:'d_recovery'},
+    {id:'dash-d-mvh', field:'d_mvh'}
+  ];
+  checks.forEach(c => {
+    const el = document.getElementById(c.id);
+    const val = c.field === 'd_mvh' ? !!currentLog.d_mvh : !!currentLog[c.field];
+    el.classList.toggle('done', val);
+  });
+
+  // Master Mentor
+  document.getElementById('dash-ms1').classList.toggle('done', masterSteps.s1);
+  document.getElementById('dash-ms2').classList.toggle('done', masterSteps.s2);
+  document.getElementById('dash-ms1-text').className = 'master-step-text' + (masterSteps.s1 ? ' done' : '');
+  document.getElementById('dash-ms2-text').className = 'master-step-text' + (masterSteps.s2 ? ' done' : '');
+
+  // Week strip
+  renderWeekStrip();
+}
+
+function renderWeekStrip() {
+  const c = document.getElementById('dashWeekStrip');
+  const today = getTodayStr();
+  const days = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const str = d.toISOString().slice(0,10);
+    days.push(str);
+  }
+  c.innerHTML = days.map(dayStr => {
+    const log = logs.find(l => l.date === dayStr);
+    const isToday = dayStr === today;
+    const isFuture = dayStr > today;
+    let bg = 'var(--bg3)'; let border = 'var(--border)'; let label = ''; let textColor = 'var(--text3)';
+    if (log && log.shipped === 'YES') { bg = 'rgba(0,229,176,.15)'; border = 'var(--accent2)'; label = '✓'; textColor = 'var(--accent2)'; }
+    else if (log && log.d_mvh) { bg = 'var(--disc-glow)'; border = 'var(--disc)'; label = '~'; textColor = 'var(--disc)'; }
+    else if (log) { bg = 'rgba(255,95,126,.06)'; border = 'rgba(255,95,126,.2)'; label = '○'; textColor = 'var(--accent3)'; }
+    if (isFuture) { bg = 'transparent'; border = 'var(--border)'; label = ''; }
+    const dayName = new Date(dayStr + 'T12:00:00').toLocaleDateString('en-US', {weekday:'short'});
+    const dayNum = new Date(dayStr + 'T12:00:00').getDate();
+    return `<div style="flex:1;min-width:36px;background:${bg};border:1px solid ${border};border-radius:8px;padding:8px 4px;text-align:center;${isToday?'box-shadow:0 0 0 2px var(--accent);':''}">
+      <div style="font-family:var(--font-mono);font-size:.54rem;color:var(--text3);text-transform:uppercase;letter-spacing:.04em">${dayName}</div>
+      <div style="font-family:var(--font-display);font-size:.8rem;font-weight:700;color:${isToday?'var(--accent)':'var(--text2)';}">${dayNum}</div>
+      <div style="font-size:.7rem;color:${textColor};margin-top:2px">${label || (isFuture?'':'-')}</div>
+    </div>`;
+  }).join('');
+}
+
+// ─────────────────────────────────────────────
 // DISCIPLINE
 // ─────────────────────────────────────────────
 function toggleDiscipline(field) {
   currentLog[field] = !currentLog[field];
   const map = {d_wake:'d1', d_workout:'d2', d_breakfast:'d3', d_recovery:'d4', d_affirm_am:'d5', d_affirm_pm:'d6'};
   const id = map[field];
-  document.getElementById('ci-'+id).classList.toggle('checked', currentLog[field]);
-  document.getElementById('ci-'+id).classList.add('discipline');
+  if (id) {
+    const el = document.getElementById('ci-'+id);
+    el.classList.toggle('checked', currentLog[field]);
+    el.classList.add('discipline');
+  }
   autoDetectShipped();
   updateShippedUI();
   updateDiscStreak();
@@ -676,18 +1262,50 @@ function calcDiscStreak() {
     const log = logs.find(l => l.date === check);
     const isToday = check === today;
     if (log) {
-      const discChecks = [log.d_wake, log.d_workout, log.d_breakfast, log.d_recovery].filter(Boolean).length;
-      if (discChecks >= 2 || !!log.d_mvh) { streak++; }
-      else if (!isToday) { break; }
+      const dc = [log.d_wake, log.d_workout, log.d_breakfast, log.d_recovery].filter(Boolean).length;
+      if (dc >= 2 || !!log.d_mvh) streak++;
+      else if (!isToday) break;
     } else if (isToday) {
-      const discChecks = [currentLog.d_wake, currentLog.d_workout, currentLog.d_breakfast, currentLog.d_recovery].filter(Boolean).length;
-      if (discChecks >= 2 || !!currentLog.d_mvh) streak++;
-    } else { break; }
+      const dc = [currentLog.d_wake, currentLog.d_workout, currentLog.d_breakfast, currentLog.d_recovery].filter(Boolean).length;
+      if (dc >= 2 || !!currentLog.d_mvh) streak++;
+    } else break;
     const d = new Date(check + 'T12:00:00');
     d.setDate(d.getDate()-1);
     check = d.toISOString().slice(0,10);
   }
   return streak;
+}
+
+function calcGUStreak() {
+  let streak = 0;
+  const today = getTodayStr();
+  let check = today;
+  for (let i = 0; i < 365; i++) {
+    const log = logs.find(l => l.date === check);
+    if (log && log.shipped === 'YES') streak++;
+    else if (check !== today) break;
+    const d = new Date(check + 'T12:00:00');
+    d.setDate(d.getDate()-1);
+    check = d.toISOString().slice(0,10);
+  }
+  return streak;
+}
+
+function calcIdentityVotes() {
+  return logs.reduce((total, l) => {
+    let votes = 0;
+    if (l.d_wake) votes++;
+    if (l.d_workout) votes++;
+    if (l.d_breakfast) votes++;
+    if (l.d_recovery) votes++;
+    if (l.d_affirm_am) votes++;
+    if (l.d_affirm_pm) votes++;
+    if (l.d_mvh) votes++;
+    if (l.strength) votes++;
+    if (l.movement) votes++;
+    if (l.shipped === 'YES') votes += 3;
+    return total + votes;
+  }, 0);
 }
 
 function updateDiscStreak() {
@@ -726,8 +1344,7 @@ function renderLogForm() {
   });
   ['d_wake','d_workout','d_breakfast','d_recovery','d_affirm_am','d_affirm_pm'].forEach((k,i) => {
     const el = document.getElementById('ci-d'+(i+1));
-    el.classList.toggle('checked', !!currentLog[k]);
-    el.classList.add('discipline');
+    if (el) { el.classList.toggle('checked', !!currentLog[k]); el.classList.add('discipline'); }
   });
 
   renderMVH();
@@ -770,17 +1387,9 @@ function renderIntroList() {
   });
 }
 
-function addReachOutRow() {
-  if (!currentLog.reach_outs) currentLog.reach_outs = [];
-  currentLog.reach_outs.push('');
-  renderROList();
-}
+function addReachOutRow() { if (!currentLog.reach_outs) currentLog.reach_outs = []; currentLog.reach_outs.push(''); renderROList(); }
 function removeRO(i) { currentLog.reach_outs.splice(i,1); renderROList(); }
-function addIntroRow() {
-  if (!currentLog.people_introduced) currentLog.people_introduced = [];
-  currentLog.people_introduced.push({name:'',stage:'New Prospect'});
-  renderIntroList();
-}
+function addIntroRow() { if (!currentLog.people_introduced) currentLog.people_introduced = []; currentLog.people_introduced.push({name:'',stage:'New Prospect'}); renderIntroList(); }
 function removeIntro(i) { currentLog.people_introduced.splice(i,1); renderIntroList(); }
 
 function adjustCount(field, delta) {
@@ -822,16 +1431,15 @@ function updateShippedUI() {
   const shipped = currentLog.shipped === 'YES';
   document.getElementById('shippedStatus').className = 'shipped-status ' + (shipped ? 'shipped' : 'not-shipped');
   document.getElementById('shippedLabel').textContent = shipped ? '✓ SHIPPED' : 'NOT SHIPPED';
-  document.getElementById('shippedSub').textContent = shipped ? 'You shipped today. Keep investing your energy!' : 'Complete 3 GU + 1 fitness + 2 discipline checks + Full/Floor Day to ship';
+  document.getElementById('shippedSub').textContent = shipped ? 'You shipped today. Keep investing your energy!' : '3 GU + 1 fitness + 2 discipline + Full/Floor to ship';
   document.getElementById('shippedToggleBtn').textContent = shipped ? 'Unmark' : 'Mark Shipped';
   document.getElementById('shippedToggleBtn').className = 'btn btn-sm ' + (shipped ? 'btn-secondary' : 'btn-success');
 }
 
 // ─────────────────────────────────────────────
-// SAVE LOG — FIXED: PATCH first, POST if new
+// SAVE LOG
 // ─────────────────────────────────────────────
 async function saveLog() {
-  // Read reflection fields from DOM
   currentLog.reflection_grateful = document.getElementById('reflectionGrateful').value;
   currentLog.reflection_good = document.getElementById('reflectionGood').value;
   currentLog.reflection_needle = document.getElementById('reflectionNeedle').value;
@@ -842,72 +1450,41 @@ async function saveLog() {
     currentLog.reflection_needle ? '🎯 ' + currentLog.reflection_needle : '',
     currentLog.reflection_shift ? '🔄 ' + currentLog.reflection_shift : ''
   ].filter(Boolean).join(' | ');
-
   currentLog.reach_outs = (currentLog.reach_outs || []).filter(r => r.trim());
   currentLog.people_introduced = (currentLog.people_introduced || []).filter(p => p.name && p.name.trim());
   autoDetectShipped();
-
-  // Strip id and created_at — Supabase manages these
   const { id, created_at, ...logData } = currentLog;
-
   try {
     let savedRecord = null;
-
-    // Always try PATCH first (update existing row by date)
-    const patched = await sb(`shipped_logs?date=eq.${logData.date}`, {
-      method: 'PATCH',
-      prefer: 'return=representation',
-      body: JSON.stringify(logData)
-    });
-
-    if (patched && patched.length > 0) {
-      // Row existed and was updated
-      savedRecord = patched[0];
-    } else {
-      // No row for this date yet — insert new
-      const inserted = await sb('shipped_logs', {
-        method: 'POST',
-        prefer: 'return=representation',
-        body: JSON.stringify(logData)
-      });
+    const patched = await sb(`shipped_logs?date=eq.${logData.date}`, { method: 'PATCH', prefer: 'return=representation', body: JSON.stringify(logData) });
+    if (patched && patched.length > 0) { savedRecord = patched[0]; }
+    else {
+      const inserted = await sb('shipped_logs', { method: 'POST', prefer: 'return=representation', body: JSON.stringify(logData) });
       savedRecord = Array.isArray(inserted) ? inserted[0] : inserted;
     }
-
-    // Update in-memory logs array
     const idx = logs.findIndex(l => l.date === currentDate);
     if (idx >= 0) logs[idx] = savedRecord || currentLog;
     else logs.unshift(savedRecord || currentLog);
     logs.sort((a,b) => b.date.localeCompare(a.date));
-
     renderStats();
     updateDiscStreak();
-    showToast('Log saved!', 'success');
-    // Trigger GitHub export so JSON stays in sync
-    fetch('https://gu-proxy.emtrad83.workers.dev/trigger-export', { method: 'POST' })
-      .catch(err => console.log('Export trigger skipped:', err));
-
+    renderDashboard();
+    showToast('Log saved! ✓', 'success');
+    fetch('https://gu-proxy.emtrad83.workers.dev/trigger-export', { method: 'POST' }).catch(() => {});
   } catch(e) {
     console.error('saveLog error:', e);
     showToast('Save failed — check Supabase', 'error');
   }
 }
 
-function clearLog() {
-  currentLog = freshLog(currentDate);
-  renderLogForm();
-}
+function clearLog() { currentLog = freshLog(currentDate); renderLogForm(); }
 
 // ─────────────────────────────────────────────
 // LOAD / STATS
 // ─────────────────────────────────────────────
 async function loadLogs() {
-  try {
-    logs = await sb('shipped_logs?order=date.desc&limit=90');
-    renderStats();
-  } catch(e) {
-    console.error('loadLogs:', e);
-    logs = [];
-  }
+  try { logs = await sb('shipped_logs?order=date.desc&limit=90'); renderStats(); }
+  catch(e) { console.error('loadLogs:', e); logs = []; }
 }
 
 function renderStats() {
@@ -915,18 +1492,7 @@ function renderStats() {
   document.getElementById('hist-total').textContent = logs.length;
   document.getElementById('hist-shipped').textContent = shipped.length;
   document.getElementById('hist-ro').textContent = logs.reduce((s,l) => s + (l.reach_out_count||0) + (l.reach_outs||[]).length, 0);
-  let streak = 0;
-  const today = getTodayStr();
-  let check = today;
-  for (let i = 0; i < 365; i++) {
-    const log = logs.find(l => l.date === check);
-    if (log && log.shipped === 'YES') { streak++; }
-    else if (check !== today) { break; }
-    const d = new Date(check + 'T12:00:00');
-    d.setDate(d.getDate()-1);
-    check = d.toISOString().slice(0,10);
-  }
-  document.getElementById('hist-streak').textContent = streak;
+  document.getElementById('hist-streak').textContent = calcGUStreak();
   updateDiscStreak();
 }
 
@@ -935,10 +1501,7 @@ function renderStats() {
 // ─────────────────────────────────────────────
 function renderHistory() {
   const c = document.getElementById('historyList');
-  if (!logs.length) {
-    c.innerHTML = '<div style="text-align:center;color:var(--text3);padding:40px;font-size:.8rem">No logs yet. Start your first daily log!</div>';
-    return;
-  }
+  if (!logs.length) { c.innerHTML = '<div style="text-align:center;color:var(--text3);padding:40px;font-size:.8rem">No logs yet. Start your first daily log!</div>'; return; }
   c.innerHTML = logs.map(l => {
     const pi = (l.people_introduced||[]).filter(p=>p.name);
     const piStr = pi.length ? pi.map(p=>`${p.name}${p.stage?` (${p.stage})`:''}`).join(', ') : '';
@@ -949,9 +1512,9 @@ function renderHistory() {
       <div class="history-header">
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
           <span class="history-date">${formatDateDisplay(l.date)}</span>
-          ${discBadge ? `<span style="font-size:.6rem;padding:2px 7px;border-radius:10px;background:rgba(200,168,75,.15);color:var(--discipline);font-weight:700">${discBadge}</span>` : ''}
+          ${discBadge ? `<span style="font-family:var(--font-mono);font-size:.58rem;padding:2px 7px;border-radius:10px;background:var(--disc-glow);color:var(--disc);font-weight:500">${discBadge}</span>` : ''}
         </div>
-        <span class="shipped-pill ${l.shipped==='YES'?'yes':'no'}">${l.shipped==='YES'?'SHIPPED':'NOT SHIPPED'}</span>
+        <span class="shipped-pill ${l.shipped==='YES'?'yes':'no'}">${l.shipped==='YES'?'SHIPPED':'MISS'}</span>
       </div>
       <div class="history-body">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:.72rem">
@@ -965,21 +1528,21 @@ function renderHistory() {
           <span style="color:${l.rest?'var(--accent2)':'var(--text3)'}">${l.rest?'✓':'○'} Rest</span>
         </div>
         ${discChecks > 0 || l.d_mvh ? `
-        <div style="margin-top:10px;padding:8px 10px;background:rgba(200,168,75,.06);border:1px solid rgba(200,168,75,.15);border-radius:6px;font-size:.7rem">
-          <div style="color:var(--discipline);font-weight:700;margin-bottom:4px;letter-spacing:.08em">⚡ DISCIPLINE</div>
+        <div style="margin-top:10px;padding:8px 10px;background:var(--disc-glow);border:1px solid rgba(212,168,67,.15);border-radius:8px;font-size:.7rem">
+          <div style="color:var(--disc);font-family:var(--font-mono);font-weight:500;margin-bottom:4px;letter-spacing:.08em;font-size:.62rem">⚡ DISCIPLINE</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px">
-            <span style="color:${l.d_wake?'var(--discipline)':'var(--text3)'}">${l.d_wake?'✓':'○'} Up at 5am</span>
-            <span style="color:${l.d_workout?'var(--discipline)':'var(--text3)'}">${l.d_workout?'✓':'○'} Workout done</span>
-            <span style="color:${l.d_breakfast?'var(--discipline)':'var(--text3)'}">${l.d_breakfast?'✓':'○'} Protein breakfast</span>
-            <span style="color:${l.d_recovery?'var(--discipline)':'var(--text3)'}">${l.d_recovery?'✓':'○'} Transition ritual</span>
-            <span style="color:${l.d_affirm_am?'var(--discipline)':'var(--text3)'}">${l.d_affirm_am?'✓':'○'} AM affirmations</span>
-            <span style="color:${l.d_affirm_pm?'var(--discipline)':'var(--text3)'}">${l.d_affirm_pm?'✓':'○'} PM affirmations</span>
+            <span style="color:${l.d_wake?'var(--disc)':'var(--text3)'}">${l.d_wake?'✓':'○'} Up at 5am</span>
+            <span style="color:${l.d_workout?'var(--disc)':'var(--text3)'}">${l.d_workout?'✓':'○'} Workout done</span>
+            <span style="color:${l.d_breakfast?'var(--disc)':'var(--text3)'}">${l.d_breakfast?'✓':'○'} Protein breakfast</span>
+            <span style="color:${l.d_recovery?'var(--disc)':'var(--text3)'}">${l.d_recovery?'✓':'○'} Transition ritual</span>
+            <span style="color:${l.d_affirm_am?'var(--disc)':'var(--text3)'}">${l.d_affirm_am?'✓':'○'} AM affirmations</span>
+            <span style="color:${l.d_affirm_pm?'var(--disc)':'var(--text3)'}">${l.d_affirm_pm?'✓':'○'} PM affirmations</span>
           </div>
-          ${l.d_mvh ? `<div style="margin-top:4px;color:var(--discipline)">${l.d_mvh==='full'?'✦ Full day':'~ Floor day'}</div>` : ''}
+          ${l.d_mvh ? `<div style="margin-top:4px;color:var(--disc)">${l.d_mvh==='full'?'✦ Full day':'~ Floor day'}</div>` : ''}
         </div>` : ''}
-        ${l.reach_out_count||l.samples_count||l.sixw_count ? `<div style="margin-top:8px;font-size:.7rem;color:var(--text2)">Reach-outs: <b>${l.reach_out_count||0}</b> · Samples: <b>${l.samples_count||0}</b> · 6-W: <b>${l.sixw_count||0}</b></div>` : ''}
+        ${l.reach_out_count||l.samples_count||l.sixw_count ? `<div style="margin-top:8px;font-size:.7rem;color:var(--text2);font-family:var(--font-mono)">R/O: <b>${l.reach_out_count||0}</b> · Samples: <b>${l.samples_count||0}</b> · 6-W: <b>${l.sixw_count||0}</b></div>` : ''}
         ${piStr ? `<div style="margin-top:6px;font-size:.7rem;color:var(--text2)">Introduced: ${piStr}</div>` : ''}
-        ${(l.reach_outs||[]).length ? `<div style="margin-top:6px;font-size:.7rem;color:var(--text2)">Reach-outs: ${l.reach_outs.join(', ')}</div>` : ''}
+        ${(l.reach_outs||[]).length ? `<div style="margin-top:6px;font-size:.7rem;color:var(--text2)">Names: ${l.reach_outs.join(', ')}</div>` : ''}
         ${(l.reflection_grateful||l.reflection_good||l.reflection_needle||l.reflection_shift) ? `
         <div style="margin-top:8px;font-size:.72rem;color:var(--text2);line-height:1.6">
           ${l.reflection_grateful ? `<div>🙏 ${escHtml(l.reflection_grateful.slice(0,120))}${l.reflection_grateful.length>120?'…':''}</div>` : ''}
@@ -996,11 +1559,9 @@ function renderHistory() {
 // PIPELINE
 // ─────────────────────────────────────────────
 async function loadProspects() {
-  try {
-    prospects = await sb('prospects?order=created_at.desc');
-  } catch(e) { console.error('loadProspects:', e); prospects = []; }
+  try { prospects = await sb('prospects?order=created_at.desc'); }
+  catch(e) { console.error('loadProspects:', e); prospects = []; }
   renderPipeline();
-  renderCoachProspects();
   renderPipelineStats();
 }
 
@@ -1036,7 +1597,7 @@ function renderPipeline() {
             ${p.archetype ? `<span style="font-size:.65rem;color:var(--text3)">${p.archetype}</span>` : ''}
           </div>
         </div>
-        <div style="font-size:.65rem;color:var(--text3);text-align:right">${p.last_conversation ? formatShortDate(p.last_conversation) : 'No contact'}</div>
+        <div style="font-family:var(--font-mono);font-size:.62rem;color:var(--text3);text-align:right">${p.last_conversation ? formatShortDate(p.last_conversation) : 'No contact'}</div>
       </div>
       <div class="prospect-detail" id="pd-${p.id}">
         <div class="detail-grid">
@@ -1068,370 +1629,413 @@ function renderPipeline() {
         <input type="text" value="${escHtml(p.tension_point||'')}" placeholder="What tension have you detected?" onclick="event.stopPropagation()" onchange="updateProspect('${p.id}','tension_point',this.value)"/>
         <label>Notes</label>
         <textarea style="min-height:60px" onclick="event.stopPropagation()" onchange="updateProspect('${p.id}','notes',this.value)">${escHtml(p.notes||'')}</textarea>
-        <div class="btn-row" style="margin-top:8px">
-          <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();saveProspect('${p.id}')">💾 Save</button>
-          <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();coachThis('${p.id}')">⚡ Coach</button>
-          <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteProspect('${p.id}')">Delete</button>
-        </div>
-      </div>
-    </div>`).join('');
+
+```
+    <div class="btn-row" style="margin-top:8px">
+      <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();saveProspect('${p.id}')">💾 Save</button>
+      <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteProspect('${p.id}')">Delete</button>
+    </div>
+  </div>
+</div>`).join('');
+```
+
 }
 
 function renderPipelineStats() {
-  document.getElementById('pl-total').textContent = prospects.length;
-  document.getElementById('pl-active').textContent = prospects.filter(p => p.stage !== 'Passed').length;
-  document.getElementById('pl-mentors').textContent = prospects.filter(p => p.stage === 'Interview').length;
+document.getElementById(‘pl-total’).textContent = prospects.length;
+document.getElementById(‘pl-active’).textContent = prospects.filter(p => p.stage !== ‘Passed’).length;
+document.getElementById(‘pl-mentors’).textContent = prospects.filter(p => p.stage === ‘Interview’).length;
 }
 
-function toggleProspect(id) { document.getElementById('pc-'+id).classList.toggle('open'); }
+function toggleProspect(id) { document.getElementById(‘pc-’+id).classList.toggle(‘open’); }
 function updateProspect(id, field, value) {
-  const p = prospects.find(x => String(x.id) === String(id));
-  if (p) p[field] = value;
+const p = prospects.find(x => String(x.id) === String(id));
+if (p) p[field] = value;
 }
 
 async function saveProspect(id) {
-  const p = prospects.find(x => String(x.id) === String(id));
-  if (!p) return;
-  const saved = await upsertProspect(p);
-  if (saved) {
-    const idx = prospects.findIndex(x => String(x.id) === String(id));
-    if (idx >= 0) prospects[idx] = saved;
-    showToast('Saved!', 'success');
-    renderPipeline();
-  } else { showToast('Save failed', 'error'); }
+const p = prospects.find(x => String(x.id) === String(id));
+if (!p) return;
+const saved = await upsertProspect(p);
+if (saved) {
+const idx = prospects.findIndex(x => String(x.id) === String(id));
+if (idx >= 0) prospects[idx] = saved;
+showToast(‘Saved!’, ‘success’);
+renderPipeline();
+} else showToast(‘Save failed’, ‘error’);
 }
 
 async function deleteProspect(id) {
-  if (!confirm('Delete this prospect?')) return;
-  try {
-    await sb(`prospects?id=eq.${id}`, {method:'DELETE', prefer:''});
-    prospects = prospects.filter(p => String(p.id) !== String(id));
-    renderPipeline(); renderCoachProspects();
-    showToast('Deleted', 'success');
-  } catch(e) { showToast('Delete failed', 'error'); }
-}
-
-function coachThis(id) {
-  const p = prospects.find(x => String(x.id) === String(id));
-  if (!p) return;
-  coachSelectedProspect = p;
-  document.getElementById('coachProspectName').value = p.name;
-  if (p.archetype) document.getElementById('coachArchetype').value = p.archetype;
-  if (p.stage) document.getElementById('coachStage').value = p.stage;
-  if (p.tension_point) document.getElementById('coachTension').value = p.tension_point;
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.tab')[1].classList.add('active');
-  document.getElementById('sec-coach').classList.add('active');
-  renderCoachProspects();
+if (!confirm(‘Delete this prospect?’)) return;
+try {
+await sb(`prospects?id=eq.${id}`, {method:‘DELETE’, prefer:’’});
+prospects = prospects.filter(p => String(p.id) !== String(id));
+renderPipeline();
+showToast(‘Deleted’, ‘success’);
+} catch(e) { showToast(‘Delete failed’, ‘error’); }
 }
 
 function filterPipeline(stage, el) {
-  pipelineFilter = stage;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  el.classList.add('active');
-  renderPipeline();
+pipelineFilter = stage;
+document.querySelectorAll(’.filter-btn’).forEach(b => b.classList.remove(‘active’));
+el.classList.add(‘active’);
+renderPipeline();
 }
 
-function openAddProspect() { document.getElementById('addProspectModal').classList.add('open'); }
-function closeAddProspect() { document.getElementById('addProspectModal').classList.remove('open'); }
+function openAddProspect() { document.getElementById(‘addProspectModal’).classList.add(‘open’); }
+function closeAddProspect() { document.getElementById(‘addProspectModal’).classList.remove(‘open’); }
 
 async function saveNewProspect() {
-  const name = document.getElementById('newName').value.trim();
-  if (!name) { showToast('Name is required', 'error'); return; }
-  const p = {
-    name,
-    contact: document.getElementById('newContact').value.trim(),
-    stage: document.getElementById('newStage').value,
-    warmth: document.getElementById('newWarmth').value,
-    archetype: document.getElementById('newArchetype').value,
-    tension_point: document.getElementById('newTension').value.trim(),
-    notes: document.getElementById('newNotes').value.trim(),
-    last_conversation: '', reach_out_count: 1
-  };
-  const saved = await upsertProspect(p);
-  prospects.unshift(saved || {...p, id: Date.now()});
-  renderPipeline(); renderCoachProspects(); closeAddProspect();
-  showToast(`${name} added to Pipeline`, 'success');
-  ['newName','newContact','newTension','newNotes'].forEach(id => document.getElementById(id).value='');
-}
-
-// ─────────────────────────────────────────────
-// COACH
-// ─────────────────────────────────────────────
-function renderCoachProspects() {
-  const c = document.getElementById('coachProspectBtns');
-  c.innerHTML = prospects.filter(p => p.stage !== 'Passed').map(p =>
-    `<button class="coach-prospect-btn ${coachSelectedProspect && coachSelectedProspect.id === p.id ? 'selected' : ''}" onclick="selectCoachProspect('${p.id}')">
-      <div class="warmth-dot ${warmthCSS(p.warmth)}" style="width:6px;height:6px"></div>
-      ${escHtml(p.name)}
-    </button>`
-  ).join('');
-}
-
-function selectCoachProspect(id) {
-  const p = prospects.find(x => String(x.id) === String(id));
-  if (!p) return;
-  coachSelectedProspect = p;
-  document.getElementById('coachProspectName').value = p.name;
-  if (p.archetype) document.getElementById('coachArchetype').value = p.archetype;
-  if (p.stage) document.getElementById('coachStage').value = p.stage;
-  if (p.tension_point) document.getElementById('coachTension').value = p.tension_point;
-  renderCoachProspects();
-  renderProspectHistory(p.name);
-}
-
-async function runCoach() {
-  const name = document.getElementById('coachProspectName').value.trim() || 'this prospect';
-  const archetype = document.getElementById('coachArchetype').value;
-  const stage = document.getElementById('coachStage').value;
-  const temp = document.getElementById('coachTemp').value;
-  const context = document.getElementById('coachContext').value.trim();
-  const tension = document.getElementById('coachTension').value.trim();
-  const goal = document.getElementById('coachGoal').value;
-  const out = document.getElementById('coachOutput');
-  out.style.display = 'block';
-  out.className = 'coach-output loading';
-  out.innerHTML = '<span class="thinking-dots">Thinking</span>';
-  const priorHistory = convHistory.filter(h => h.prospect_name && h.prospect_name.toLowerCase() === name.toLowerCase()).slice(0,8).reverse();
-  const historyStr = priorHistory.length ? priorHistory.map(h => `[${h.date}] Stage: ${h.stage||''} | Notes: ${h.notes||''} | Context: ${h.context||''}`).join('\n') : 'No prior conversations logged.';
-  const prompt = `You are Evan's personal GU coach. Not an assistant. Not an analyst. A coach who knows Evan, knows the game, and talks to him like a real person.\n\nWho Evan is: Chicago educator, 17+ years in special ed, now Climate & Culture Coordinator. GU Senior Mentor pushing toward Master Mentor. His whole philosophy is "Give more to gain more." He's not a salesperson — he's someone who genuinely believes in what he's doing and is learning to trust that. He uses the 6-W conversation to find real tension, not manufacture it.\n\nHere's the situation with ${name}:\n- Archetype: ${archetype || 'unknown'}\n- Where they are in the pipeline: ${stage}\n- Their emotional temperature right now: ${temp}\n- What's going on / what they said: ${context || 'not provided'}\n- Tension point Evan has detected: ${tension || 'not identified yet'}\n- What Evan is trying to do: ${goal}\n\nWhat's happened before with ${name}:\n${historyStr}\n\nDo NOT use headers. Do NOT use bullet points. Talk to Evan like you're sitting across from him. Think out loud with him. Read what's actually happening with this person and tell Evan what you're seeing. Then give him the actual words — a real message or line he can use that sounds like HIM, not like a script. Keep it tight. End with one sentence on what to watch for when ${name} responds.`;
-  try {
-    const res = await fetch(CLAUDE_API, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json', 'anthropic-version': '2023-06-01'},
-      body: JSON.stringify({model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{role:'user', content: prompt}]})
-    });
-    const data = await res.json();
-    const text = data.content?.map(b => b.text||'').join('') || 'No response received.';
-    out.className = 'coach-output';
-    out.textContent = text;
-    window._lastCoachOutput = text;
-    renderProspectHistory(name);
-  } catch(e) {
-    out.className = 'coach-output';
-    out.textContent = 'Error: ' + e.message;
-  }
-}
-
-function clearCoach() {
-  document.getElementById('coachProspectName').value = '';
-  document.getElementById('coachContext').value = '';
-  document.getElementById('coachTension').value = '';
-  document.getElementById('coachOutput').style.display = 'none';
-  document.getElementById('saveConvNotes').value = '';
-  coachSelectedProspect = null;
-  renderCoachProspects();
-}
-
-async function saveConversation() {
-  const name = document.getElementById('coachProspectName').value.trim();
-  const notes = document.getElementById('saveConvNotes').value.trim();
-  if (!name) { showToast('Select a prospect first', 'error'); return; }
-  const entry = {
-    prospect_name: name, date: getTodayStr(),
-    stage: document.getElementById('coachStage').value,
-    tension_point: document.getElementById('coachTension').value.trim(),
-    notes, context: document.getElementById('coachContext').value.trim(),
-    coaching_output: window._lastCoachOutput || ''
-  };
-  try {
-    const res = await sb('conversation_history', { method: 'POST', prefer: 'return=representation', body: JSON.stringify(entry) });
-    convHistory.unshift(Array.isArray(res) ? res[0] : entry);
-    showToast('Conversation saved!', 'success');
-    document.getElementById('saveConvNotes').value = '';
-    window._lastCoachOutput = '';
-    if (coachSelectedProspect) {
-      coachSelectedProspect.last_conversation = getTodayStr();
-      await upsertProspect(coachSelectedProspect);
-    }
-    renderProspectHistory(name);
-  } catch(e) { showToast('Failed to save conversation', 'error'); }
-}
-
-async function loadConvHistory() {
-  try { convHistory = await sb('conversation_history?order=date.desc&limit=50'); }
-  catch(e) { console.error('loadConvHistory:', e); convHistory = []; }
-}
-
-function renderConvHistory() {
-  const c = document.getElementById('convHistoryList');
-  if (!convHistory.length) { c.innerHTML = '<div style="color:var(--text3)">No conversations saved yet.</div>'; return; }
-  c.innerHTML = convHistory.map(h => `
-    <div style="padding:10px 0;border-bottom:1px solid var(--border)">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <span style="font-weight:700;color:var(--text1);font-size:.82rem">${escHtml(h.prospect_name)}</span>
-        <span style="font-size:.65rem;color:var(--text3)">${formatDateDisplay(h.date)}</span>
-      </div>
-      <div style="margin-top:4px;font-size:.7rem">
-        <span class="stage-tag ${stageCSS(h.stage)}" style="font-size:.6rem">${h.stage||''}</span>
-        ${h.tension_point ? `<span style="color:var(--text3);margin-left:6px">⚡ ${escHtml(h.tension_point)}</span>` : ''}
-      </div>
-      ${h.notes ? `<div style="margin-top:6px;font-size:.74rem;color:var(--text2)">${escHtml(h.notes)}</div>` : ''}
-    </div>`).join('');
-}
-
-function renderProspectHistory(name) {
-  const card = document.getElementById('prospectHistoryCard');
-  const list = document.getElementById('prospectHistoryList');
-  if (!name) { card.style.display = 'none'; return; }
-  const history = convHistory.filter(h => h.prospect_name && h.prospect_name.toLowerCase() === name.toLowerCase()).slice(0,20);
-  if (!history.length) { card.style.display = 'none'; return; }
-  card.style.display = 'block';
-  list.innerHTML = history.map(h => {
-    const tensionHtml = h.tension_point ? `<div style="font-size:.7rem;color:var(--warn);margin-bottom:3px">⚡ ${escHtml(h.tension_point)}</div>` : '';
-    const contextHtml = h.context ? `<div style="font-size:.72rem;color:var(--text2);margin-bottom:3px"><b>Context:</b> ${escHtml(h.context.slice(0,120))}${h.context.length>120?'…':''}</div>` : '';
-    const notesHtml = h.notes ? `<div style="font-size:.72rem;color:var(--text1)"><b>Notes:</b> ${escHtml(h.notes)}</div>` : '';
-    const coachHtml = h.coaching_output ? '<div style="font-size:.7rem;color:var(--text3);margin-top:4px;font-style:italic">Coach response saved ✓</div>' : '';
-    return `<div style="padding:10px 0;border-bottom:1px solid var(--border)"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><span class="stage-tag ${stageCSS(h.stage)}" style="font-size:.6rem">${h.stage||''}</span><span style="font-size:.65rem;color:var(--text3)">${formatDateDisplay(h.date)}</span></div>${tensionHtml}${contextHtml}${notesHtml}${coachHtml}</div>`;
-  }).join('');
+const name = document.getElementById(‘newName’).value.trim();
+if (!name) { showToast(‘Name is required’, ‘error’); return; }
+const p = {
+name, contact: document.getElementById(‘newContact’).value.trim(),
+stage: document.getElementById(‘newStage’).value,
+warmth: document.getElementById(‘newWarmth’).value,
+archetype: document.getElementById(‘newArchetype’).value,
+tension_point: document.getElementById(‘newTension’).value.trim(),
+notes: document.getElementById(‘newNotes’).value.trim(),
+last_conversation: ‘’, reach_out_count: 1
+};
+const saved = await upsertProspect(p);
+prospects.unshift(saved || {…p, id: Date.now()});
+renderPipeline(); closeAddProspect();
+showToast(`${name} added to Pipeline`, ‘success’);
+[‘newName’,‘newContact’,‘newTension’,‘newNotes’].forEach(id => document.getElementById(id).value=’’);
 }
 
 // ─────────────────────────────────────────────
 // REVIEWS
 // ─────────────────────────────────────────────
 async function runReview(period) {
-  const out = document.getElementById('reviewOutput');
-  const content = document.getElementById('reviewOutputContent');
-  const title = document.getElementById('reviewOutputTitle');
-  out.style.display = 'block';
-  title.textContent = period === 'week' ? 'Weekly Review' : 'Monthly Review';
-  content.textContent = 'Analyzing your data...';
-  const days = period === 'week' ? 7 : 30;
-  const cutoff = new Date();
-  cutoff.setDate(cutoff.getDate() - days);
-  const cutoffStr = cutoff.toISOString().slice(0,10);
-  const periodLogs = logs.filter(l => l.date >= cutoffStr);
-  const periodConvs = convHistory.filter(h => h.date >= cutoffStr);
-  const shipped = periodLogs.filter(l => l.shipped === 'YES').length;
-  const totalRO = periodLogs.reduce((s,l) => s + (l.reach_out_count||0), 0);
-  const totalSamples = periodLogs.reduce((s,l) => s + (l.samples_count||0), 0);
-  const totalSixW = periodLogs.reduce((s,l) => s + (l.sixw_count||0), 0);
-  const discFullDays = periodLogs.filter(l => l.d_mvh === 'full').length;
-  const discFloorDays = periodLogs.filter(l => l.d_mvh === 'floor').length;
-  const discWakeDays = periodLogs.filter(l => l.d_wake).length;
-  const discWorkoutDays = periodLogs.filter(l => l.d_workout).length;
-  const discRecoveryDays = periodLogs.filter(l => l.d_recovery).length;
-  const stageBreakdown = {};
-  prospects.forEach(p => { stageBreakdown[p.stage] = (stageBreakdown[p.stage]||0)+1; });
-  const prompt = `You are Evan's personal GU coach. Review his ${period === 'week' ? 'last 7 days' : 'last 30 days'} of data and give him a powerful, specific, personalized review.\n\nCONTEXT ABOUT EVAN:\n- Climate & Culture Coordinator at a Chicago elementary school (first year after 19 years teaching special ed)\n- GU Senior Mentor advancing toward Master Mentor\n- Goal: $10,000/month income via GU within 1 year\n- Daily system: 5-3-1-6\n- "Give more to gain more" is his core philosophy\n\n${period.toUpperCase()} DATA:\n- Days logged: ${periodLogs.length} of ${days}\n- Days SHIPPED: ${shipped}\n- Reach-Outs: ${totalRO} (goal: ${days===7?35:150})\n- Samples: ${totalSamples} (goal: ${days===7?21:90})\n- 6-W: ${totalSixW} (goal: ${days===7?7:30})\n- Conversations logged: ${periodConvs.length}\n- Pipeline: ${JSON.stringify(stageBreakdown)}\n\nDISCIPLINE:\n- Full days: ${discFullDays}, Floor days: ${discFloorDays}\n- Up at 5am: ${discWakeDays}, Workout: ${discWorkoutDays}, Transition: ${discRecoveryDays}\n\nREFLECTIONS:\n${periodLogs.filter(l=>l.reflection).slice(0,5).map(l=>`[${l.date}]: "${l.reflection}"`).join('\n') || 'None recorded'}\n\nWrite sections: 1) Overall Assessment 2) Strengths 3) Consistency Patterns 4) Discipline System 5) Areas of Growth 6) Master Mentor Focus 7) Your One Priority. Be direct, specific, reference actual numbers. Celebrate floor days as wins.`;
-  try {
-    const res = await fetch(CLAUDE_API, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json', 'anthropic-version': '2023-06-01'},
-      body: JSON.stringify({model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{role:'user', content: prompt}]})
-    });
-    const data = await res.json();
-    content.textContent = data.content?.map(b => b.text||'').join('') || 'No response.';
-  } catch(e) { content.textContent = 'Error reaching Claude API.'; }
+const out = document.getElementById(‘reviewOutput’);
+const content = document.getElementById(‘reviewOutputContent’);
+const title = document.getElementById(‘reviewOutputTitle’);
+out.style.display = ‘block’;
+title.textContent = period === ‘week’ ? ‘Weekly Review’ : ‘Monthly Review’;
+content.textContent = ‘Analyzing your data…’;
+const days = period === ‘week’ ? 7 : 30;
+const cutoff = new Date();
+cutoff.setDate(cutoff.getDate() - days);
+const cutoffStr = cutoff.toISOString().slice(0,10);
+const periodLogs = logs.filter(l => l.date >= cutoffStr);
+const shipped = periodLogs.filter(l => l.shipped === ‘YES’).length;
+const totalRO = periodLogs.reduce((s,l) => s + (l.reach_out_count||0), 0);
+const totalSamples = periodLogs.reduce((s,l) => s + (l.samples_count||0), 0);
+const totalSixW = periodLogs.reduce((s,l) => s + (l.sixw_count||0), 0);
+const discFull = periodLogs.filter(l => l.d_mvh === ‘full’).length;
+const discFloor = periodLogs.filter(l => l.d_mvh === ‘floor’).length;
+const discWake = periodLogs.filter(l => l.d_wake).length;
+const discWorkout = periodLogs.filter(l => l.d_workout).length;
+const discRecovery = periodLogs.filter(l => l.d_recovery).length;
+const discAffirm = periodLogs.filter(l => l.d_affirm_am).length;
+const identityVotes = periodLogs.reduce((t,l) => {
+return t + [l.d_wake,l.d_workout,l.d_breakfast,l.d_recovery,l.d_affirm_am,l.d_affirm_pm,l.strength,l.movement].filter(Boolean).length + (l.shipped===‘YES’?3:0);
+}, 0);
+const stageBreakdown = {};
+prospects.forEach(p => { stageBreakdown[p.stage] = (stageBreakdown[p.stage]||0)+1; });
+const recentIdentity = identityEntries.filter(e => e.date >= cutoffStr && e.type !== ‘bevel’).slice(0,5);
+const recentBevel = identityEntries.filter(e => e.date >= cutoffStr && e.type === ‘bevel’).map(e => {
+let d = {}; try { d = JSON.parse(e.content||’{}’); } catch(err) {}
+return `[${e.date}] Recovery:${d.recovery??'—'}% Sleep:${d.sleep??'—'}% Strain:${d.strain??'—'}% Stress:${d.stress_current??'—'} (${d.stress_level||'—'})${d.note?' — '+d.note:''}`;
+}).join(’\n’);
+const prompt = `You are Evan's personal coach. Review his ${period === 'week' ? 'last 7 days' : 'last 30 days'} of data and give him a powerful, direct, personalized review. Speak to him as a peer who believes in him.\n\nCONTEXT: Chicago educator (17+ yrs special ed), now Climate & Culture Coordinator. GU Senior Mentor advancing to Master Mentor. Philosophy: "Give more to gain more." Building Team EVAN as his path to income independence. He is deeply systems-oriented, reflective, and in an active identity-building phase.\n\n${period.toUpperCase()} DATA:\n- Days logged: ${periodLogs.length} of ${days} | Days shipped: ${shipped}\n- Reach-Outs: ${totalRO} (goal: ${days===7?35:150}) | Samples: ${totalSamples} | 6-W Convos: ${totalSixW}\n- Pipeline: ${JSON.stringify(stageBreakdown)}\n\nDISCIPLINE:\n- Full days: ${discFull} | Floor days: ${discFloor}\n- 5am wake: ${discWake} | Workout: ${discWorkout} | Transition ritual: ${discRecovery} | Affirmations: ${discAffirm}\n- Total identity votes this period: ${identityVotes}\n\nREFLECTIONS:\n${periodLogs.filter(l=>l.reflection).slice(0,5).map(l=>`[${l.date}]: “${l.reflection}”`).join('\n') || 'None recorded'}\n\nIDENTITY ENTRIES:\n${recentIdentity.map(e=>`[${e.date}] ${e.content||’’}`).join('\n') || 'None recorded'}\n\nBEVEL RECOVERY DATA:\n${recentBevel || 'No Bevel data logged this period'}\n\nWrite these sections:\n1) Overall Assessment — what's the real story of this period?\n2) Strengths — what is working, be specific with numbers\n3) Discipline System — how are the identity votes adding up?\n4) GU Momentum — what's the pipeline telling you?\n5) Recovery Pattern — what is the Bevel data showing? Are low recovery/sleep scores correlating with missed discipline checks?\n6) Internal Pattern — what internal roadblock showed up this period?\n7) Master Mentor Focus — what does the path forward look like right now?\n8) One Priority — the single most important move for next period\n\nBe direct. Reference actual numbers. Floor days are wins. Celebrate the streak, not just the peak. End with one sentence Evan can carry all week.`;
+try {
+const res = await fetch(CLAUDE_API, {
+method: ‘POST’,
+headers: {‘Content-Type’: ‘application/json’, ‘anthropic-version’: ‘2023-06-01’},
+body: JSON.stringify({model: ‘claude-sonnet-4-20250514’, max_tokens: 1000, messages: [{role:‘user’, content: prompt}]})
+});
+const data = await res.json();
+content.textContent = data.content?.map(b => b.text||’’).join(’’) || ‘No response.’;
+} catch(e) { content.textContent = ’Error reaching Claude API: ’ + e.message; }
 }
 
-let savedReviews = [];
-
 async function saveReview() {
-  const title = document.getElementById('reviewOutputTitle').textContent;
-  const content2 = document.getElementById('reviewOutputContent').textContent;
-  if (!content2 || content2 === 'Analyzing your data...') { showToast('Generate a review first', 'error'); return; }
-  try {
-    const res = await sb('reviews', { method: 'POST', prefer: 'return=representation', body: JSON.stringify({date: getTodayStr(), period: title.includes('Weekly') ? 'week' : 'month', title, content: content2}) });
-    savedReviews.unshift(Array.isArray(res) ? res[0] : {title, content: content2, date: getTodayStr()});
-    renderSavedReviews();
-    showToast('Review saved!', 'success');
-  } catch(e) { showToast('Failed to save review', 'error'); }
+const title = document.getElementById(‘reviewOutputTitle’).textContent;
+const content2 = document.getElementById(‘reviewOutputContent’).textContent;
+if (!content2 || content2 === ‘Analyzing your data…’) { showToast(‘Generate a review first’, ‘error’); return; }
+try {
+const res = await sb(‘reviews’, { method: ‘POST’, prefer: ‘return=representation’, body: JSON.stringify({date: getTodayStr(), period: title.includes(‘Weekly’) ? ‘week’ : ‘month’, title, content: content2}) });
+savedReviews.unshift(Array.isArray(res) ? res[0] : {title, content: content2, date: getTodayStr()});
+renderSavedReviews();
+showToast(‘Review saved!’, ‘success’);
+} catch(e) { showToast(‘Failed to save review’, ‘error’); }
 }
 
 async function loadSavedReviews() {
-  try { savedReviews = await sb('reviews?order=date.desc&limit=20'); }
-  catch(e) { console.error('loadSavedReviews:', e); savedReviews = []; }
-  renderSavedReviews();
+try { savedReviews = await sb(‘reviews?order=date.desc&limit=20’); }
+catch(e) { console.error(‘loadSavedReviews:’, e); savedReviews = []; }
+renderSavedReviews();
 }
 
 function renderSavedReviews() {
-  const c = document.getElementById('savedReviewsList');
-  if (!c) return;
-  if (!savedReviews.length) { c.innerHTML = '<div style="color:var(--text3)">No saved reviews yet.</div>'; return; }
-  c.innerHTML = savedReviews.map((r,i) => `
-    <div style="border-bottom:1px solid var(--border);padding:10px 0">
-      <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer" onclick="document.getElementById('rv-body-${i}').style.display=document.getElementById('rv-body-${i}').style.display==='none'?'block':'none'">
-        <div>
-          <span style="font-weight:700;color:var(--text1);font-size:.82rem">${escHtml(r.title||'Review')}</span>
-          <span style="margin-left:8px;font-size:.65rem;color:var(--text3)">${formatDateDisplay(r.date)}</span>
-        </div>
-        <span style="font-size:.7rem;color:var(--accent)">▼</span>
-      </div>
-      <div id="rv-body-${i}" style="display:none;margin-top:10px;font-size:.78rem;color:var(--text2);line-height:1.65;white-space:pre-wrap">${escHtml(r.content||'')}</div>
-    </div>`).join('');
+const c = document.getElementById(‘savedReviewsList’);
+if (!c) return;
+if (!savedReviews.length) { c.innerHTML = ‘<div style="color:var(--text3)">No saved reviews yet.</div>’; return; }
+c.innerHTML = savedReviews.map((r,i) => ` <div style="border-bottom:1px solid var(--border);padding:10px 0"> <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer" onclick="document.getElementById('rv-body-${i}').style.display=document.getElementById('rv-body-${i}').style.display==='none'?'block':'none'"> <div> <span style="font-family:var(--font-display);font-weight:700;color:var(--text1);font-size:.82rem">${escHtml(r.title||'Review')}</span> <span style="margin-left:8px;font-family:var(--font-mono);font-size:.62rem;color:var(--text3)">${formatShortDate(r.date)}</span> </div> <span style="font-size:.7rem;color:var(--accent)">▼</span> </div> <div id="rv-body-${i}" style="display:none;margin-top:10px;font-size:.78rem;color:var(--text2);line-height:1.65;white-space:pre-wrap">${escHtml(r.content||'')}</div> </div>`).join(’’);
+}
+
+async function renderConvHistory() {
+const c = document.getElementById(‘convHistoryList’);
+if (!convHistory.length) { c.innerHTML = ‘<div style="color:var(--text3)">No conversations saved yet.</div>’; return; }
+c.innerHTML = convHistory.map(h => `<div style="padding:10px 0;border-bottom:1px solid var(--border)"> <div style="display:flex;justify-content:space-between;align-items:center"> <span style="font-family:var(--font-display);font-weight:700;color:var(--text1);font-size:.82rem">${escHtml(h.prospect_name)}</span> <span style="font-family:var(--font-mono);font-size:.62rem;color:var(--text3)">${formatShortDate(h.date)}</span> </div> <div style="margin-top:4px;font-size:.7rem"> <span class="stage-tag ${stageCSS(h.stage)}" style="font-size:.58rem">${h.stage||''}</span> ${h.tension_point ?`<span style="color:var(--text3);margin-left:6px;font-size:.68rem">⚡ ${escHtml(h.tension_point)}</span>`: ''} </div> ${h.notes ?`<div style="margin-top:6px;font-size:.72rem;color:var(--text2)">${escHtml(h.notes)}</div>` : ''} </div>`).join(’’);
+}
+
+async function loadConvHistory() {
+try { convHistory = await sb(‘conversation_history?order=date.desc&limit=50’); }
+catch(e) { console.error(‘loadConvHistory:’, e); convHistory = []; }
 }
 
 // ─────────────────────────────────────────────
 // MASTER MENTOR
 // ─────────────────────────────────────────────
 function setMasterStep(step, done) {
-  if (step === 1) masterSteps.s1 = done;
-  else masterSteps.s2 = done;
-  updateMasterUI();
-  localStorage.setItem('masterSteps', JSON.stringify(masterSteps));
+if (step === 1) masterSteps.s1 = done;
+else masterSteps.s2 = done;
+updateMasterUI();
+localStorage.setItem(‘masterSteps’, JSON.stringify(masterSteps));
 }
 
 function updateMasterUI() {
-  document.getElementById('ms1').classList.toggle('done', masterSteps.s1);
-  document.getElementById('ms2').classList.toggle('done', masterSteps.s2);
-  const count = (masterSteps.s1?1:0) + (masterSteps.s2?1:0);
-  document.getElementById('masterLabel').textContent = `${count}/2 steps`;
-  ['mm1yes','mm1no','mm2yes','mm2no'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.opacity = '0.5';
-  });
-  document.getElementById(masterSteps.s1 ? 'mm1yes' : 'mm1no').style.opacity = '1';
-  document.getElementById(masterSteps.s2 ? 'mm2yes' : 'mm2no').style.opacity = '1';
+document.getElementById(‘ms1’).classList.toggle(‘done’, masterSteps.s1);
+document.getElementById(‘ms2’).classList.toggle(‘done’, masterSteps.s2);
+const count = (masterSteps.s1?1:0) + (masterSteps.s2?1:0);
+document.getElementById(‘masterLabel’).textContent = `${count}/2`;
+[‘mm1yes’,‘mm1no’,‘mm2yes’,‘mm2no’].forEach(id => {
+const el = document.getElementById(id); if (el) el.style.opacity = ‘0.5’;
+});
+const y1 = document.getElementById(‘mm1yes’); const n1 = document.getElementById(‘mm1no’);
+const y2 = document.getElementById(‘mm2yes’); const n2 = document.getElementById(‘mm2no’);
+if (y1 && n1) { (masterSteps.s1 ? y1 : n1).style.opacity = ‘1’; }
+if (y2 && n2) { (masterSteps.s2 ? y2 : n2).style.opacity = ‘1’; }
+// Update dashboard dots
+const dm1 = document.getElementById(‘dash-ms1’); const dm2 = document.getElementById(‘dash-ms2’);
+if (dm1) dm1.classList.toggle(‘done’, masterSteps.s1);
+if (dm2) dm2.classList.toggle(‘done’, masterSteps.s2);
+}
+
+// ─────────────────────────────────────────────
+// IDENTITY TAB
+// ─────────────────────────────────────────────
+function renderHeatmap() {
+const grid = document.getElementById(‘heatmapGrid’);
+const today = new Date();
+const todayStr = getTodayStr();
+// Build 28 days ending today, padded to start on Sunday
+const endDate = new Date(today);
+const startDate = new Date(today);
+startDate.setDate(startDate.getDate() - 27);
+// Pad to previous Sunday
+const startDay = startDate.getDay();
+startDate.setDate(startDate.getDate() - startDay);
+const days = [];
+const cur = new Date(startDate);
+while (cur <= endDate || days.length % 7 !== 0) {
+days.push(cur.toISOString().slice(0,10));
+cur.setDate(cur.getDate()+1);
+if (days.length > 42) break;
+}
+grid.innerHTML = days.map(dayStr => {
+const log = logs.find(l => l.date === dayStr);
+const isFuture = dayStr > todayStr;
+const isToday = dayStr === todayStr;
+let cls = ‘heatmap-day’;
+if (isToday) cls += ’ today’;
+if (!isFuture) {
+if (log && log.d_mvh === ‘full’) cls += ’ full’;
+else if (log && log.d_mvh === ‘floor’) cls += ’ floor’;
+else if (log) cls += ’ miss’;
+}
+const title = dayStr;
+return `<div class="${cls}" title="${title}"></div>`;
+}).join(’’);
+}
+
+function renderIdentityStats() {
+const votes = calcIdentityVotes();
+const fullDays = logs.filter(l => l.d_mvh === ‘full’).length;
+const floorDays = logs.filter(l => l.d_mvh === ‘floor’).length;
+const streak = calcDiscStreak();
+document.getElementById(‘identityVoteNum’).textContent = votes;
+document.getElementById(‘id-full-days’).textContent = fullDays;
+document.getElementById(‘id-floor-days’).textContent = floorDays;
+document.getElementById(‘id-disc-streak’).textContent = streak;
+}
+
+async function saveDailyVote() {
+const v1 = document.getElementById(‘dailyVote1’).value.trim();
+const v2 = document.getElementById(‘dailyVote2’).value.trim();
+const v3 = document.getElementById(‘dailyVote3’).value.trim();
+if (!v1 && !v2 && !v3) { showToast(‘Fill in at least one field’, ‘error’); return; }
+const entry = {
+date: getTodayStr(),
+type: ‘daily’,
+content: [v1?`Story I told: ${v1}`:’’, v2?`Voted for: ${v2}`:’’, v3?`Tomorrow I commit: ${v3}`:’’].filter(Boolean).join(’ | ’)
+};
+await saveIdentityEntry(entry);
+document.getElementById(‘dailyVote1’).value = ‘’;
+document.getElementById(‘dailyVote2’).value = ‘’;
+document.getElementById(‘dailyVote3’).value = ‘’;
+showToast(‘Identity vote saved ✓’, ‘success’);
+renderIdentityHistory();
+}
+
+async function saveWeeklyReflection() {
+const r1 = document.getElementById(‘weeklyR1’).value.trim();
+const r2 = document.getElementById(‘weeklyR2’).value.trim();
+const r3 = document.getElementById(‘weeklyR3’).value.trim();
+const r4 = document.getElementById(‘weeklyR4’).value.trim();
+if (!r1 && !r2 && !r3 && !r4) { showToast(‘Fill in at least one field’, ‘error’); return; }
+const entry = {
+date: getTodayStr(),
+type: ‘weekly’,
+content: [
+r1?`Pattern: ${r1}`:’’, r2?`Chose comfort: ${r2}`:’’,
+r3?`Disciplined version: ${r3}`:’’, r4?`Identity vote: ${r4}`:’’
+].filter(Boolean).join(’ | ’)
+};
+await saveIdentityEntry(entry);
+[‘weeklyR1’,‘weeklyR2’,‘weeklyR3’,‘weeklyR4’].forEach(id => document.getElementById(id).value = ‘’);
+showToast(‘Weekly reflection saved ✓’, ‘success’);
+renderIdentityHistory();
+}
+
+async function saveIdentityEntry(entry) {
+try {
+const res = await sb(‘identity_entries’, { method: ‘POST’, prefer: ‘return=representation’, body: JSON.stringify(entry) });
+identityEntries.unshift(Array.isArray(res) ? res[0] : entry);
+} catch(e) {
+// If table doesn’t exist yet, store locally
+identityEntries.unshift({…entry, id: Date.now()});
+console.warn(‘identity_entries table may not exist yet:’, e);
+}
+}
+
+async function loadIdentityEntries() {
+try { identityEntries = await sb(‘identity_entries?order=date.desc&limit=50’); }
+catch(e) { console.error(‘loadIdentityEntries:’, e); identityEntries = []; }
+bevelLogs = identityEntries.filter(e => e.type === ‘bevel’);
+}
+
+let bevelLogs = [];
+let currentBevelStressLevel = ‘’;
+
+function updateBevelBar(type, val) {
+const pct = Math.min(100, Math.max(0, Number(val) || 0));
+const bar = document.getElementById(‘bevel-bar-’ + type);
+if (!bar) return;
+bar.style.width = pct + ‘%’;
+// Color coding
+if (type === ‘recovery’ || type === ‘sleep’) {
+bar.style.background = pct >= 70 ? ‘var(–accent2)’ : pct >= 50 ? ‘var(–warn)’ : ‘var(–accent3)’;
+} else if (type === ‘strain’) {
+bar.style.background = pct <= 30 ? ‘var(–accent2)’ : pct <= 60 ? ‘var(–warn)’ : ‘var(–accent3)’;
+} else if (type === ‘stress’) {
+bar.style.background = pct <= 30 ? ‘var(–accent2)’ : pct <= 60 ? ‘var(–warn)’ : ‘var(–accent3)’;
+}
+}
+
+function setBevelStressLevel(level) {
+currentBevelStressLevel = currentBevelStressLevel === level ? ‘’ : level;
+[‘low’,‘medium’,‘high’].forEach(l => {
+const btn = document.getElementById(‘slb-’ + l);
+if (btn) btn.className = ‘stress-level-btn’ + (currentBevelStressLevel === l ? ’ active-’ + l : ‘’);
+});
+}
+
+async function saveBevelLog() {
+const recovery = document.getElementById(‘bevelRecovery’).value;
+const sleep = document.getElementById(‘bevelSleep’).value;
+const strain = document.getElementById(‘bevelStrain’).value;
+const stressCurrent = document.getElementById(‘bevelStressCurrent’).value;
+const stressHigh = document.getElementById(‘bevelStressHigh’).value;
+const stressLow = document.getElementById(‘bevelStressLow’).value;
+const stressAvg = document.getElementById(‘bevelStressAvg’).value;
+const note = document.getElementById(‘bevelNote’).value.trim();
+if (!recovery && !sleep && !strain) { showToast(‘Enter at least one metric’, ‘error’); return; }
+const entry = {
+date: getTodayStr(),
+type: ‘bevel’,
+content: JSON.stringify({
+recovery: Number(recovery)||null,
+sleep: Number(sleep)||null,
+strain: Number(strain)||null,
+stress_current: Number(stressCurrent)||null,
+stress_high: Number(stressHigh)||null,
+stress_low: Number(stressLow)||null,
+stress_avg: Number(stressAvg)||null,
+stress_level: currentBevelStressLevel,
+note
+})
+};
+await saveIdentityEntry(entry);
+// Clear fields
+[‘bevelRecovery’,‘bevelSleep’,‘bevelStrain’,‘bevelStressCurrent’,‘bevelStressHigh’,‘bevelStressLow’,‘bevelStressAvg’,‘bevelNote’].forEach(id => { document.getElementById(id).value = ‘’; });
+[‘recovery’,‘sleep’,‘strain’,‘stress’].forEach(t => { const b = document.getElementById(‘bevel-bar-’+t); if(b) b.style.width=‘0%’; });
+currentBevelStressLevel = ‘’;
+setBevelStressLevel(’’);
+showToast(‘Bevel log saved ✓’, ‘success’);
+renderBevelHistory();
+}
+
+function renderBevelHistory() {
+const c = document.getElementById(‘bevelHistoryList’);
+if (!c) return;
+const bevelEntries = bevelLogs.filter(e => e.type === ‘bevel’).slice(0, 14);
+if (!bevelEntries.length) { c.innerHTML = ‘<div style="color:var(--text3)">No Bevel logs yet.</div>’; return; }
+c.innerHTML = bevelEntries.map(e => {
+let data = {};
+try { data = JSON.parse(e.content || ‘{}’); } catch(err) {}
+const levelColor = data.stress_level === ‘low’ ? ‘var(–accent2)’ : data.stress_level === ‘medium’ ? ‘var(–warn)’ : data.stress_level === ‘high’ ? ‘var(–accent3)’ : ‘var(–text3)’;
+const recColor = data.recovery >= 70 ? ‘var(–accent2)’ : data.recovery >= 50 ? ‘var(–warn)’ : ‘var(–accent3)’;
+const sleepColor = data.sleep >= 70 ? ‘var(–accent2)’ : data.sleep >= 50 ? ‘var(–warn)’ : ‘var(–accent3)’;
+return `<div class="bevel-history-item"> <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px"> <span style="font-family:var(--font-mono);font-size:.62rem;color:var(--text3)">${formatShortDate(e.date)}</span> ${data.stress_level ? `<span style="font-family:var(--font-mono);font-size:.58rem;color:${levelColor};text-transform:uppercase;letter-spacing:.06em">${data.stress_level} stress</span>`: ''} </div> <div class="bevel-history-metrics"> ${data.recovery != null ?`<span class="bevel-history-metric" style="color:${recColor}">Recovery: <b>${data.recovery}%</b></span>`: ''} ${data.sleep != null ?`<span class="bevel-history-metric" style="color:${sleepColor}">Sleep: <b>${data.sleep}%</b></span>`: ''} ${data.strain != null ?`<span class="bevel-history-metric" style="color:var(--text2)">Strain: <b>${data.strain}%</b></span>`: ''} ${data.stress_current != null ?`<span class="bevel-history-metric" style="color:var(--text2)">Stress: <b>${data.stress_current}</b></span>`: ''} </div> ${data.note ?`<div style="font-size:.7rem;color:var(--text3);margin-top:3px;font-style:italic">${escHtml(data.note)}</div>` : ''} </div>`;
+}).join(’’);
+}
+
+const c = document.getElementById(‘identityHistoryList’);
+if (!identityEntries.length) { c.innerHTML = ‘<div style="color:var(--text3)">No entries yet. Start your first daily vote above.</div>’; return; }
+c.innerHTML = identityEntries.map(e => ` <div class="identity-history-item"> <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"> <div class="identity-history-date">${formatDateDisplay(e.date)}</div> <span style="font-family:var(--font-mono);font-size:.56rem;padding:1px 6px;border-radius:8px;background:${e.type==='weekly'?'rgba(124,110,255,.15)':'rgba(212,168,67,.1)'};color:${e.type==='weekly'?'var(--accent)':'var(--disc)'}">${e.type==='weekly'?'WEEKLY':'DAILY'}</span> </div> <div class="identity-history-text">${escHtml(e.content||'')}</div> </div>`).join(’’);
 }
 
 // ─────────────────────────────────────────────
 // HELPERS
 // ─────────────────────────────────────────────
 function stageCSS(stage) {
-  const map = {'New Lead':'stage-new','Sample Offered':'stage-sample','6-W Scheduled':'stage-sixw','Briefing Invited':'stage-briefing','Enrolled Mentor':'stage-mentor','Nurturing':'stage-nurture','Passed':'stage-pass'};
-  return map[stage] || 'stage-new';
+const map = {‘New Prospect’:‘stage-new’,‘New Lead’:‘stage-new’,‘Sample’:‘stage-sample’,‘6-W Conversation’:‘stage-sixw’,‘Patron Preso’:‘stage-briefing’,‘Briefing’:‘stage-briefing’,‘Interview’:‘stage-mentor’,‘Nurturing’:‘stage-nurture’,‘Passed’:‘stage-pass’};
+return map[stage] || ‘stage-new’;
 }
-function warmthCSS(w) {
-  return {Hot:'warm-hot', Warm:'warm-warm', Cool:'warm-cool', Cold:'warm-cold'}[w] || 'warm-warm';
-}
-function escHtml(s) {
-  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-function formatShortDate(str) {
-  if (!str) return '';
-  const [y,m,d] = str.split('-').map(Number);
-  return new Date(y, m-1, d).toLocaleDateString('en-US', {month:'short', day:'numeric'});
-}
-function showToast(msg, type='') {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast show ' + type;
-  setTimeout(() => { t.className = 'toast ' + type; }, 2800);
+function warmthCSS(w) { return {Hot:‘warm-hot’,Warm:‘warm-warm’,Cool:‘warm-cool’,Cold:‘warm-cold’}[w]||‘warm-warm’; }
+function escHtml(s) { return String(s||’’).replace(/&/g,’&’).replace(/</g,’<’).replace(/>/g,’>’).replace(/”/g,’"’); }
+function showToast(msg, type=’’) {
+const t = document.getElementById(‘toast’);
+t.textContent = msg; t.className = ’toast show ’ + type;
+setTimeout(() => { t.className = ’toast ’ + type; }, 2800);
 }
 
 // ─────────────────────────────────────────────
 // INIT
 // ─────────────────────────────────────────────
 async function init() {
-  const today = getTodayStr();
-  document.getElementById('logDatePicker').value = today;
-  document.getElementById('logDateDisplay').textContent = formatDateDisplay(today);
-  try {
-    const ms = JSON.parse(localStorage.getItem('masterSteps') || '{}');
-    masterSteps.s1 = !!ms.s1;
-    masterSteps.s2 = !!ms.s2;
-  } catch(e) {}
-  updateMasterUI();
-  await Promise.all([loadLogs(), loadProspects(), loadConvHistory(), loadSavedReviews()]);
-  const todayLog = logs.find(l => l.date === today);
-  currentLog = todayLog ? JSON.parse(JSON.stringify(todayLog)) : freshLog(today);
-  renderLogForm();
-  renderStats();
+const today = getTodayStr();
+document.getElementById(‘logDatePicker’).value = today;
+document.getElementById(‘logDateDisplay’).textContent = formatDateDisplay(today);
+try {
+const ms = JSON.parse(localStorage.getItem(‘masterSteps’) || ‘{}’);
+masterSteps.s1 = !!ms.s1; masterSteps.s2 = !!ms.s2;
+} catch(e) {}
+updateMasterUI();
+await Promise.all([loadLogs(), loadProspects(), loadConvHistory(), loadSavedReviews(), loadIdentityEntries()]);
+const todayLog = logs.find(l => l.date === today);
+currentLog = todayLog ? JSON.parse(JSON.stringify(todayLog)) : freshLog(today);
+renderLogForm();
+renderStats();
+renderDashboard();
 }
 
 init();
 </script>
+
 </body>
 </html>
