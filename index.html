@@ -1071,18 +1071,8 @@ async function sb(path, opts={}) {
 }
 
 // ─────────────────────────────────────────────
-// STATE
+// CORE HELPERS (must be defined before state)
 // ─────────────────────────────────────────────
-let logs = [];
-let prospects = [];
-let convHistory = [];
-let identityEntries = [];
-let currentDate = getTodayStr();
-let currentLog = freshLog(currentDate);
-let pipelineFilter = 'All';
-let masterSteps = {s1: false, s2: false};
-let savedReviews = [];
-
 function getTodayStr() {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
@@ -1102,6 +1092,19 @@ function freshLog(date) {
     reach_out_count: 0, samples_count: 0, sixw_count: 0, mentor_count: 0
   };
 }
+
+// ─────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────
+let logs = [];
+let prospects = [];
+let convHistory = [];
+let identityEntries = [];
+let currentDate = getTodayStr();
+let currentLog = freshLog(currentDate);
+let pipelineFilter = 'All';
+let masterSteps = {s1: false, s2: false};
+let savedReviews = [];
 
 // ─────────────────────────────────────────────
 // TABS
