@@ -2,7 +2,7 @@ name: Export Logs to JSON
 
 on:
   schedule:
-    - cron: '0 6 * * *'
+    - cron: '0 */2 * * *'
   workflow_dispatch:
   repository_dispatch:
     types: [log-saved]
@@ -25,10 +25,18 @@ jobs:
             -H "Authorization: Bearer ${{ secrets.SUPABASE_KEY }}" \
             -o data/logs.json
 
+      - name: Fetch identity entries from Supabase
+        run: |
+          curl -s \
+            "https://kkerejaviuqnaalbbnfs.supabase.co/rest/v1/identity_entries?order=date.desc&limit=100" \
+            -H "apikey: ${{ secrets.SUPABASE_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_KEY }}" \
+            -o data/identity.json
+
       - name: Commit and push
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          git add data/logs.json
+          git add data/logs.json data/identity.json
           git commit -m "Daily log export $(date +%Y-%m-%d)" --allow-empty
           git push
