@@ -795,7 +795,16 @@ document.getElementById('tabBar').addEventListener('click', function(e) {
   if (tab === 'history') renderHistory();
   if (tab === 'pipeline') renderPipeline();
   if (tab === 'reviews') { renderConvHist(); renderSavedReviews(); }
-  if (tab === 'identity') { renderHeatmap(); renderIdentityStats(); renderIdentityHist(); renderBevelHist(); }
+  if (tab === 'identity') {
+    // Refresh logs to ensure latest identity columns are loaded
+    loadLogs().then(function() {
+      deriveIdentityFromLogs();
+      renderHeatmap();
+      renderIdentityStats();
+      renderIdentityHist();
+      renderBevelHist();
+    });
+  }
   if (tab === 'dash') renderDash();
 });
 
