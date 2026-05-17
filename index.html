@@ -1,1690 +1,567 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-<title>GU Command Center</title>
-<style>
-:root {
-  --bg:#07070f; --bg2:#0e0e1a; --bg3:#141424; --bg4:#1a1a2e;
-  --border:#1e1e32; --border2:#2a2a42;
-  --accent:#7c6eff; --aglow:rgba(124,110,255,.15);
-  --green:#00e5b0; --gglow:rgba(0,229,176,.12);
-  --red:#ff5f7e; --gold:#f5c842; --warn:#ff8c42;
-  --disc:#d4a843; --dglow:rgba(212,168,67,.12);
-  --blue:#4a9eff; --bglow:rgba(74,158,255,.12);
-  --t1:#eeeaff; --t2:#8a84a8; --t3:#3d3858;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--t1);font-family:system-ui,sans-serif;min-height:100vh}
+import React, { useEffect, useMemo, useState } from "react";
+import { motion } from "framer-motion";
+import { Check, ChevronLeft, ChevronRight, Download, Flame, Heart, Plus, Save, Sparkles, Target, Trash2, Trophy, Upload } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
-/* HEADER */
-.hdr{background:#0a0a18;border-bottom:1px solid var(--border);padding:12px 16px 0;position:sticky;top:0;z-index:100}
-.hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px}
-.logo{font-size:.72rem;font-weight:800;letter-spacing:.18em;color:var(--accent);text-transform:uppercase}
-.master-bar{display:flex;align-items:center;gap:8px;font-size:.68rem;color:var(--t2)}
-.mbadge{background:linear-gradient(90deg,var(--gold),#e8a820);color:#07070f;font-weight:800;font-size:.6rem;letter-spacing:.1em;padding:3px 9px;border-radius:20px;text-transform:uppercase}
-.msteps{display:flex;gap:5px}
-.mstep{width:22px;height:5px;border-radius:3px;background:var(--bg3);border:1px solid var(--border2);transition:background .3s}
-.mstep.done{background:var(--gold);border-color:var(--gold)}
-.tabs{display:flex;gap:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
-.tabs::-webkit-scrollbar{display:none}
-.tab{padding:8px 12px;font-size:.65rem;font-weight:700;letter-spacing:.08em;color:var(--t3);border:none;background:transparent;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;text-transform:uppercase;white-space:nowrap;flex-shrink:0}
-.tab:hover{color:var(--t2)}
-.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
-
-/* LAYOUT */
-.content{padding:16px;max-width:800px;margin:0 auto}
-.section{display:none}
-.section.active{display:block}
-
-/* CARDS */
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px}
-.ctitle{font-size:.62rem;font-weight:700;letter-spacing:.12em;color:var(--t3);text-transform:uppercase;margin-bottom:12px}
-.ctitle.ca{color:var(--accent)}
-.ctitle.cg{color:var(--green)}
-.ctitle.cd{color:var(--disc)}
-.ctitle.cb{color:var(--blue)}
-
-/* INPUTS */
-input[type=text],input[type=date],input[type=number],textarea,select{
-  width:100%;background:var(--bg3);border:1px solid var(--border);
-  color:var(--t1);padding:9px 12px;border-radius:8px;
-  font-size:.82rem;outline:none;transition:border .2s;font-family:inherit}
-input[type=text]:focus,input[type=date]:focus,input[type=number]:focus,textarea:focus,select:focus{border-color:var(--accent)}
-textarea{resize:vertical;min-height:60px}
-select{cursor:pointer}
-.lbl{font-size:.7rem;color:var(--t2);display:block;margin:10px 0 4px;letter-spacing:.04em}
-.lbl:first-child{margin-top:0}
-
-/* BUTTONS */
-.btn{padding:9px 18px;border-radius:8px;font-size:.75rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;letter-spacing:.04em;font-family:inherit}
-.btn-p{background:var(--accent);color:#fff}.btn-p:hover{background:#9080ff}
-.btn-s{background:var(--bg3);color:var(--t2);border:1px solid var(--border2)}.btn-s:hover{background:var(--bg4);color:var(--t1)}
-.btn-g{background:var(--green);color:#07070f;font-weight:700}.btn-g:hover{background:#00ffcc}
-.btn-d{background:#cc3355;color:#fff}.btn-d:hover{background:#dd4466}
-.btn-gold{background:var(--gold);color:#07070f;font-weight:700}.btn-gold:hover{background:#ffd84a}
-.btn-sm{padding:5px 12px;font-size:.68rem}
-.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-
-/* CHECKBOXES */
-.chk-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.chk{display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:9px 11px;cursor:pointer;transition:all .2s}
-.chk:hover{border-color:var(--border2)}
-.chk.on{border-color:var(--accent);background:var(--aglow)}
-.chk.on.fit{border-color:var(--green);background:var(--gglow)}
-.chk.on.dis{border-color:var(--disc);background:var(--dglow)}
-.chkbox{width:16px;height:16px;border:2px solid var(--border2);border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:.6rem;color:transparent}
-.chk.on .chkbox{background:var(--accent);border-color:var(--accent);color:#fff}
-.chk.on.fit .chkbox{background:var(--green);border-color:var(--green);color:#07070f}
-.chk.on.dis .chkbox{background:var(--disc);border-color:var(--disc);color:#07070f}
-.chk-lbl{font-size:.74rem;color:var(--t2);line-height:1.3}
-.chk.on .chk-lbl{color:var(--t1)}
-
-/* DISCIPLINE */
-.disc-card{background:var(--bg2);border:1px solid rgba(212,168,67,.2);border-radius:12px;padding:16px;margin-bottom:12px}
-.disc-title{font-size:.7rem;font-weight:800;letter-spacing:.14em;color:var(--disc);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px}
-.disc-sub{font-size:.62rem;font-weight:700;letter-spacing:.1em;color:var(--t3);text-transform:uppercase;margin-bottom:8px;margin-top:14px}
-.mvh-row{display:flex;gap:8px;margin-bottom:8px}
-.mvh-btn{flex:1;padding:10px;border-radius:8px;border:1px solid var(--border);background:var(--bg3);color:var(--t3);font-size:.68rem;font-weight:700;letter-spacing:.08em;cursor:pointer;transition:all .2s;text-transform:uppercase}
-.mvh-btn.full{border-color:var(--green);background:var(--gglow);color:var(--green)}
-.mvh-btn.floor{border-color:var(--disc);background:var(--dglow);color:var(--disc)}
-.mvh-note{font-size:.68rem;color:var(--t3);font-style:italic;margin-bottom:4px}
-.streak-box{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:rgba(0,0,0,.3);border:1px solid rgba(212,168,67,.15);border-radius:10px;margin-top:14px}
-.streak-num{font-size:1.8rem;font-weight:800;color:var(--disc);line-height:1}
-.streak-lbl{font-size:.58rem;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;margin-top:3px}
-.streak-rule{font-size:.65rem;color:var(--t3);text-align:right;max-width:160px;line-height:1.5}
-
-/* CADENCE */
-.cad-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border)}
-.cad-row:last-child{border-bottom:none}
-.cad-lbl{font-size:.78rem;color:var(--t2)}
-.cad-target{font-size:.65rem;color:var(--t3)}
-.cad-count{display:flex;align-items:center;gap:8px}
-.cad-num{font-size:1.1rem;font-weight:800;color:var(--t1);min-width:24px;text-align:center;transition:color .2s}
-.cad-num.met{color:var(--green)}
-.cnt-btn{width:28px;height:28px;border-radius:50%;border:1px solid var(--border2);background:var(--bg3);color:var(--t2);cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;transition:all .2s}
-.cnt-btn:hover{background:var(--bg4);color:var(--t1)}
-
-/* REACH OUT */
-.ro-row{display:flex;gap:8px;margin-bottom:6px;align-items:center}
-.ro-row input{flex:1}
-.rm-btn{background:none;border:none;color:var(--t3);cursor:pointer;font-size:1rem;padding:0 4px;transition:color .2s}
-.rm-btn:hover{color:var(--red)}
-
-/* SHIPPED */
-.shipped-bar{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-radius:10px;margin-top:12px;border:1px solid var(--border);transition:all .3s}
-.shipped-bar.yes{background:var(--gglow);border-color:var(--green)}
-.shipped-bar.no{background:rgba(255,95,126,.05);border-color:rgba(255,95,126,.2)}
-.shipped-lbl{font-size:.88rem;font-weight:800;letter-spacing:.06em}
-.shipped-bar.yes .shipped-lbl{color:var(--green)}
-.shipped-bar.no .shipped-lbl{color:var(--red)}
-
-/* PIPELINE */
-.pipe-filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
-.flt-btn{padding:5px 12px;border-radius:20px;font-size:.66rem;font-weight:600;cursor:pointer;border:1px solid var(--border2);background:var(--bg3);color:var(--t3);transition:all .2s;letter-spacing:.04em}
-.flt-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
-.prospect{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;cursor:pointer;transition:all .2s}
-.prospect:hover{border-color:var(--border2)}
-.prospect.open{border-color:var(--accent)}
-.p-name{font-size:.9rem;font-weight:700;color:var(--t1)}
-.p-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:4px}
-.stag{font-size:.6rem;font-weight:700;letter-spacing:.08em;padding:2px 8px;border-radius:10px;text-transform:uppercase}
-.wdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.p-detail{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
-.prospect.open .p-detail{display:block}
-.dgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.stag-new{background:rgba(124,110,255,.15);color:var(--accent)}
-.stag-samp{background:rgba(0,229,176,.12);color:var(--green)}
-.stag-sixw{background:rgba(245,200,66,.12);color:var(--gold)}
-.stag-brief{background:rgba(255,140,66,.12);color:var(--warn)}
-.stag-ment{background:rgba(0,229,176,.25);color:#00ffcc}
-.stag-nurt{background:rgba(90,84,117,.3);color:var(--t2)}
-.stag-pass{background:rgba(255,95,126,.1);color:var(--red)}
-.w-hot{background:#ff5050}.w-warm{background:var(--warn)}.w-cool{background:#60aaff}.w-cold{background:var(--t3)}
-
-/* HISTORY */
-.hist-item{background:var(--bg2);border:1px solid var(--border);border-radius:10px;margin-bottom:8px;overflow:hidden}
-.hist-hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer;transition:background .2s}
-.hist-hdr:hover{background:var(--bg3)}
-.hist-date{font-size:.8rem;font-weight:700;color:var(--t1)}
-.hist-body{display:none;padding:12px 14px;border-top:1px solid var(--border)}
-.hist-item.open .hist-body{display:block}
-.pill{font-size:.58rem;font-weight:700;letter-spacing:.1em;padding:2px 8px;border-radius:10px;text-transform:uppercase}
-.pill.yes{background:rgba(0,229,176,.15);color:var(--green)}
-.pill.no{background:rgba(255,95,126,.1);color:var(--red)}
-
-/* STATS */
-.stats-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-.stat-box{flex:1;min-width:70px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:10px 12px;text-align:center}
-.sv{font-size:1.4rem;font-weight:800;color:var(--accent)}
-.sv.g{color:var(--green)}.sv.gold{color:var(--gold)}.sv.d{color:var(--disc)}
-.sl{font-size:.58rem;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
-
-/* DASHBOARD */
-.id-anchor{background:linear-gradient(135deg,rgba(124,110,255,.08),rgba(0,229,176,.05));border:1px solid rgba(124,110,255,.2);border-radius:12px;padding:18px;margin-bottom:12px;text-align:center}
-.id-anchor-lbl{font-size:.58rem;color:var(--t3);letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px}
-.id-anchor-txt{font-size:1rem;font-weight:800;color:var(--t1);line-height:1.4}
-.id-anchor-sub{font-size:.72rem;color:var(--t2);margin-top:6px;line-height:1.5}
-.dash-date-nav{display:flex;align-items:center;justify-content:space-between;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px 16px;margin-bottom:12px;gap:10px}
-.dash-date-txt{font-size:.88rem;font-weight:700;color:var(--t1);text-align:center;flex:1}
-.dash-date-sub{font-size:.62rem;color:var(--t3);text-align:center;margin-top:2px}
-.nav-btn{background:var(--bg3);border:1px solid var(--border2);color:var(--t2);border-radius:8px;padding:6px 12px;cursor:pointer;font-size:.75rem;transition:all .2s;flex-shrink:0}
-.nav-btn:hover{background:var(--bg4);color:var(--t1)}
-.nav-btn:disabled{opacity:.3;cursor:default}
-.streak-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
-.sk-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
-.sk-card.a{border-color:rgba(124,110,255,.25);background:var(--aglow)}
-.sk-card.g{border-color:rgba(0,229,176,.2);background:var(--gglow)}
-.sk-card.gold{border-color:rgba(245,200,66,.2);background:rgba(245,200,66,.06)}
-.sk-card.d{border-color:rgba(212,168,67,.2);background:var(--dglow)}
-.sk-num{font-size:2rem;font-weight:800;line-height:1}
-.sk-num.a{color:var(--accent)}.sk-num.g{color:var(--green)}.sk-num.gold{color:var(--gold)}.sk-num.d{color:var(--disc)}
-.sk-lbl{font-size:.58rem;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;margin-top:4px}
-.today-chks{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px}
-.tck{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:8px;text-align:center;transition:all .3s}
-.tck.done{border-color:var(--disc);background:var(--dglow)}
-.tck-icon{font-size:.9rem;margin-bottom:2px}
-.tck-lbl{font-size:.55rem;color:var(--t3);text-transform:uppercase;letter-spacing:.06em}
-.tck.done .tck-lbl{color:var(--disc)}
-.week-strip{display:flex;gap:6px}
-.wday{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:8px 4px;text-align:center}
-.wday-name{font-size:.54rem;color:var(--t3);text-transform:uppercase;letter-spacing:.04em}
-.wday-num{font-size:.8rem;font-weight:700;color:var(--t2)}
-.wday-status{font-size:.7rem;margin-top:2px}
-.wday.shipped{background:rgba(0,229,176,.1);border-color:var(--green)}
-.wday.floor{background:var(--dglow);border-color:var(--disc)}
-.wday.miss{background:rgba(255,95,126,.06);border-color:rgba(255,95,126,.2)}
-.wday.today{box-shadow:0 0 0 2px var(--accent)}
-.master-prog{background:var(--bg2);border:1px solid rgba(245,200,66,.2);border-radius:12px;padding:16px;margin-bottom:12px}
-.mstep-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
-.mstep-row:last-child{border-bottom:none}
-.mstep-dot{width:10px;height:10px;border-radius:50%;background:var(--bg3);border:2px solid var(--border2);flex-shrink:0;transition:all .3s}
-.mstep-dot.done{background:var(--gold);border-color:var(--gold)}
-.mstep-txt{font-size:.76rem;color:var(--t2);flex:1}
-.mstep-txt.done{color:var(--gold)}
-
-/* IDENTITY */
-.vote-wrap{text-align:center;padding:20px}
-.vote-num{font-size:3.5rem;font-weight:800;color:var(--accent);line-height:1}
-.vote-lbl{font-size:.62rem;color:var(--t3);text-transform:uppercase;letter-spacing:.12em;margin-top:6px}
-.vote-sub{font-size:.72rem;color:var(--t2);margin-top:8px;line-height:1.5}
-.heatmap-wrap{margin-bottom:4px}
-.hm-labels{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:4px}
-.hm-label{font-size:.54rem;color:var(--t3);text-align:center;text-transform:uppercase;letter-spacing:.06em}
-.hm-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
-.hm-day{aspect-ratio:1;border-radius:4px;background:var(--bg3);border:1px solid var(--border)}
-.hm-day.full{background:var(--green);border-color:var(--green)}
-.hm-day.floor{background:var(--disc);border-color:var(--disc)}
-.hm-day.miss{background:rgba(255,95,126,.15);border-color:rgba(255,95,126,.2)}
-.hm-day.today{box-shadow:0 0 0 2px var(--accent)}
-.leg-row{display:flex;gap:14px;margin-bottom:10px;flex-wrap:wrap}
-.leg-item{display:flex;align-items:center;gap:5px;font-size:.6rem;color:var(--t3);text-transform:uppercase;letter-spacing:.06em}
-.leg-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
-.anchor-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px}
-.anchor-icon{font-size:1.2rem;flex-shrink:0}
-.anchor-title{font-size:.78rem;font-weight:700;color:var(--t1)}
-.anchor-desc{font-size:.7rem;color:var(--t2);margin-top:2px;line-height:1.4}
-.reflect-card{background:var(--bg2);border:1px solid rgba(124,110,255,.2);border-radius:12px;padding:16px;margin-bottom:12px}
-.reflect-title{font-size:.7rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:2px}
-.reflect-sub{font-size:.62rem;color:var(--t3);margin-bottom:14px;letter-spacing:.04em}
-.reflect-q{font-size:.78rem;color:var(--t2);margin-bottom:6px;line-height:1.5}
-.reflect-q-wrap{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:8px}
-.id-hist-item{padding:10px 0;border-bottom:1px solid var(--border)}
-.id-hist-date{font-size:.62rem;color:var(--t3);margin-bottom:4px}
-.id-hist-txt{font-size:.76rem;color:var(--t2);line-height:1.5}
-
-/* BEVEL */
-.bevel-card{background:var(--bg2);border:1px solid rgba(74,158,255,.2);border-radius:12px;padding:16px;margin-bottom:12px}
-.bevel-title{font-size:.7rem;font-weight:800;letter-spacing:.14em;color:var(--blue);text-transform:uppercase;margin-bottom:4px}
-.bevel-sub{font-size:.6rem;color:var(--t3);margin-bottom:14px;letter-spacing:.04em}
-.bevel-metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
-.bevel-metric{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px}
-.bevel-metric-lbl{font-size:.6rem;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}
-.bevel-input-row{display:flex;align-items:center;gap:8px}
-.bevel-num{width:60px;background:var(--bg4);border:1px solid var(--border2);color:var(--t1);padding:6px 8px;border-radius:6px;font-size:1rem;font-weight:800;text-align:center;outline:none;transition:border .2s}
-.bevel-num:focus{border-color:var(--blue)}
-.bevel-pct{font-size:.7rem;color:var(--t3)}
-.bevel-bar-wrap{flex:1;height:6px;background:var(--bg);border-radius:3px;overflow:hidden}
-.bevel-bar{height:100%;border-radius:3px;transition:width .4s,background .4s;width:0%}
-.stress-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
-.stress-mini{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center}
-.stress-mini-lbl{font-size:.56rem;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
-.stress-mini input{width:100%;background:transparent;border:none;color:var(--t1);font-size:1rem;font-weight:800;text-align:center;outline:none}
-.slev-row{display:flex;gap:6px;margin-bottom:12px}
-.slev-btn{flex:1;padding:7px;border-radius:7px;border:1px solid var(--border);background:var(--bg3);font-size:.62rem;font-weight:500;letter-spacing:.08em;cursor:pointer;text-transform:uppercase;transition:all .2s;color:var(--t3)}
-.slev-btn.low{border-color:var(--green);background:var(--gglow);color:var(--green)}
-.slev-btn.med{border-color:var(--warn);background:rgba(255,140,66,.1);color:var(--warn)}
-.slev-btn.hi{border-color:var(--red);background:rgba(255,95,126,.1);color:var(--red)}
-.bv-hist-item{padding:10px 0;border-bottom:1px solid var(--border)}
-.bv-metrics{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
-.bv-metric{font-size:.66rem}
-
-/* REVIEWS */
-.rev-output{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:16px;font-size:.84rem;line-height:1.75;color:var(--t1);white-space:pre-wrap;min-height:100px}
-
-/* MODAL */
-.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
-.modal-ov.open{display:flex}
-.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:20px;width:100%;max-width:460px;max-height:90vh;overflow-y:auto}
-.modal-title{font-size:.9rem;font-weight:800;margin-bottom:16px}
-.modal-x{float:right;background:none;border:none;color:var(--t3);font-size:1.2rem;cursor:pointer}
-.modal-x:hover{color:var(--t1)}
-
-/* TOAST */
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--bg4);border:1px solid var(--border2);color:var(--t1);padding:10px 20px;border-radius:10px;font-size:.78rem;transition:transform .3s;z-index:9999;pointer-events:none}
-.toast.show{transform:translateX(-50%) translateY(0)}
-.toast.ok{border-color:var(--green);color:var(--green)}
-.toast.err{border-color:var(--red);color:var(--red)}
-
-::-webkit-scrollbar{width:4px}
-::-webkit-scrollbar-track{background:var(--bg)}
-::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
-
-@media(max-width:500px){
-  .chk-grid{grid-template-columns:1fr}
-  .dgrid{grid-template-columns:1fr}
-  .streak-grid{grid-template-columns:1fr 1fr}
-  .today-chks{grid-template-columns:1fr 1fr}
-  .week-strip{gap:3px}
-}
-</style>
-</head>
-<body>
-
-<div class="hdr">
-  <div class="hdr-top">
-    <div class="logo">⬡ GU Command Center</div>
-    <div class="master-bar">
-      <span class="mbadge">🏆 Master Mentor</span>
-      <div class="msteps">
-        <div class="mstep" id="ms1"></div>
-        <div class="mstep" id="ms2"></div>
-      </div>
-      <span id="masterLabel" style="font-size:.62rem;color:var(--t3)">0/2</span>
-    </div>
-  </div>
-  <div class="tabs" id="tabBar">
-    <button class="tab active" data-tab="dash">Dashboard</button>
-    <button class="tab" data-tab="log">Daily Log</button>
-    <button class="tab" data-tab="pipeline">Pipeline</button>
-    <button class="tab" data-tab="history">History</button>
-    <button class="tab" data-tab="reviews">Reviews</button>
-    <button class="tab" data-tab="identity">Identity</button>
-  </div>
-</div>
-
-<div class="content">
-
-<!-- DASHBOARD -->
-<div class="section active" id="sec-dash">
-  <div class="id-anchor">
-    <div class="id-anchor-lbl">Your Identity</div>
-    <div class="id-anchor-txt">I am someone who acts before I feel ready.</div>
-    <div class="id-anchor-sub">Every action today is a vote for who you're becoming.</div>
-  </div>
-
-  <div class="dash-date-nav">
-    <button class="nav-btn" id="dashPrev" onclick="dashNav(-1)">← Prev</button>
-    <div style="flex:1;text-align:center">
-      <div class="dash-date-txt" id="dashDateTxt">—</div>
-      <div class="dash-date-sub" id="dashDateSub">—</div>
-    </div>
-    <button class="nav-btn" id="dashNext" onclick="dashNav(1)">Next →</button>
-  </div>
-
-  <div id="dashShippedBanner" class="shipped-bar no" style="margin-bottom:12px">
-    <div>
-      <div class="shipped-lbl" id="dashShippedLbl">NOT SHIPPED YET</div>
-      <div style="font-size:.68rem;color:var(--t3);margin-top:2px" id="dashShippedSub">Complete your log to ship today</div>
-    </div>
-    <span style="font-size:1.4rem" id="dashShippedIcon">○</span>
-  </div>
-
-  <div class="streak-grid">
-    <div class="sk-card a"><div class="sk-num a" id="dash-gu-streak">—</div><div class="sk-lbl">GU Streak 🔥</div></div>
-    <div class="sk-card d"><div class="sk-num d" id="dash-disc-streak">—</div><div class="sk-lbl">Discipline 🏅</div></div>
-    <div class="sk-card g"><div class="sk-num g" id="dash-shipped-count">—</div><div class="sk-lbl">Days Shipped</div></div>
-    <div class="sk-card gold"><div class="sk-num gold" id="dash-vote-count">—</div><div class="sk-lbl">Identity Votes</div></div>
-  </div>
-
-  <div class="card">
-    <div class="ctitle cd">Today's Discipline Checks</div>
-    <div class="today-chks">
-      <div class="tck" id="dash-d-wake"><div class="tck-icon">⏰</div><div class="tck-lbl">5am Wake</div></div>
-      <div class="tck" id="dash-d-workout"><div class="tck-icon">💪</div><div class="tck-lbl">Workout</div></div>
-      <div class="tck" id="dash-d-breakfast"><div class="tck-icon">🥗</div><div class="tck-lbl">Protein</div></div>
-      <div class="tck" id="dash-d-affirm"><div class="tck-icon">🌟</div><div class="tck-lbl">Affirmations</div></div>
-      <div class="tck" id="dash-d-recovery"><div class="tck-icon">🌿</div><div class="tck-lbl">Transition</div></div>
-      <div class="tck" id="dash-d-mvh"><div class="tck-icon">✦</div><div class="tck-lbl">Day Declared</div></div>
-    </div>
-  </div>
-
-  <div class="master-prog">
-    <div class="ctitle cd" style="color:var(--gold)">⚡ Master Mentor Progress</div>
-    <div class="mstep-row">
-      <div class="mstep-dot" id="dash-ms1"></div>
-      <div class="mstep-txt" id="dash-ms1-txt">Enroll 1 new direct mentor</div>
-    </div>
-    <div class="mstep-row">
-      <div class="mstep-dot" id="dash-ms2"></div>
-      <div class="mstep-txt" id="dash-ms2-txt">Support a mentor to enroll someone</div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="ctitle ca">This Week</div>
-    <div class="week-strip" id="weekStrip"></div>
-  </div>
-</div>
-
-<!-- DAILY LOG -->
-<div class="section" id="sec-log">
-  <div class="card">
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
-      <div>
-        <div style="font-size:1rem;font-weight:800;color:var(--t1)" id="logDateDisplay">—</div>
-        <div style="font-size:.62rem;color:var(--t3);margin-top:2px;letter-spacing:.08em">DAILY SHIPPED LOG</div>
-      </div>
-      <input type="date" id="logDatePicker" style="width:auto;font-size:.75rem" onchange="onDateChange()"/>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="ctitle ca">5-3-1-6 Daily Cadence</div>
-    <div class="cad-row"><span class="cad-lbl">Reach-Outs <span class="cad-target">(goal: 5)</span></span><div class="cad-count"><button class="cnt-btn" onclick="adj('ro',-1)">−</button><span class="cad-num" id="roCount">0</span><button class="cnt-btn" onclick="adj('ro',1)">+</button></div></div>
-    <div class="cad-row"><span class="cad-lbl">Samples Offered <span class="cad-target">(goal: 3)</span></span><div class="cad-count"><button class="cnt-btn" onclick="adj('sa',-1)">−</button><span class="cad-num" id="saCount">0</span><button class="cnt-btn" onclick="adj('sa',1)">+</button></div></div>
-    <div class="cad-row"><span class="cad-lbl">6-W Conversations <span class="cad-target">(goal: 1)</span></span><div class="cad-count"><button class="cnt-btn" onclick="adj('sw',-1)">−</button><span class="cad-num" id="swCount">0</span><button class="cnt-btn" onclick="adj('sw',1)">+</button></div></div>
-    <div class="cad-row"><span class="cad-lbl">New Mentors Enrolled <span class="cad-target">(goal: 6/yr)</span></span><div class="cad-count"><button class="cnt-btn" onclick="adj('mn',-1)">−</button><span class="cad-num" id="mnCount">0</span><button class="cnt-btn" onclick="adj('mn',1)">+</button></div></div>
-  </div>
-
-  <div class="card">
-    <div class="ctitle ca">Business Actions</div>
-    <div class="chk-grid">
-      <div class="chk" id="ci-bo" onclick="tog('business_opened')"><div class="chkbox">✓</div><span class="chk-lbl">Business Opened</span></div>
-      <div class="chk" id="ci-gi" onclick="tog('gu_intro_made')"><div class="chkbox">✓</div><span class="chk-lbl">GU Intro Made</span></div>
-      <div class="chk" id="ci-ge" onclick="tog('gu_exp_advanced')"><div class="chkbox">✓</div><span class="chk-lbl">GU Exp. Advanced</span></div>
-      <div class="chk" id="ci-bc" onclick="tog('business_closed')"><div class="chkbox">✓</div><span class="chk-lbl">Business Closed</span></div>
-      <div class="chk" id="ci-r5" onclick="tog('five_reach_outs')"><div class="chkbox">✓</div><span class="chk-lbl">5 Reach-Outs Done</span></div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="ctitle">People Introduced to GU</div>
-    <div id="introList"></div>
-    <button class="btn btn-s btn-sm" onclick="addIntro()" style="margin-top:8px">+ Add Person</button>
-  </div>
-
-  <div class="card">
-    <div class="ctitle">Reach-Out Names</div>
-    <div id="roList"></div>
-    <button class="btn btn-s btn-sm" onclick="addRO()" style="margin-top:8px">+ Add Name</button>
-  </div>
-
-  <div class="card">
-    <div class="ctitle cg">Fitness & Recovery</div>
-    <div class="chk-grid">
-      <div class="chk fit" id="ci-str" onclick="tog('strength')"><div class="chkbox">✓</div><span class="chk-lbl">Strength / Vitruvian</span></div>
-      <div class="chk fit" id="ci-mov" onclick="tog('movement')"><div class="chkbox">✓</div><span class="chk-lbl">Movement / Cardio</span></div>
-      <div class="chk fit" id="ci-rst" onclick="tog('rest')"><div class="chkbox">✓</div><span class="chk-lbl">Rest / Recovery</span></div>
-    </div>
-  </div>
-
-  <div class="disc-card">
-    <div class="disc-title">⚡ Discipline Check-In</div>
-    <div class="disc-sub">Morning Ritual</div>
-    <div class="chk-grid">
-      <div class="chk dis" id="ci-d1" onclick="togD('d_wake')"><div class="chkbox">✓</div><span class="chk-lbl">Up at 5am — no snooze</span></div>
-      <div class="chk dis" id="ci-d2" onclick="togD('d_workout')"><div class="chkbox">✓</div><span class="chk-lbl">Workout done</span></div>
-      <div class="chk dis" id="ci-d3" onclick="togD('d_breakfast')"><div class="chkbox">✓</div><span class="chk-lbl">High-protein breakfast</span></div>
-      <div class="chk dis" id="ci-d5" onclick="togD('d_affirm_am')"><div class="chkbox">✓</div><span class="chk-lbl">Morning affirmations</span></div>
-    </div>
-    <div class="disc-sub">Active Recovery (4pm Transition)</div>
-    <div class="chk-grid">
-      <div class="chk dis" id="ci-d4" onclick="togD('d_recovery')"><div class="chkbox">✓</div><span class="chk-lbl">Transition ritual (walk / stretch / magic)</span></div>
-      <div class="chk dis" id="ci-d6" onclick="togD('d_affirm_pm')"><div class="chkbox">✓</div><span class="chk-lbl">Afternoon affirmations</span></div>
-    </div>
-    <div class="disc-sub">Today's Effort Level</div>
-    <div class="mvh-row">
-      <button class="mvh-btn" id="mvh-full" onclick="setMVH('full')">✦ Full Day</button>
-      <button class="mvh-btn" id="mvh-floor" onclick="setMVH('floor')">~ Floor Day (counts!)</button>
-    </div>
-    <div id="mvh-note" class="mvh-note">Floor days count. Showing up at the minimum is still a win.</div>
-    <div class="streak-box">
-      <div><div class="streak-num" id="disc-streak-num">—</div><div class="streak-lbl">Discipline Streak</div></div>
-      <div class="streak-rule">Separate from GU streak.<br>Never 2 misses in a row.</div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="ctitle">Daily Reflection</div>
-    <span class="lbl">🙏 What am I grateful for today?</span>
-    <textarea id="rfGrateful" placeholder="I am grateful for..."></textarea>
-    <span class="lbl">✨ What good happened today?</span>
-    <textarea id="rfGood" placeholder="Something good..."></textarea>
-    <span class="lbl">🎯 What did I do to move the needle?</span>
-    <textarea id="rfNeedle" placeholder="I moved the needle by..."></textarea>
-    <span class="lbl">🔄 What will I shift tomorrow?</span>
-    <textarea id="rfShift" placeholder="Tomorrow I will shift..."></textarea>
-  </div>
-
-  <div id="shippedBar" class="shipped-bar no">
-    <div>
-      <div class="shipped-lbl" id="shippedLbl">NOT SHIPPED</div>
-      <div style="font-size:.68rem;color:var(--t3);margin-top:2px" id="shippedSub">3 GU + 1 fitness + 2 discipline + Full/Floor to ship</div>
-    </div>
-    <button class="btn btn-sm" id="shippedBtn" onclick="manualShip()">Mark Shipped</button>
-  </div>
-
-  <div class="btn-row">
-    <button class="btn btn-p" onclick="saveLog()">💾 Save Log</button>
-    <button class="btn btn-s" onclick="clearLog()">Clear</button>
-  </div>
-</div>
-
-<!-- PIPELINE -->
-<div class="section" id="sec-pipeline">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
-    <div class="stats-row" style="margin:0;flex:1">
-      <div class="stat-box"><div class="sv" id="pl-total">0</div><div class="sl">Total</div></div>
-      <div class="stat-box"><div class="sv g" id="pl-active">0</div><div class="sl">Active</div></div>
-      <div class="stat-box"><div class="sv gold" id="pl-mentors">0</div><div class="sl">Mentors</div></div>
-    </div>
-    <button class="btn btn-p btn-sm" onclick="openAddP()">+ Add Prospect</button>
-  </div>
-  <div class="pipe-filter" id="pipeFilter"></div>
-  <div id="pipelineList"></div>
-</div>
-
-<!-- HISTORY -->
-<div class="section" id="sec-history">
-  <div class="stats-row">
-    <div class="stat-box"><div class="sv" id="hist-streak">0</div><div class="sl">GU Streak 🔥</div></div>
-    <div class="stat-box"><div class="sv d" id="hist-disc">0</div><div class="sl">Discipline 🏅</div></div>
-    <div class="stat-box"><div class="sv g" id="hist-shipped">0</div><div class="sl">Shipped</div></div>
-    <div class="stat-box"><div class="sv" id="hist-total">0</div><div class="sl">Total Logs</div></div>
-    <div class="stat-box"><div class="sv gold" id="hist-ro">0</div><div class="sl">Total R/O</div></div>
-  </div>
-  <div id="historyList"></div>
-</div>
-
-<!-- REVIEWS -->
-<div class="section" id="sec-reviews">
-  <div class="card">
-    <div class="ctitle ca">AI-Powered Review</div>
-    <p style="font-size:.78rem;color:var(--t2);margin-bottom:14px;line-height:1.65">Analyzes your GU cadence, discipline, Bevel recovery data, identity votes, and reflections for a direct personalized breakdown.</p>
-    <div class="btn-row" style="margin-top:0">
-      <button class="btn btn-p" onclick="runReview('week')">📊 Weekly Review</button>
-      <button class="btn btn-gold" onclick="runReview('month')">📈 Monthly Review</button>
-    </div>
-  </div>
-  <div id="reviewOut" style="display:none" class="card">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-      <div class="ctitle ca" id="reviewTitle" style="margin:0">Review</div>
-      <button class="btn btn-g btn-sm" onclick="saveReview()">💾 Save</button>
-    </div>
-    <div id="reviewContent" class="rev-output"></div>
-  </div>
-  <div class="card">
-    <div class="ctitle">Saved Reviews</div>
-    <div id="savedReviews" style="font-size:.78rem;color:var(--t2)">Loading...</div>
-  </div>
-  <div class="card">
-    <div class="ctitle cd" style="color:var(--gold)">Master Mentor Tracker</div>
-    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:4px">
-      <div style="flex:1;min-width:180px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px">
-        <div style="font-size:.62rem;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Step 1</div>
-        <div style="font-size:.82rem;color:var(--t2);margin-bottom:8px">Enroll 1 new direct mentor</div>
-        <div style="display:flex;gap:8px">
-          <button class="btn btn-sm btn-s" onclick="setMS(1,false)" id="mm1no">○ Not Yet</button>
-          <button class="btn btn-sm btn-g" onclick="setMS(1,true)" id="mm1yes">✓ Done</button>
-        </div>
-      </div>
-      <div style="flex:1;min-width:180px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px">
-        <div style="font-size:.62rem;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Step 2</div>
-        <div style="font-size:.82rem;color:var(--t2);margin-bottom:8px">Support mentor to enroll someone</div>
-        <div style="display:flex;gap:8px">
-          <button class="btn btn-sm btn-s" onclick="setMS(2,false)" id="mm2no">○ Not Yet</button>
-          <button class="btn btn-sm btn-g" onclick="setMS(2,true)" id="mm2yes">✓ Done</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="ctitle">Conversation History</div>
-    <div id="convHistList" style="font-size:.78rem;color:var(--t2)">Loading...</div>
-  </div>
-</div>
-
-<!-- IDENTITY -->
-<div class="section" id="sec-identity">
-  <div class="card">
-    <div class="ctitle ca">Identity Vote Counter</div>
-    <div class="vote-wrap">
-      <div class="vote-num" id="voteNum">0</div>
-      <div class="vote-lbl">Total Votes Cast</div>
-      <div class="vote-sub">Every discipline check is a vote for who you're becoming.</div>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:4px">
-      <div class="stat-box"><div class="sv d" id="id-full">0</div><div class="sl">Full Days</div></div>
-      <div class="stat-box"><div class="sv d" id="id-floor">0</div><div class="sl">Floor Days</div></div>
-      <div class="stat-box"><div class="sv g" id="id-streak">0</div><div class="sl">Streak</div></div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="ctitle cd">28-Day Discipline Heatmap</div>
-    <div class="leg-row">
-      <div class="leg-item"><div class="leg-dot" style="background:var(--green)"></div>Full</div>
-      <div class="leg-item"><div class="leg-dot" style="background:var(--disc)"></div>Floor</div>
-      <div class="leg-item"><div class="leg-dot" style="background:rgba(255,95,126,.3)"></div>Miss</div>
-      <div class="leg-item"><div class="leg-dot" style="background:var(--bg3);border:1px solid var(--border)"></div>No Log</div>
-    </div>
-    <div class="heatmap-wrap">
-      <div class="hm-labels"><div class="hm-label">Su</div><div class="hm-label">Mo</div><div class="hm-label">Tu</div><div class="hm-label">We</div><div class="hm-label">Th</div><div class="hm-label">Fr</div><div class="hm-label">Sa</div></div>
-      <div class="hm-grid" id="heatmapGrid"></div>
-    </div>
-    <div style="font-size:.6rem;color:var(--t3);margin-top:10px;text-align:center">Rule: Never two misses in a row.</div>
-  </div>
-
-  <!-- BEVEL -->
-  <div class="bevel-card">
-    <div class="bevel-title">📡 Bevel Recovery Log</div>
-    <div class="bevel-sub">Log each morning — builds your recovery-to-discipline correlation over time</div>
-    <div class="bevel-metrics">
-      <div class="bevel-metric">
-        <div class="bevel-metric-lbl">Recovery %</div>
-        <div class="bevel-input-row">
-          <input type="number" class="bevel-num" id="bvRecovery" min="0" max="100" placeholder="72" oninput="updateBevelBar('recovery',this.value)"/>
-          <span class="bevel-pct">%</span>
-          <div class="bevel-bar-wrap"><div class="bevel-bar" id="bbar-recovery"></div></div>
-        </div>
-      </div>
-      <div class="bevel-metric">
-        <div class="bevel-metric-lbl">Sleep %</div>
-        <div class="bevel-input-row">
-          <input type="number" class="bevel-num" id="bvSleep" min="0" max="100" placeholder="77" oninput="updateBevelBar('sleep',this.value)"/>
-          <span class="bevel-pct">%</span>
-          <div class="bevel-bar-wrap"><div class="bevel-bar" id="bbar-sleep"></div></div>
-        </div>
-      </div>
-      <div class="bevel-metric">
-        <div class="bevel-metric-lbl">Strain %</div>
-        <div class="bevel-input-row">
-          <input type="number" class="bevel-num" id="bvStrain" min="0" max="100" placeholder="3" oninput="updateBevelBar('strain',this.value)"/>
-          <span class="bevel-pct">%</span>
-          <div class="bevel-bar-wrap"><div class="bevel-bar" id="bbar-strain"></div></div>
-        </div>
-      </div>
-      <div class="bevel-metric">
-        <div class="bevel-metric-lbl">Stress (current)</div>
-        <div class="bevel-input-row">
-          <input type="number" class="bevel-num" id="bvStress" min="0" max="100" placeholder="52" oninput="updateBevelBar('stress',this.value)"/>
-          <div class="bevel-bar-wrap"><div class="bevel-bar" id="bbar-stress"></div></div>
-        </div>
-      </div>
-    </div>
-    <div style="font-size:.62rem;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Stress Breakdown</div>
-    <div class="stress-3">
-      <div class="stress-mini"><div class="stress-mini-lbl">Highest</div><input type="number" id="bvSHigh" min="0" max="100" placeholder="57"/></div>
-      <div class="stress-mini"><div class="stress-mini-lbl">Lowest</div><input type="number" id="bvSLow" min="0" max="100" placeholder="5"/></div>
-      <div class="stress-mini"><div class="stress-mini-lbl">Average</div><input type="number" id="bvSAvg" min="0" max="100" placeholder="29"/></div>
-    </div>
-    <div style="font-size:.62rem;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Overall Stress Level</div>
-    <div class="slev-row">
-      <button class="slev-btn" id="slev-low" onclick="setBevelLevel('low')">Low</button>
-      <button class="slev-btn" id="slev-med" onclick="setBevelLevel('med')">Medium</button>
-      <button class="slev-btn" id="slev-hi" onclick="setBevelLevel('hi')">High</button>
-    </div>
-    <span class="lbl" style="margin-top:0">Note — anything that explains today's numbers</span>
-    <textarea id="bvNote" placeholder="e.g. Bad sleep, stressful day at school..." style="min-height:50px;margin-top:6px"></textarea>
-    <div class="btn-row" style="margin-top:12px">
-      <button class="btn btn-sm" style="background:var(--blue);color:#07070f;font-weight:700" onclick="saveBevel()">💾 Save Bevel Log</button>
-    </div>
-    <div style="margin-top:16px">
-      <div style="font-size:.62rem;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Recent Logs</div>
-      <div id="bevelHist">No Bevel logs yet.</div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="ctitle cd">Goal Anchors</div>
-    <div class="anchor-card"><div class="anchor-icon">🏋️</div><div><div class="anchor-title">Lose 10–15 lbs</div><div class="anchor-desc">5am workout + high-protein meals every day. The body follows the mind.</div></div></div>
-    <div class="anchor-card"><div class="anchor-icon">🏆</div><div><div class="anchor-title">Master Mentor</div><div class="anchor-desc">1 new direct mentor enrolled. 1 existing mentor supported to enroll. That's it.</div></div></div>
-    <div class="anchor-card"><div class="anchor-icon">💰</div><div><div class="anchor-title">Team EVAN Income</div><div class="anchor-desc">GU + Team EVAN becomes primary income. Build the system daily.</div></div></div>
-    <div class="anchor-card"><div class="anchor-icon">🎩</div><div><div class="anchor-title">Magic Performance</div><div class="anchor-desc">Full routine performed confidently in public in 2026. Practice is daily discipline too.</div></div></div>
-  </div>
-
-  <div class="reflect-card">
-    <div class="reflect-title">Daily Identity Vote</div>
-    <div class="reflect-sub">Quick check-in — 2 minutes max</div>
-    <div class="reflect-q-wrap"><div class="reflect-q">What story did I tell myself today that kept me small?</div><textarea id="dv1" placeholder="Be honest. No one's watching." style="min-height:54px"></textarea></div>
-    <div class="reflect-q-wrap" style="margin-top:8px"><div class="reflect-q">What did I do today that voted for the disciplined version of me?</div><textarea id="dv2" placeholder="Even one thing counts." style="min-height:54px"></textarea></div>
-    <div class="reflect-q-wrap" style="margin-top:8px"><div class="reflect-q">Tomorrow, I commit to one thing before I feel ready:</div><textarea id="dv3" placeholder="Make it specific." style="min-height:54px"></textarea></div>
-    <div class="btn-row"><button class="btn btn-p" onclick="saveDailyVote()">💾 Save Daily Vote</button></div>
-  </div>
-
-  <div class="reflect-card">
-    <div class="reflect-title">Weekly Roadblock Reflection</div>
-    <div class="reflect-sub">Sunday reset — go deep, 10 minutes</div>
-    <span class="lbl" style="margin-top:0">What pattern showed up this week that is not serving me?</span>
-    <textarea id="wr1" placeholder="Look for the repeating thing..." style="min-height:64px"></textarea>
-    <span class="lbl">Where did I choose comfort over commitment?</span>
-    <textarea id="wr2" placeholder="Be specific about the moment..." style="min-height:64px"></textarea>
-    <span class="lbl">What does the disciplined version of me do differently next week?</span>
-    <textarea id="wr3" placeholder="Make it a behavior, not a feeling..." style="min-height:64px"></textarea>
-    <span class="lbl">What identity am I voting for this week?</span>
-    <textarea id="wr4" placeholder="Complete this: I am someone who..." style="min-height:54px"></textarea>
-    <div class="btn-row"><button class="btn btn-gold" onclick="saveWeekly()">💾 Save Weekly Reflection</button></div>
-  </div>
-
-  <div class="card">
-    <div class="ctitle">Identity Journal</div>
-    <div id="identityHist" style="font-size:.78rem;color:var(--t2)">No entries yet.</div>
-  </div>
-</div>
-
-</div><!-- end content -->
-
-<!-- ADD PROSPECT MODAL -->
-<div class="modal-ov" id="addPModal">
-  <div class="modal">
-    <button class="modal-x" onclick="closeAddP()">×</button>
-    <div class="modal-title">Add New Prospect</div>
-    <span class="lbl" style="margin-top:0">Name *</span><input type="text" id="np-name" placeholder="Full name"/>
-    <span class="lbl">Contact Info</span><input type="text" id="np-contact" placeholder="Phone / Instagram / email"/>
-    <span class="lbl">Stage</span>
-    <select id="np-stage"><option>New Prospect</option><option>Nurturing</option><option>Sample</option><option>6-W Conversation</option><option>Patron Preso</option><option>Open Account</option><option>Trial</option><option>Briefing</option><option>Saturday</option><option>MAP</option><option>Interview</option><option>Passed</option></select>
-    <span class="lbl">Warmth</span>
-    <select id="np-warmth"><option>Hot</option><option>Warm</option><option>Cool</option><option>Cold</option></select>
-    <span class="lbl">Archetype</span>
-    <select id="np-arch"><option value="">Unknown</option><option>Caregiver under strain</option><option>Structural builder</option><option>Relational stabilizer</option><option>Momentum-driven recruiter</option><option>Burned-out high achiever</option><option>Identity-seeker</option></select>
-    <span class="lbl">Tension Point</span><input type="text" id="np-tension" placeholder="e.g. Time compression..."/>
-    <span class="lbl">Notes</span><textarea id="np-notes" placeholder="Context about this person..." style="min-height:60px"></textarea>
-    <div class="btn-row">
-      <button class="btn btn-p" onclick="saveNewP()">Save Prospect</button>
-      <button class="btn btn-s" onclick="closeAddP()">Cancel</button>
-    </div>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<script>
-// ── CONFIG ──────────────────────────────────────
-const SUPA_URL = 'https://kkerejaviuqnaalbbnfs.supabase.co';
-const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtrZXJlamF2aXVxbmFhbGJibmZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1Mzc0MDAsImV4cCI6MjA4ODExMzQwMH0.aqqh3Qmh-L8-YiF9asZhY5xjlGdcd5L4q3arfDKIv1I';
-const CLAUDE_API = 'https://gu-proxy.emtrad83.workers.dev/v1/messages';
-
-// ── HELPERS ──────────────────────────────────────
-function todayStr() {
-  const d = new Date();
-  return d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate());
-}
-function pad(n) { return String(n).padStart(2,'0'); }
-function dateStr(d) { return d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate()); }
-function fmtDate(s) {
-  if (!s) return '';
-  const p = s.split('-').map(Number);
-  return new Date(p[0], p[1]-1, p[2]).toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
-}
-function fmtShort(s) {
-  if (!s) return '';
-  const p = s.split('-').map(Number);
-  return new Date(p[0], p[1]-1, p[2]).toLocaleDateString('en-US',{month:'short',day:'numeric'});
-}
-function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function toast(msg, type) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.className = 'toast show' + (type ? ' '+type : '');
-  setTimeout(() => { t.className = 'toast'; }, 2800);
-}
-function freshLog(date) {
-  return {
-    date,
-    business_opened:false, gu_intro_made:false, gu_exp_advanced:false, business_closed:false, five_reach_outs:false,
-    reach_outs:[], people_introduced:[],
-    strength:false, movement:false, rest:false,
-    d_wake:false, d_workout:false, d_breakfast:false, d_recovery:false, d_affirm_am:false, d_affirm_pm:false, d_mvh:'',
-    reflection_grateful:'', reflection_good:'', reflection_needle:'', reflection_shift:'', reflection:'',
-    shipped:'NO', reach_out_count:0, samples_count:0, sixw_count:0, mentor_count:0
-  };
-}
-
-// ── SUPABASE ──────────────────────────────────────
-async function sb(path, opts) {
-  opts = opts || {};
-  const r = await fetch(SUPA_URL + '/rest/v1/' + path, {
-    method: opts.method || 'GET',
-    headers: {
-      'apikey': SUPA_KEY,
-      'Authorization': 'Bearer ' + SUPA_KEY,
-      'Content-Type': 'application/json',
-      'Prefer': opts.prefer || 'return=representation'
-    },
-    body: opts.body || undefined
+const todayISO = () => new Date().toISOString().slice(0, 10);
+const pad = (n) => String(n).padStart(2, "0");
+const addDays = (iso, days) => {
+  const d = new Date(`${iso}T12:00:00`);
+  d.setDate(d.getDate() + days);
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+};
+const prettyDate = (iso) =>
+  new Date(`${iso}T12:00:00`).toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
   });
-  if (!r.ok) { const e = await r.text(); throw new Error(e); }
-  const t = await r.text();
-  return t ? JSON.parse(t) : [];
-}
 
-// ── STATE ──────────────────────────────────────
-var logs = [];
-var prospects = [];
-var convHistory = [];
-var identityEntries = []; // kept for legacy render compatibility, now derived from logs
-var savedReviewsList = [];
-var currentDate = todayStr();
-var currentLog = freshLog(currentDate);
-var dashDate = todayStr();
-var pipeFilter = 'All';
-var masterSteps = {s1:false, s2:false};
-var bevelLevel = '';
+const GOALS = [
+  { key: "prosperity", label: "Prosperity", icon: "🌱", question: "Where did I plant a seed today before seeing the harvest?", anchor: "Give first. Plant seeds daily without waiting for the harvest." },
+  { key: "wellness", label: "Wellness/Fitness", icon: "💪", question: "Did I treat my body like the asset that carries my mission?", anchor: "5am discipline, Vitruvian training, protein, recovery." },
+  { key: "happiness", label: "Happiness", icon: "😊", question: "What thought did I choose today that served my future self?", anchor: "Choose thoughts that serve and build happiness through alignment." },
+  { key: "freedom", label: "Freedom", icon: "🕊️", question: "What system, asset, or income action did I build today?", anchor: "Build systems and income streams beyond direct time." },
+  { key: "wealth", label: "Wealth", icon: "💰", question: "What did I do today that the first multimillionaire in my family would do?", anchor: "Think and build like the first multimillionaire in the family." },
+  { key: "travel", label: "Travel", icon: "✈️", question: "What disciplined action made future travel more possible?", anchor: "Plan it, earn it, book it." },
+  { key: "discipline", label: "Discipline", icon: "⏰", question: "What choice did I make when no one else could see it?", anchor: "Discipline is my identity, not a goal." },
+  { key: "magic", label: "Performing Magician", icon: "🎩", question: "What rep did I complete before I felt ready?", anchor: "Confidence comes from reps, not readiness." },
+  { key: "mentor", label: "Ambassador Mentor", icon: "🏆", question: "How did I rise by lifting another GIVER today?", anchor: "Rise by lifting. Develop other GIVERs." },
+  { key: "network", label: "Grow Network", icon: "🤝", question: "Who did I intentionally invest in or move closer today?", anchor: "Invest in like-minded GIVER relationships." },
+];
 
-// ── TABS ──────────────────────────────────────
-document.getElementById('tabBar').addEventListener('click', function(e) {
-  var btn = e.target.closest('[data-tab]');
-  if (!btn) return;
-  var tab = btn.getAttribute('data-tab');
-  document.querySelectorAll('.tab').forEach(function(t) {
-    t.classList.toggle('active', t.getAttribute('data-tab') === tab);
-  });
-  document.querySelectorAll('.section').forEach(function(s) { s.classList.remove('active'); });
-  document.getElementById('sec-' + tab).classList.add('active');
-  if (tab === 'history') renderHistory();
-  if (tab === 'pipeline') renderPipeline();
-  if (tab === 'reviews') { renderConvHist(); renderSavedReviews(); }
-  if (tab === 'identity') {
-    // Refresh logs to ensure latest identity columns are loaded
-    loadLogs().then(function() {
-      deriveIdentityFromLogs();
-      renderHeatmap();
-      renderIdentityStats();
-      renderIdentityHist();
-      renderBevelHist();
-    });
-  }
-  if (tab === 'dash') renderDash();
+const CHECKS = [
+  { key: "wake5", label: "5am discipline", goal: "discipline", points: 1 },
+  { key: "train", label: "Vitruvian / movement", goal: "wellness", points: 1 },
+  { key: "protein", label: "Protein target", goal: "wellness", points: 1 },
+  { key: "giveFirst", label: "Give-first action", goal: "prosperity", points: 1 },
+  { key: "reachouts", label: "5 reach-outs", goal: "mentor", points: 1 },
+  { key: "samples", label: "Sample / invite / 6-W advanced", goal: "mentor", points: 1 },
+  { key: "magicReps", label: "Magic reps", goal: "magic", points: 1 },
+  { key: "teamEvan", label: "Team EVAN / mission action", goal: "freedom", points: 1 },
+  { key: "network", label: "Invested in one GIVER relationship", goal: "network", points: 1 },
+  { key: "learn", label: "Lifelong learning / reflection", goal: "happiness", points: 1 },
+];
+
+const STAGES = ["New", "Curious", "Sample", "6-W", "Patron", "Mentor", "Nurture", "Passed"];
+const ROYAL = "#0033cc";
+
+const PRIORITY_BANK = [
+  { id: "protect-body", label: "Protect the body: complete protein + 10 minutes of movement", energy: ["red", "yellow"], goal: "wellness", reason: "Your body carries the mission. A floor win keeps the identity intact." },
+  { id: "full-train", label: "Complete intentional Vitruvian training", energy: ["green", "yellow"], goal: "wellness", reason: "Strength compounds into energy, confidence, and discipline." },
+  { id: "one-reach", label: "Send one meaningful GU reach-out or follow-up", energy: ["red", "yellow", "green"], goal: "mentor", reason: "One planted seed prevents business drift." },
+  { id: "five-reach", label: "Complete the 5 reach-out cadence", energy: ["green", "yellow"], goal: "mentor", reason: "Consistent outreach makes Master Mentor predictable." },
+  { id: "sample-sixw", label: "Move one person toward a sample, 6-W, or patron step", energy: ["green", "yellow"], goal: "mentor", reason: "This is a multiplication action, not maintenance." },
+  { id: "magic-floor", label: "Practice one core magic trick 5 times", energy: ["red", "yellow"], goal: "magic", reason: "Confidence comes from reps, not readiness." },
+  { id: "magic-full", label: "Practice all three core tricks until clean", energy: ["green"], goal: "magic", reason: "Automatic skill creates performance confidence." },
+  { id: "give-first", label: "Do one give-first action for someone with no expectation", energy: ["red", "yellow", "green"], goal: "prosperity", reason: "Prosperity follows the GIVER who plants seeds." },
+  { id: "relationship", label: "Invest in one GIVER relationship", energy: ["yellow", "green"], goal: "network", reason: "Your BDD is built through people, not isolation." },
+  { id: "system", label: "Build or improve one small system for GU or Team EVAN", energy: ["green"], goal: "freedom", reason: "Freedom comes from systems that create value beyond your presence." },
+  { id: "wisdom", label: "Capture one lesson in the Wisdom Vault / reflection", energy: ["red", "yellow", "green"], goal: "happiness", reason: "Lifelong learning turns experience into character." },
+];
+const STORAGE_KEY = "giversDailyHub_v1";
+
+const blankLog = (date) => ({
+  date,
+  energy: "yellow",
+  todayWin: [],
+  checks: {},
+  reachOuts: [],
+  introduced: [],
+  samples: 0,
+  sixW: 0,
+  mentors: 0,
+  directMentorEnrolled: false,
+  mentorHelpedEnroll: false,
+  coreTricksPracticed: 0,
+  audienceRep: false,
+  incomeSystemAction: false,
+  floorDay: false,
+  reflections: {
+    give: "",
+    wisdom: "",
+    vow: "",
+    shift: "",
+    gratitude: "",
+  },
 });
 
-// ── DASHBOARD ──────────────────────────────────────
-function dashNav(dir) {
-  var d = new Date(dashDate + 'T12:00:00');
-  d.setDate(d.getDate() + dir);
-  var nd = dateStr(d);
-  if (nd > todayStr()) return;
-  dashDate = nd;
-  renderDash();
-}
-
-function renderDash() {
-  var today = todayStr();
-  var isToday = dashDate === today;
-
-  document.getElementById('dashDateTxt').textContent = fmtDate(dashDate);
-  document.getElementById('dashDateSub').textContent = isToday ? 'Today' : fmtShort(dashDate);
-  document.getElementById('dashNext').disabled = isToday;
-
-  // Find the log for dashDate
-  var dlog = dashDate === currentDate ? currentLog : (logs.find(function(l){ return l.date === dashDate; }) || freshLog(dashDate));
-
-  var shipped = dlog.shipped === 'YES';
-  var banner = document.getElementById('dashShippedBanner');
-  banner.className = 'shipped-bar ' + (shipped ? 'yes' : 'no');
-  document.getElementById('dashShippedLbl').textContent = shipped ? (isToday ? '✓ SHIPPED TODAY' : '✓ SHIPPED') : (isToday ? 'NOT SHIPPED YET' : 'NOT SHIPPED');
-  document.getElementById('dashShippedSub').textContent = shipped ? 'You invested in yourself.' : (isToday ? 'Complete your log to ship today' : 'This day was not shipped');
-  document.getElementById('dashShippedIcon').textContent = shipped ? '✓' : '○';
-
-  // Streaks (always current)
-  document.getElementById('dash-gu-streak').textContent = calcGUStreak();
-  document.getElementById('dash-disc-streak').textContent = calcDiscStreak();
-  document.getElementById('dash-shipped-count').textContent = logs.filter(function(l){ return l.shipped === 'YES'; }).length;
-  document.getElementById('dash-vote-count').textContent = calcVotes();
-
-  // Discipline checks for dashDate log
-  var dchecks = [
-    {id:'dash-d-wake', f:'d_wake'},
-    {id:'dash-d-workout', f:'d_workout'},
-    {id:'dash-d-breakfast', f:'d_breakfast'},
-    {id:'dash-d-affirm', f:'d_affirm_am'},
-    {id:'dash-d-recovery', f:'d_recovery'},
-    {id:'dash-d-mvh', f:'d_mvh'}
-  ];
-  dchecks.forEach(function(c) {
-    var el = document.getElementById(c.id);
-    if (!el) return;
-    var val = c.f === 'd_mvh' ? !!dlog.d_mvh : !!dlog[c.f];
-    el.classList.toggle('done', val);
-  });
-
-  // Master Mentor
-  document.getElementById('dash-ms1').classList.toggle('done', masterSteps.s1);
-  document.getElementById('dash-ms2').classList.toggle('done', masterSteps.s2);
-  document.getElementById('dash-ms1-txt').className = 'mstep-txt' + (masterSteps.s1 ? ' done' : '');
-  document.getElementById('dash-ms2-txt').className = 'mstep-txt' + (masterSteps.s2 ? ' done' : '');
-
-  renderWeekStrip();
-}
-
-function renderWeekStrip() {
-  var c = document.getElementById('weekStrip');
-  var today = todayStr();
-  var days = [];
-  for (var i = 6; i >= 0; i--) {
-    var d = new Date(); d.setDate(d.getDate() - i);
-    days.push(dateStr(d));
-  }
-  c.innerHTML = days.map(function(ds) {
-    var log = logs.find(function(l){ return l.date === ds; });
-    var isToday = ds === today;
-    var isFuture = ds > today;
-    var cls = 'wday';
-    if (!isFuture) {
-      if (log && log.shipped === 'YES') cls += ' shipped';
-      else if (log && log.d_mvh) cls += ' floor';
-      else if (log) cls += ' miss';
-    }
-    if (isToday) cls += ' today';
-    var d2 = new Date(ds + 'T12:00:00');
-    var dayName = d2.toLocaleDateString('en-US',{weekday:'short'});
-    var dayNum = d2.getDate();
-    var status = isFuture ? '' : (log && log.shipped === 'YES' ? '✓' : (log && log.d_mvh ? '~' : (log ? '○' : '·')));
-    return '<div class="' + cls + '"><div class="wday-name">' + dayName + '</div><div class="wday-num">' + dayNum + '</div><div class="wday-status">' + status + '</div></div>';
-  }).join('');
-}
-
-// ── LOG FORM ──────────────────────────────────────
-function onDateChange() {
-  var v = document.getElementById('logDatePicker').value;
-  if (!v) return;
-  currentDate = v;
-  document.getElementById('logDateDisplay').textContent = fmtDate(v);
-  var existing = logs.find(function(l){ return l.date === v; });
-  currentLog = existing ? JSON.parse(JSON.stringify(existing)) : freshLog(v);
-  renderLogForm();
-}
-
-function renderLogForm() {
-  var cl = currentLog;
-  // Cadence
-  var counts = {ro: cl.reach_out_count||0, sa: cl.samples_count||0, sw: cl.sixw_count||0, mn: cl.mentor_count||0};
-  document.getElementById('roCount').textContent = counts.ro;
-  document.getElementById('saCount').textContent = counts.sa;
-  document.getElementById('swCount').textContent = counts.sw;
-  document.getElementById('mnCount').textContent = counts.mn;
-  document.getElementById('roCount').className = 'cad-num' + (counts.ro >= 5 ? ' met' : '');
-  document.getElementById('saCount').className = 'cad-num' + (counts.sa >= 3 ? ' met' : '');
-  document.getElementById('swCount').className = 'cad-num' + (counts.sw >= 1 ? ' met' : '');
-
-  // Business checks
-  var bmap = {business_opened:'bo', gu_intro_made:'gi', gu_exp_advanced:'ge', business_closed:'bc', five_reach_outs:'r5'};
-  Object.keys(bmap).forEach(function(k) {
-    var el = document.getElementById('ci-' + bmap[k]);
-    if (el) el.classList.toggle('on', !!cl[k]);
-  });
-  // Fitness
-  var fmap = {strength:'str', movement:'mov', rest:'rst'};
-  Object.keys(fmap).forEach(function(k) {
-    var el = document.getElementById('ci-' + fmap[k]);
-    if (el) { el.classList.toggle('on', !!cl[k]); el.classList.add('fit'); }
-  });
-  // Discipline
-  var dmap = {d_wake:'d1', d_workout:'d2', d_breakfast:'d3', d_recovery:'d4', d_affirm_am:'d5', d_affirm_pm:'d6'};
-  Object.keys(dmap).forEach(function(k) {
-    var el = document.getElementById('ci-' + dmap[k]);
-    if (el) { el.classList.toggle('on', !!cl[k]); el.classList.add('dis'); }
-  });
-
-  renderMVH();
-  renderROList();
-  renderIntroList();
-  document.getElementById('rfGrateful').value = cl.reflection_grateful || '';
-  document.getElementById('rfGood').value = cl.reflection_good || '';
-  document.getElementById('rfNeedle').value = cl.reflection_needle || '';
-  document.getElementById('rfShift').value = cl.reflection_shift || '';
-  updateShippedUI();
-  updateDiscStreak();
-}
-
-function renderMVH() {
-  var v = currentLog.d_mvh || '';
-  document.getElementById('mvh-full').className = 'mvh-btn' + (v === 'full' ? ' full' : '');
-  document.getElementById('mvh-floor').className = 'mvh-btn' + (v === 'floor' ? ' floor' : '');
-  var note = document.getElementById('mvh-note');
-  if (v === 'full') note.textContent = '✦ Full day logged. You invested everything today.';
-  else if (v === 'floor') note.textContent = '~ Floor day. You showed up. That always counts.';
-  else note.textContent = 'Floor days count. Showing up at the minimum is still a win.';
-}
-
-function renderROList() {
-  var c = document.getElementById('roList'); c.innerHTML = '';
-  (currentLog.reach_outs || []).forEach(function(name, i) {
-    var row = document.createElement('div'); row.className = 'ro-row';
-    row.innerHTML = '<input type="text" value="' + esc(name) + '" placeholder="Name" oninput="currentLog.reach_outs[' + i + ']=this.value"/><button class="rm-btn" onclick="removeRO(' + i + ')">✕</button>';
-    c.appendChild(row);
-  });
-}
-
-function renderIntroList() {
-  var c = document.getElementById('introList'); c.innerHTML = '';
-  var stages = ['New Prospect','Nurturing','Sample','6-W Conversation','Patron Preso','Open Account','Trial','Briefing','Saturday','MAP','Interview'];
-  (currentLog.people_introduced || []).forEach(function(p, i) {
-    var row = document.createElement('div');
-    row.style.cssText = 'display:flex;gap:6px;margin-bottom:6px;align-items:center;flex-wrap:wrap';
-    var opts = stages.map(function(s){ return '<option' + (p.stage===s?' selected':'') + '>' + s + '</option>'; }).join('');
-    row.innerHTML = '<input type="text" value="' + esc(p.name||'') + '" placeholder="Name" style="flex:1;min-width:100px" oninput="currentLog.people_introduced[' + i + '].name=this.value"/><select style="width:140px" onchange="currentLog.people_introduced[' + i + '].stage=this.value">' + opts + '</select><button class="rm-btn" onclick="removeIntro(' + i + ')">✕</button>';
-    c.appendChild(row);
-  });
-}
-
-function addRO() { currentLog.reach_outs = currentLog.reach_outs || []; currentLog.reach_outs.push(''); renderROList(); }
-function removeRO(i) { currentLog.reach_outs.splice(i,1); renderROList(); }
-function addIntro() { currentLog.people_introduced = currentLog.people_introduced || []; currentLog.people_introduced.push({name:'',stage:'New Prospect'}); renderIntroList(); }
-function removeIntro(i) { currentLog.people_introduced.splice(i,1); renderIntroList(); }
-
-function adj(field, delta) {
-  var keys = {ro:'reach_out_count', sa:'samples_count', sw:'sixw_count', mn:'mentor_count'};
-  var ids = {ro:'roCount', sa:'saCount', sw:'swCount', mn:'mnCount'};
-  var targets = {ro:5, sa:3, sw:1};
-  var k = keys[field];
-  currentLog[k] = Math.max(0, (currentLog[k]||0) + delta);
-  var el = document.getElementById(ids[field]);
-  el.textContent = currentLog[k];
-  el.className = 'cad-num' + (targets[field] !== undefined && currentLog[k] >= targets[field] ? ' met' : '');
-}
-
-function tog(field) {
-  currentLog[field] = !currentLog[field];
-  var maps = {business_opened:'bo', gu_intro_made:'gi', gu_exp_advanced:'ge', business_closed:'bc', five_reach_outs:'r5', strength:'str', movement:'mov', rest:'rst'};
-  var el = document.getElementById('ci-' + maps[field]);
-  if (el) {
-    el.classList.toggle('on', currentLog[field]);
-    if (['strength','movement','rest'].indexOf(field) > -1) el.classList.add('fit');
-  }
-  autoShip(); updateShippedUI();
-}
-
-function togD(field) {
-  currentLog[field] = !currentLog[field];
-  var dmap = {d_wake:'d1', d_workout:'d2', d_breakfast:'d3', d_recovery:'d4', d_affirm_am:'d5', d_affirm_pm:'d6'};
-  var el = document.getElementById('ci-' + dmap[field]);
-  if (el) { el.classList.toggle('on', currentLog[field]); el.classList.add('dis'); }
-  autoShip(); updateShippedUI(); updateDiscStreak();
-}
-
-function setMVH(val) {
-  currentLog.d_mvh = currentLog.d_mvh === val ? '' : val;
-  renderMVH(); autoShip(); updateShippedUI();
-}
-
-function autoShip() {
-  var gu = [currentLog.business_opened, currentLog.gu_intro_made, currentLog.gu_exp_advanced, currentLog.business_closed, currentLog.five_reach_outs].filter(Boolean).length;
-  var fit = [currentLog.strength, currentLog.movement, currentLog.rest].filter(Boolean).length;
-  var dis = [currentLog.d_wake, currentLog.d_workout, currentLog.d_breakfast, currentLog.d_recovery].filter(Boolean).length;
-  var mvh = currentLog.d_mvh === 'full' || currentLog.d_mvh === 'floor';
-  if (gu >= 3 && fit >= 1 && dis >= 2 && mvh) currentLog.shipped = 'YES';
-}
-
-function manualShip() {
-  currentLog.shipped = currentLog.shipped === 'YES' ? 'NO' : 'YES';
-  updateShippedUI();
-}
-
-function updateShippedUI() {
-  autoShip();
-  var s = currentLog.shipped === 'YES';
-  document.getElementById('shippedBar').className = 'shipped-bar ' + (s ? 'yes' : 'no');
-  document.getElementById('shippedLbl').textContent = s ? '✓ SHIPPED' : 'NOT SHIPPED';
-  document.getElementById('shippedSub').textContent = s ? 'You shipped today. Keep investing your energy!' : '3 GU + 1 fitness + 2 discipline + Full/Floor to ship';
-  document.getElementById('shippedBtn').textContent = s ? 'Unmark' : 'Mark Shipped';
-  document.getElementById('shippedBtn').className = 'btn btn-sm ' + (s ? 'btn-s' : 'btn-g');
-}
-
-function calcDiscStreak() {
-  var streak = 0, today = todayStr(), check = today;
-  for (var i = 0; i < 365; i++) {
-    var log = check === currentDate ? currentLog : logs.find(function(l){ return l.date === check; });
-    var isToday = check === today;
-    if (log) {
-      var dc = [log.d_wake, log.d_workout, log.d_breakfast, log.d_recovery].filter(Boolean).length;
-      if (dc >= 2 || !!log.d_mvh) streak++;
-      else if (!isToday) break;
-    } else if (!isToday) break;
-    var d = new Date(check + 'T12:00:00'); d.setDate(d.getDate()-1);
-    check = dateStr(d);
-  }
-  return streak;
-}
-
-function calcGUStreak() {
-  var streak = 0, today = todayStr(), check = today;
-  for (var i = 0; i < 365; i++) {
-    var log = logs.find(function(l){ return l.date === check; });
-    if (log && log.shipped === 'YES') streak++;
-    else if (check !== today) break;
-    var d = new Date(check + 'T12:00:00'); d.setDate(d.getDate()-1);
-    check = dateStr(d);
-  }
-  return streak;
-}
-
-function calcVotes() {
-  return logs.reduce(function(total, l) {
-    var v = 0;
-    if (l.d_wake) v++; if (l.d_workout) v++; if (l.d_breakfast) v++;
-    if (l.d_recovery) v++; if (l.d_affirm_am) v++; if (l.d_affirm_pm) v++;
-    if (l.d_mvh) v++; if (l.strength) v++; if (l.movement) v++;
-    if (l.shipped === 'YES') v += 3;
-    return total + v;
-  }, 0);
-}
-
-function updateDiscStreak() {
-  var s = calcDiscStreak();
-  var el = document.getElementById('disc-streak-num');
-  if (el) el.textContent = s + (s === 1 ? ' day' : ' days');
-  var h = document.getElementById('hist-disc');
-  if (h) h.textContent = s;
-}
-
-// ── SAVE LOG ──────────────────────────────────────
-async function saveLog() {
-  currentLog.reflection_grateful = document.getElementById('rfGrateful').value;
-  currentLog.reflection_good = document.getElementById('rfGood').value;
-  currentLog.reflection_needle = document.getElementById('rfNeedle').value;
-  currentLog.reflection_shift = document.getElementById('rfShift').value;
-  currentLog.reflection = [
-    currentLog.reflection_grateful ? '🙏 ' + currentLog.reflection_grateful : '',
-    currentLog.reflection_good ? '✨ ' + currentLog.reflection_good : '',
-    currentLog.reflection_needle ? '🎯 ' + currentLog.reflection_needle : '',
-    currentLog.reflection_shift ? '🔄 ' + currentLog.reflection_shift : ''
-  ].filter(Boolean).join(' | ');
-  currentLog.reach_outs = (currentLog.reach_outs||[]).filter(function(r){ return r.trim(); });
-  currentLog.people_introduced = (currentLog.people_introduced||[]).filter(function(p){ return p.name && p.name.trim(); });
-  autoShip();
-  var logData = JSON.parse(JSON.stringify(currentLog));
-  delete logData.id; delete logData.created_at;
+function loadState() {
   try {
-    var patched = await sb('shipped_logs?date=eq.' + logData.date, {method:'PATCH', body:JSON.stringify(logData)});
-    var saved;
-    if (patched && patched.length > 0) { saved = patched[0]; }
-    else {
-      var inserted = await sb('shipped_logs', {method:'POST', body:JSON.stringify(logData)});
-      saved = Array.isArray(inserted) ? inserted[0] : inserted;
-    }
-    var idx = logs.findIndex(function(l){ return l.date === currentDate; });
-    if (idx >= 0) logs[idx] = saved || currentLog;
-    else logs.unshift(saved || currentLog);
-    logs.sort(function(a,b){ return b.date.localeCompare(a.date); });
-    renderStats(); updateDiscStreak(); renderDash();
-    toast('Log saved! ✓', 'ok');
-    fetch('https://gu-proxy.emtrad83.workers.dev/trigger-export', {method:'POST'}).catch(function(){});
-  } catch(e) {
-    console.error('saveLog:', e);
-    toast('Save failed — check Supabase', 'err');
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return { logs: {}, prospects: [] };
+    return JSON.parse(raw);
+  } catch {
+    return { logs: {}, prospects: [] };
   }
 }
 
-function clearLog() { currentLog = freshLog(currentDate); renderLogForm(); }
-
-// ── LOAD DATA ──────────────────────────────────────
-async function loadLogs() {
-  try { logs = await sb('shipped_logs?order=date.desc&limit=90'); } catch(e) { console.error('loadLogs:', e); logs = []; }
-}
-async function loadProspects() {
-  try { prospects = await sb('prospects?order=created_at.desc'); } catch(e) { console.error('loadProspects:', e); prospects = []; }
-}
-async function loadConvHistory() {
-  try { convHistory = await sb('conversation_history?order=date.desc&limit=50'); } catch(e) { console.error('loadConvHist:', e); convHistory = []; }
-}
-async function loadIdentityEntries() {
-  // Identity data now lives in shipped_logs columns — no separate table needed
-  // identityEntries is derived from logs after loadLogs() completes
-  deriveIdentityFromLogs();
+function scoreLog(log) {
+  const checkScore = CHECKS.reduce((sum, c) => sum + (log.checks?.[c.key] ? c.points : 0), 0);
+  const cadenceScore = Math.min((log.reachOuts?.length || 0) / 5, 1) * 2 + Math.min((log.samples || 0) / 3, 1) + Math.min((log.sixW || 0), 1);
+  const goalScore = (log.directMentorEnrolled ? 1 : 0) + (log.mentorHelpedEnroll ? 1 : 0) + (log.incomeSystemAction ? 1 : 0) + (log.audienceRep ? 1 : 0);
+  return Math.round(checkScore + cadenceScore + goalScore);
 }
 
-function deriveIdentityFromLogs() {
-  // Build identityEntries array from shipped_logs for render compatibility
-  identityEntries = [];
-  logs.forEach(function(l) {
-    // Daily vote entry
-    if (l.identity_story || l.identity_vote || l.identity_commit) {
-      var parts = [];
-      if (l.identity_story) parts.push('Story: ' + l.identity_story);
-      if (l.identity_vote) parts.push('Voted for: ' + l.identity_vote);
-      if (l.identity_commit) parts.push('Commit: ' + l.identity_commit);
-      identityEntries.push({date: l.date, type: 'daily', content: parts.join(' | ')});
-    }
-    // Weekly reflection entry
-    if (l.weekly_pattern || l.weekly_comfort || l.weekly_disciplined || l.weekly_identity) {
-      var parts2 = [];
-      if (l.weekly_pattern) parts2.push('Pattern: ' + l.weekly_pattern);
-      if (l.weekly_comfort) parts2.push('Comfort: ' + l.weekly_comfort);
-      if (l.weekly_disciplined) parts2.push('Disciplined: ' + l.weekly_disciplined);
-      if (l.weekly_identity) parts2.push('Identity: ' + l.weekly_identity);
-      identityEntries.push({date: l.date, type: 'weekly', content: parts2.join(' | ')});
-    }
-    // Bevel entry
-    if (l.bevel_recovery != null || l.bevel_sleep != null) {
-      var bd = {
-        recovery: l.bevel_recovery, sleep: l.bevel_sleep,
-        strain: l.bevel_strain, stress_current: l.bevel_stress_current,
-        stress_high: l.bevel_stress_high, stress_low: l.bevel_stress_low,
-        stress_avg: l.bevel_stress_avg, stress_level: l.bevel_stress_level,
-        note: l.bevel_note
-      };
-      identityEntries.push({date: l.date, type: 'bevel', content: JSON.stringify(bd)});
-    }
+function isShipped(log) {
+  const core = log.checks?.giveFirst && log.checks?.learn;
+  const wellness = log.checks?.wake5 || log.checks?.train || log.checks?.protein;
+  const business = (log.reachOuts?.length || 0) >= 5 || log.samples > 0 || log.sixW > 0 || log.directMentorEnrolled || log.mentorHelpedEnroll;
+  return log.floorDay || Boolean(core && wellness && business);
+}
+
+function streak(logs, predicate) {
+  let count = 0;
+  let d = todayISO();
+  while (true) {
+    const log = logs[d];
+    if (!log || !predicate(log)) break;
+    count += 1;
+    d = addDays(d, -1);
+  }
+  return count;
+}
+
+function recentNeglect(logs, goal, days = 4) {
+  for (let i = 0; i < days; i++) {
+    const d = addDays(todayISO(), -i);
+    const l = logs[d];
+    if (!l) continue;
+    const hit = CHECKS.some((c) => c.goal === goal && l.checks?.[c.key]);
+    if (hit) return false;
+  }
+  return true;
+}
+
+function suggestPriorities(log, logs) {
+  const energy = log.energy || "yellow";
+  const incomplete = PRIORITY_BANK.filter((p) => p.energy.includes(energy));
+  const scored = incomplete.map((p) => {
+    let score = 1;
+    if (["mentor", "wellness", "discipline"].includes(p.goal)) score += 2;
+    if (recentNeglect(logs, p.goal)) score += 2;
+    if (energy === "red" && ["protect-body", "one-reach", "magic-floor", "wisdom", "give-first"].includes(p.id)) score += 3;
+    if (energy === "green" && ["five-reach", "sample-sixw", "system", "magic-full"].includes(p.id)) score += 2;
+    if (log.todayWin?.includes(p.id)) score += 4;
+    return { ...p, score };
   });
-  // Sort newest first
-  identityEntries.sort(function(a,b){ return b.date.localeCompare(a.date); });
-}
-async function loadSavedReviews() {
-  try { savedReviewsList = await sb('reviews?order=date.desc&limit=20'); } catch(e) { console.error('loadReviews:', e); savedReviewsList = []; }
+  return scored.sort((a, b) => b.score - a.score).slice(0, 3);
 }
 
-function renderStats() {
-  var shipped = logs.filter(function(l){ return l.shipped === 'YES'; });
-  document.getElementById('hist-total').textContent = logs.length;
-  document.getElementById('hist-shipped').textContent = shipped.length;
-  document.getElementById('hist-ro').textContent = logs.reduce(function(s,l){ return s + (l.reach_out_count||0) + (l.reach_outs||[]).length; }, 0);
-  document.getElementById('hist-streak').textContent = calcGUStreak();
-  updateDiscStreak();
-}
+export default function GiversDailyHub() {
+  const [state, setState] = useState(loadState);
+  const [date, setDate] = useState(todayISO());
+  const [tab, setTab] = useState("dashboard");
+  const [newProspect, setNewProspect] = useState({ name: "", stage: "New", next: "", tension: "", notes: "" });
 
-// ── HISTORY ──────────────────────────────────────
-function renderHistory() {
-  var c = document.getElementById('historyList');
-  if (!logs.length) { c.innerHTML = '<div style="text-align:center;color:var(--t3);padding:40px;font-size:.8rem">No logs yet.</div>'; return; }
-  c.innerHTML = logs.map(function(l) {
-    var pi = (l.people_introduced||[]).filter(function(p){ return p.name; });
-    var piStr = pi.map(function(p){ return p.name + (p.stage ? ' (' + p.stage + ')' : ''); }).join(', ');
-    var dc = [l.d_wake, l.d_workout, l.d_breakfast, l.d_recovery].filter(Boolean).length;
-    var badge = l.d_mvh === 'full' ? '✦ Full' : l.d_mvh === 'floor' ? '~ Floor' : dc > 0 ? dc + '/4' : '';
-    return '<div class="hist-item" onclick="this.classList.toggle(\'open\')">' +
-      '<div class="hist-hdr">' +
-        '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">' +
-          '<span class="hist-date">' + fmtDate(l.date) + '</span>' +
-          (badge ? '<span style="font-size:.58rem;padding:2px 7px;border-radius:10px;background:var(--dglow);color:var(--disc);font-weight:700">' + badge + '</span>' : '') +
-        '</div>' +
-        '<span class="pill ' + (l.shipped==='YES'?'yes':'no') + '">' + (l.shipped==='YES'?'SHIPPED':'MISS') + '</span>' +
-      '</div>' +
-      '<div class="hist-body">' +
-        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:.72rem">' +
-          '<span style="color:' + (l.business_opened?'var(--accent)':'var(--t3)') + '">' + (l.business_opened?'✓':'○') + ' Business Opened</span>' +
-          '<span style="color:' + (l.gu_intro_made?'var(--accent)':'var(--t3)') + '">' + (l.gu_intro_made?'✓':'○') + ' GU Intro Made</span>' +
-          '<span style="color:' + (l.gu_exp_advanced?'var(--accent)':'var(--t3)') + '">' + (l.gu_exp_advanced?'✓':'○') + ' GU Exp. Advanced</span>' +
-          '<span style="color:' + (l.business_closed?'var(--accent)':'var(--t3)') + '">' + (l.business_closed?'✓':'○') + ' Business Closed</span>' +
-          '<span style="color:' + (l.five_reach_outs?'var(--accent)':'var(--t3)') + '">' + (l.five_reach_outs?'✓':'○') + ' 5 Reach-Outs</span>' +
-          '<span style="color:' + (l.strength?'var(--green)':'var(--t3)') + '">' + (l.strength?'✓':'○') + ' Strength</span>' +
-          '<span style="color:' + (l.movement?'var(--green)':'var(--t3)') + '">' + (l.movement?'✓':'○') + ' Movement</span>' +
-          '<span style="color:' + (l.rest?'var(--green)':'var(--t3)') + '">' + (l.rest?'✓':'○') + ' Rest</span>' +
-        '</div>' +
-        (dc > 0 || l.d_mvh ? '<div style="margin-top:10px;padding:8px 10px;background:var(--dglow);border:1px solid rgba(212,168,67,.15);border-radius:8px;font-size:.7rem"><div style="color:var(--disc);font-weight:700;margin-bottom:4px;font-size:.62rem;letter-spacing:.08em">⚡ DISCIPLINE</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:3px"><span style="color:' + (l.d_wake?'var(--disc)':'var(--t3)') + '">' + (l.d_wake?'✓':'○') + ' Up at 5am</span><span style="color:' + (l.d_workout?'var(--disc)':'var(--t3)') + '">' + (l.d_workout?'✓':'○') + ' Workout</span><span style="color:' + (l.d_breakfast?'var(--disc)':'var(--t3)') + '">' + (l.d_breakfast?'✓':'○') + ' Breakfast</span><span style="color:' + (l.d_recovery?'var(--disc)':'var(--t3)') + '">' + (l.d_recovery?'✓':'○') + ' Transition</span><span style="color:' + (l.d_affirm_am?'var(--disc)':'var(--t3)') + '">' + (l.d_affirm_am?'✓':'○') + ' AM Affirm</span><span style="color:' + (l.d_affirm_pm?'var(--disc)':'var(--t3)') + '">' + (l.d_affirm_pm?'✓':'○') + ' PM Affirm</span></div>' + (l.d_mvh ? '<div style="margin-top:4px;color:var(--disc)">' + (l.d_mvh==='full'?'✦ Full day':'~ Floor day') + '</div>' : '') + '</div>' : '') +
-        (l.reach_out_count||l.samples_count||l.sixw_count ? '<div style="margin-top:8px;font-size:.7rem;color:var(--t2)">R/O: <b>' + (l.reach_out_count||0) + '</b> · Samples: <b>' + (l.samples_count||0) + '</b> · 6-W: <b>' + (l.sixw_count||0) + '</b></div>' : '') +
-        (piStr ? '<div style="margin-top:6px;font-size:.7rem;color:var(--t2)">Introduced: ' + esc(piStr) + '</div>' : '') +
-        (l.reflection_grateful ? '<div style="margin-top:8px;font-size:.72rem;color:var(--t2);line-height:1.6"><div>🙏 ' + esc(l.reflection_grateful.slice(0,120)) + '</div>' + (l.reflection_good ? '<div>✨ ' + esc(l.reflection_good.slice(0,120)) + '</div>' : '') + (l.reflection_needle ? '<div>🎯 ' + esc(l.reflection_needle.slice(0,120)) + '</div>' : '') + (l.reflection_shift ? '<div>🔄 ' + esc(l.reflection_shift.slice(0,120)) + '</div>' : '') + '</div>' : '') +
-      '</div></div>';
-  }).join('');
-}
-
-// ── PIPELINE ──────────────────────────────────────
-var STAGES = ['New Prospect','Nurturing','Sample','6-W Conversation','Patron Preso','Open Account','Trial','Briefing','Saturday','MAP','Interview','Passed'];
-
-function renderPipelineFilters() {
-  var c = document.getElementById('pipeFilter');
-  var all = ['All'].concat(STAGES.slice(0, STAGES.length-1));
-  c.innerHTML = all.map(function(s) {
-    return '<button class="flt-btn' + (pipeFilter===s?' active':'') + '" onclick="setFilter(\'' + s + '\',this)">' + (s==='All'?'All':s==='6-W Conversation'?'6-W':s==='New Prospect'?'New':s.length>8?s.slice(0,8)+'…':s) + '</button>';
-  }).join('');
-}
-
-function setFilter(s, el) {
-  pipeFilter = s;
-  document.querySelectorAll('.flt-btn').forEach(function(b){ b.classList.remove('active'); });
-  el.classList.add('active');
-  renderPipeline();
-}
-
-function stageCss(s) {
-  var m = {'New Prospect':'stag-new','New Lead':'stag-new','Sample':'stag-samp','6-W Conversation':'stag-sixw','Patron Preso':'stag-brief','Briefing':'stag-brief','Interview':'stag-ment','Nurturing':'stag-nurt','Passed':'stag-pass'};
-  return m[s] || 'stag-new';
-}
-function warmCss(w) { return {Hot:'w-hot',Warm:'w-warm',Cool:'w-cool',Cold:'w-cold'}[w]||'w-warm'; }
-
-function renderPipeline() {
-  renderPipelineFilters();
-  document.getElementById('pl-total').textContent = prospects.length;
-  document.getElementById('pl-active').textContent = prospects.filter(function(p){ return p.stage !== 'Passed'; }).length;
-  document.getElementById('pl-mentors').textContent = prospects.filter(function(p){ return p.stage === 'Interview'; }).length;
-  var c = document.getElementById('pipelineList');
-  var filtered = pipeFilter === 'All' ? prospects : prospects.filter(function(p){ return p.stage === pipeFilter; });
-  if (!filtered.length) { c.innerHTML = '<div style="text-align:center;color:var(--t3);padding:40px;font-size:.8rem">' + (prospects.length ? 'No prospects in this stage.' : 'No prospects yet.') + '</div>'; return; }
-  c.innerHTML = filtered.map(function(p) {
-    var stageOpts = STAGES.map(function(s){ return '<option' + (p.stage===s?' selected':'') + '>' + s + '</option>'; }).join('');
-    var archOpts = ['','Caregiver under strain','Structural builder','Relational stabilizer','Momentum-driven recruiter','Burned-out high achiever','Identity-seeker'].map(function(a){ return '<option value="' + a + '"' + (p.archetype===a?' selected':'') + '>' + (a||'Unknown') + '</option>'; }).join('');
-    return '<div class="prospect" id="pc-' + p.id + '" onclick="togP(\'' + p.id + '\')">' +
-      '<div class="p-header">' +
-        '<div><div class="p-name">' + esc(p.name) + '</div>' +
-          '<div class="p-meta"><span class="stag ' + stageCss(p.stage) + '">' + (p.stage||'New') + '</span><div class="wdot ' + warmCss(p.warmth) + '"></div>' + (p.archetype ? '<span style="font-size:.65rem;color:var(--t3)">' + esc(p.archetype) + '</span>' : '') + '</div>' +
-        '</div>' +
-        '<div style="font-size:.62rem;color:var(--t3);text-align:right">' + (p.last_conversation ? fmtShort(p.last_conversation) : 'No contact') + '</div>' +
-      '</div>' +
-      '<div class="p-detail" id="pd-' + p.id + '">' +
-        '<div class="dgrid">' +
-          '<div><span class="lbl" style="margin-top:0">Stage</span><select onchange="updP(\'' + p.id + '\',\'stage\',this.value)" onclick="event.stopPropagation()">' + stageOpts + '</select></div>' +
-          '<div><span class="lbl" style="margin-top:0">Warmth</span><select onchange="updP(\'' + p.id + '\',\'warmth\',this.value)" onclick="event.stopPropagation()"><option' + (p.warmth==='Hot'?' selected':'') + '>Hot</option><option' + (p.warmth==='Warm'?' selected':'') + '>Warm</option><option' + (p.warmth==='Cool'?' selected':'') + '>Cool</option><option' + (p.warmth==='Cold'?' selected':'') + '>Cold</option></select></div>' +
-          '<div><span class="lbl" style="margin-top:0">Archetype</span><select onchange="updP(\'' + p.id + '\',\'archetype\',this.value)" onclick="event.stopPropagation()">' + archOpts + '</select></div>' +
-          '<div><span class="lbl" style="margin-top:0">Last Contact</span><input type="date" value="' + (p.last_conversation||'') + '" onclick="event.stopPropagation()" onchange="updP(\'' + p.id + '\',\'last_conversation\',this.value)"/></div>' +
-        '</div>' +
-        '<span class="lbl">Tension Point</span><input type="text" value="' + esc(p.tension_point||'') + '" placeholder="What tension?" onclick="event.stopPropagation()" onchange="updP(\'' + p.id + '\',\'tension_point\',this.value)"/>' +
-        '<span class="lbl">Notes</span><textarea style="min-height:60px" onclick="event.stopPropagation()" onchange="updP(\'' + p.id + '\',\'notes\',this.value)">' + esc(p.notes||'') + '</textarea>' +
-        '<div class="btn-row" style="margin-top:8px">' +
-          '<button class="btn btn-p btn-sm" onclick="event.stopPropagation();saveP(\'' + p.id + '\')">💾 Save</button>' +
-          '<button class="btn btn-d btn-sm" onclick="event.stopPropagation();deleteP(\'' + p.id + '\')">Delete</button>' +
-        '</div>' +
-      '</div></div>';
-  }).join('');
-}
-
-function togP(id) { var el = document.getElementById('pc-' + id); if (el) el.classList.toggle('open'); }
-function updP(id, f, v) { var p = prospects.find(function(x){ return String(x.id)===String(id); }); if (p) p[f] = v; }
-
-async function saveP(id) {
-  var p = prospects.find(function(x){ return String(x.id)===String(id); });
-  if (!p) return;
-  try {
-    var res;
-    if (p.id && String(p.id).includes('-')) {
-      var r = await sb('prospects?id=eq.' + p.id, {method:'PATCH', body:JSON.stringify(p)});
-      res = Array.isArray(r) ? r[0] : r;
-    } else {
-      var data = JSON.parse(JSON.stringify(p)); delete data.id;
-      var r2 = await sb('prospects', {method:'POST', body:JSON.stringify(data)});
-      res = Array.isArray(r2) ? r2[0] : r2;
-    }
-    if (res) { var idx = prospects.findIndex(function(x){ return String(x.id)===String(id); }); if (idx>=0) prospects[idx]=res; }
-    toast('Saved!', 'ok'); renderPipeline();
-  } catch(e) { toast('Save failed', 'err'); }
-}
-
-async function deleteP(id) {
-  if (!confirm('Delete this prospect?')) return;
-  try {
-    await sb('prospects?id=eq.' + id, {method:'DELETE', prefer:''});
-    prospects = prospects.filter(function(p){ return String(p.id)!==String(id); });
-    renderPipeline(); toast('Deleted', 'ok');
-  } catch(e) { toast('Delete failed', 'err'); }
-}
-
-function openAddP() { document.getElementById('addPModal').classList.add('open'); }
-function closeAddP() { document.getElementById('addPModal').classList.remove('open'); }
-
-async function saveNewP() {
-  var name = document.getElementById('np-name').value.trim();
-  if (!name) { toast('Name is required', 'err'); return; }
-  var p = {
-    name: name,
-    contact: document.getElementById('np-contact').value.trim(),
-    stage: document.getElementById('np-stage').value,
-    warmth: document.getElementById('np-warmth').value,
-    archetype: document.getElementById('np-arch').value,
-    tension_point: document.getElementById('np-tension').value.trim(),
-    notes: document.getElementById('np-notes').value.trim(),
-    last_conversation: '', reach_out_count: 1
-  };
-  try {
-    var saved = await sb('prospects', {method:'POST', body:JSON.stringify(p)});
-    prospects.unshift(Array.isArray(saved) ? saved[0] : (saved || p));
-    renderPipeline(); closeAddP(); toast(name + ' added!', 'ok');
-    ['np-name','np-contact','np-tension','np-notes'].forEach(function(id){ document.getElementById(id).value=''; });
-  } catch(e) { toast('Save failed', 'err'); }
-}
-
-// ── REVIEWS ──────────────────────────────────────
-async function runReview(period) {
-  var out = document.getElementById('reviewOut');
-  var content = document.getElementById('reviewContent');
-  out.style.display = 'block';
-  document.getElementById('reviewTitle').textContent = period === 'week' ? 'Weekly Review' : 'Monthly Review';
-  content.textContent = 'Analyzing your data...';
-  var days = period === 'week' ? 7 : 30;
-  var cutoff = new Date(); cutoff.setDate(cutoff.getDate() - days);
-  var cutoffStr = dateStr(cutoff);
-  var pl = logs.filter(function(l){ return l.date >= cutoffStr; });
-  var shipped = pl.filter(function(l){ return l.shipped === 'YES'; }).length;
-  var totalRO = pl.reduce(function(s,l){ return s+(l.reach_out_count||0); },0);
-  var totalSa = pl.reduce(function(s,l){ return s+(l.samples_count||0); },0);
-  var totalSw = pl.reduce(function(s,l){ return s+(l.sixw_count||0); },0);
-  var discFull = pl.filter(function(l){ return l.d_mvh==='full'; }).length;
-  var discFloor = pl.filter(function(l){ return l.d_mvh==='floor'; }).length;
-  var discWake = pl.filter(function(l){ return l.d_wake; }).length;
-  var discWork = pl.filter(function(l){ return l.d_workout; }).length;
-  var discRec = pl.filter(function(l){ return l.d_recovery; }).length;
-  var discAff = pl.filter(function(l){ return l.d_affirm_am; }).length;
-  var votes = pl.reduce(function(t,l){ return t+[l.d_wake,l.d_workout,l.d_breakfast,l.d_recovery,l.d_affirm_am,l.d_affirm_pm,l.strength,l.movement].filter(Boolean).length+(l.shipped==='YES'?3:0); },0);
-  var stageB = {};
-  prospects.forEach(function(p){ stageB[p.stage]=(stageB[p.stage]||0)+1; });
-  var bevelData = pl.filter(function(l){ return l.bevel_recovery != null || l.bevel_sleep != null; }).map(function(l){
-    return '[' + l.date + '] Recovery:' + (l.bevel_recovery||'—') + '% Sleep:' + (l.bevel_sleep||'—') + '% Strain:' + (l.bevel_strain||'—') + '% Stress:' + (l.bevel_stress_current||'—') + ' (' + (l.bevel_stress_level||'—') + ')' + (l.bevel_note ? ' — ' + l.bevel_note : '');
-  }).join('\n');
-  var reflections = pl.filter(function(l){ return l.reflection; }).slice(0,5).map(function(l){ return '[' + l.date + ']: "' + l.reflection + '"'; }).join('\n');
-  var idEntries = pl.filter(function(l){ return l.identity_story || l.identity_vote || l.weekly_pattern; }).slice(0,5).map(function(l){
-    var pts = [];
-    if (l.identity_story) pts.push('Story: ' + l.identity_story);
-    if (l.identity_vote) pts.push('Voted for: ' + l.identity_vote);
-    if (l.weekly_pattern) pts.push('Pattern: ' + l.weekly_pattern);
-    if (l.weekly_identity) pts.push('Identity: ' + l.weekly_identity);
-    return '[' + l.date + '] ' + pts.join(' | ');
-  }).join('\n');
-
-  var prompt = 'You are Evan\'s personal coach. Review his ' + (period==='week'?'last 7 days':'last 30 days') + ' and give a direct, personalized review.\n\nCONTEXT: Chicago educator, 17+ yrs special ed, now Climate & Culture Coordinator. GU Senior Mentor advancing to Master Mentor. Philosophy: "Give more to gain more." Building Team EVAN as path to income independence. Deeply systems-oriented, in active identity-building phase.\n\n' + period.toUpperCase() + ' DATA:\nDays logged: ' + pl.length + ' of ' + days + ' | Shipped: ' + shipped + '\nReach-Outs: ' + totalRO + ' (goal: ' + (days===7?35:150) + ') | Samples: ' + totalSa + ' | 6-W: ' + totalSw + '\nPipeline: ' + JSON.stringify(stageB) + '\n\nDISCIPLINE:\nFull: ' + discFull + ' | Floor: ' + discFloor + '\n5am wake: ' + discWake + ' | Workout: ' + discWork + ' | Transition: ' + discRec + ' | Affirmations: ' + discAff + '\nIdentity votes: ' + votes + '\n\nBEVEL RECOVERY:\n' + (bevelData || 'No Bevel data logged') + '\n\nREFLECTIONS:\n' + (reflections || 'None') + '\n\nIDENTITY ENTRIES:\n' + (idEntries || 'None') + '\n\nWrite sections: 1) Overall Assessment 2) Strengths 3) Discipline System 4) GU Momentum 5) Recovery Pattern (Bevel insights) 6) Internal Pattern 7) Master Mentor Focus 8) One Priority. Direct, specific, reference numbers. Floor days are wins. End with one sentence Evan can carry all week.';
-
-  try {
-    var res = await fetch(CLAUDE_API, {
-      method:'POST',
-      headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})
+  const log = state.logs[date] || blankLog(date);
+  const suggestedPriorities = suggestPriorities(log, state.logs);
+  const setLog = (updater) => {
+    setState((s) => {
+      const current = s.logs[date] || blankLog(date);
+      const next = typeof updater === "function" ? updater(current) : updater;
+      return { ...s, logs: { ...s.logs, [date]: next } };
     });
-    var data = await res.json();
-    content.textContent = (data.content||[]).map(function(b){ return b.text||''; }).join('') || 'No response.';
-  } catch(e) { content.textContent = 'Error: ' + e.message; }
-}
-
-async function saveReview() {
-  var title = document.getElementById('reviewTitle').textContent;
-  var content = document.getElementById('reviewContent').textContent;
-  if (!content || content === 'Analyzing your data...') { toast('Generate a review first', 'err'); return; }
-  try {
-    var res = await sb('reviews', {method:'POST', body:JSON.stringify({date:todayStr(),period:title.includes('Weekly')?'week':'month',title:title,content:content})});
-    savedReviewsList.unshift(Array.isArray(res) ? res[0] : {title:title,content:content,date:todayStr()});
-    renderSavedReviews(); toast('Review saved!', 'ok');
-  } catch(e) { toast('Failed to save', 'err'); }
-}
-
-function renderSavedReviews() {
-  var c = document.getElementById('savedReviews');
-  if (!c) return;
-  if (!savedReviewsList.length) { c.innerHTML = '<div style="color:var(--t3)">No saved reviews yet.</div>'; return; }
-  c.innerHTML = savedReviewsList.map(function(r, i) {
-    return '<div style="border-bottom:1px solid var(--border);padding:10px 0">' +
-      '<div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer" onclick="var b=document.getElementById(\'rvb-' + i + '\');b.style.display=b.style.display===\'none\'?\'block\':\'none\'">' +
-        '<div><span style="font-weight:700;color:var(--t1);font-size:.82rem">' + esc(r.title||'Review') + '</span><span style="margin-left:8px;font-size:.62rem;color:var(--t3)">' + fmtShort(r.date) + '</span></div>' +
-        '<span style="font-size:.7rem;color:var(--accent)">▼</span>' +
-      '</div>' +
-      '<div id="rvb-' + i + '" style="display:none;margin-top:10px;font-size:.78rem;color:var(--t2);line-height:1.65;white-space:pre-wrap">' + esc(r.content||'') + '</div>' +
-    '</div>';
-  }).join('');
-}
-
-function renderConvHist() {
-  var c = document.getElementById('convHistList');
-  if (!convHistory.length) { c.innerHTML = '<div style="color:var(--t3)">No conversations saved yet.</div>'; return; }
-  c.innerHTML = convHistory.map(function(h) {
-    return '<div style="padding:10px 0;border-bottom:1px solid var(--border)">' +
-      '<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:700;color:var(--t1);font-size:.82rem">' + esc(h.prospect_name) + '</span><span style="font-size:.62rem;color:var(--t3)">' + fmtShort(h.date) + '</span></div>' +
-      '<div style="margin-top:4px;font-size:.7rem"><span class="stag ' + stageCss(h.stage) + '" style="font-size:.58rem">' + (h.stage||'') + '</span>' + (h.tension_point ? '<span style="color:var(--t3);margin-left:6px;font-size:.68rem">⚡ ' + esc(h.tension_point) + '</span>' : '') + '</div>' +
-      (h.notes ? '<div style="margin-top:6px;font-size:.72rem;color:var(--t2)">' + esc(h.notes) + '</div>' : '') +
-    '</div>';
-  }).join('');
-}
-
-// ── MASTER MENTOR ──────────────────────────────────────
-function setMS(step, done) {
-  if (step===1) masterSteps.s1=done; else masterSteps.s2=done;
-  updateMasterUI();
-  try { localStorage.setItem('masterSteps', JSON.stringify(masterSteps)); } catch(e) {}
-}
-
-function updateMasterUI() {
-  document.getElementById('ms1').classList.toggle('done', masterSteps.s1);
-  document.getElementById('ms2').classList.toggle('done', masterSteps.s2);
-  var count = (masterSteps.s1?1:0) + (masterSteps.s2?1:0);
-  document.getElementById('masterLabel').textContent = count + '/2';
-  ['mm1yes','mm1no','mm2yes','mm2no'].forEach(function(id){ var el=document.getElementById(id); if(el) el.style.opacity='0.5'; });
-  var y1=document.getElementById('mm1yes'), n1=document.getElementById('mm1no');
-  var y2=document.getElementById('mm2yes'), n2=document.getElementById('mm2no');
-  if (y1&&n1) { (masterSteps.s1?y1:n1).style.opacity='1'; }
-  if (y2&&n2) { (masterSteps.s2?y2:n2).style.opacity='1'; }
-  var dm1=document.getElementById('dash-ms1'), dm2=document.getElementById('dash-ms2');
-  if (dm1) dm1.classList.toggle('done', masterSteps.s1);
-  if (dm2) dm2.classList.toggle('done', masterSteps.s2);
-  var dt1=document.getElementById('dash-ms1-txt'), dt2=document.getElementById('dash-ms2-txt');
-  if (dt1) dt1.className = 'mstep-txt' + (masterSteps.s1?' done':'');
-  if (dt2) dt2.className = 'mstep-txt' + (masterSteps.s2?' done':'');
-}
-
-// ── IDENTITY ──────────────────────────────────────
-function renderHeatmap() {
-  var grid = document.getElementById('heatmapGrid');
-  var today = todayStr();
-  var end = new Date(); end.setHours(12,0,0,0);
-  var start = new Date(end); start.setDate(start.getDate()-27);
-  var startDay = start.getDay(); start.setDate(start.getDate() - startDay);
-  var days = []; var cur = new Date(start);
-  while (days.length < 42 && dateStr(cur) <= today) {
-    days.push(dateStr(cur)); cur.setDate(cur.getDate()+1);
-  }
-  // Pad to multiple of 7
-  while (days.length % 7 !== 0) { days.push(''); }
-  grid.innerHTML = days.map(function(ds) {
-    if (!ds) return '<div class="hm-day"></div>';
-    var log = logs.find(function(l){ return l.date === ds; });
-    var isFuture = ds > today;
-    var isToday = ds === today;
-    var cls = 'hm-day';
-    if (isToday) cls += ' today';
-    if (!isFuture && ds) {
-      if (log && log.d_mvh === 'full') cls += ' full';
-      else if (log && log.d_mvh === 'floor') cls += ' floor';
-      else if (log) cls += ' miss';
-    }
-    return '<div class="' + cls + '" title="' + ds + '"></div>';
-  }).join('');
-}
-
-function renderIdentityStats() {
-  document.getElementById('voteNum').textContent = calcVotes();
-  document.getElementById('id-full').textContent = logs.filter(function(l){ return l.d_mvh==='full'; }).length;
-  document.getElementById('id-floor').textContent = logs.filter(function(l){ return l.d_mvh==='floor'; }).length;
-  document.getElementById('id-streak').textContent = calcDiscStreak();
-}
-
-async function saveDailyVote() {
-  var v1 = document.getElementById('dv1').value.trim();
-  var v2 = document.getElementById('dv2').value.trim();
-  var v3 = document.getElementById('dv3').value.trim();
-  if (!v1 && !v2 && !v3) { toast('Fill in at least one field','err'); return; }
-  var today = todayStr();
-  // Merge into today's log
-  currentLog.identity_story = v1;
-  currentLog.identity_vote = v2;
-  currentLog.identity_commit = v3;
-  // Patch shipped_logs directly
-  try {
-    var patch = {identity_story: v1, identity_vote: v2, identity_commit: v3};
-    var existing = logs.find(function(l){ return l.date === today; });
-    if (existing) {
-      await sb('shipped_logs?date=eq.' + today, {method:'PATCH', body:JSON.stringify(patch)});
-      Object.assign(existing, patch);
-    } else {
-      // No log for today yet — save a minimal row
-      var newRow = Object.assign(freshLog(today), patch);
-      var res = await sb('shipped_logs', {method:'POST', body:JSON.stringify(newRow)});
-      logs.unshift(Array.isArray(res) ? res[0] : newRow);
-      logs.sort(function(a,b){ return b.date.localeCompare(a.date); });
-    }
-    deriveIdentityFromLogs();
-    document.getElementById('dv1').value=''; document.getElementById('dv2').value=''; document.getElementById('dv3').value='';
-    toast('Identity vote saved ✓','ok'); renderIdentityHist();
-  } catch(e) { console.error('saveDailyVote:', e); toast('Save failed','err'); }
-}
-
-async function saveWeekly() {
-  var r1=document.getElementById('wr1').value.trim(), r2=document.getElementById('wr2').value.trim();
-  var r3=document.getElementById('wr3').value.trim(), r4=document.getElementById('wr4').value.trim();
-  if (!r1&&!r2&&!r3&&!r4) { toast('Fill in at least one field','err'); return; }
-  var today = todayStr();
-  currentLog.weekly_pattern = r1;
-  currentLog.weekly_comfort = r2;
-  currentLog.weekly_disciplined = r3;
-  currentLog.weekly_identity = r4;
-  try {
-    var patch = {weekly_pattern:r1, weekly_comfort:r2, weekly_disciplined:r3, weekly_identity:r4};
-    var existing = logs.find(function(l){ return l.date === today; });
-    if (existing) {
-      await sb('shipped_logs?date=eq.' + today, {method:'PATCH', body:JSON.stringify(patch)});
-      Object.assign(existing, patch);
-    } else {
-      var newRow = Object.assign(freshLog(today), patch);
-      var res = await sb('shipped_logs', {method:'POST', body:JSON.stringify(newRow)});
-      logs.unshift(Array.isArray(res) ? res[0] : newRow);
-      logs.sort(function(a,b){ return b.date.localeCompare(a.date); });
-    }
-    deriveIdentityFromLogs();
-    ['wr1','wr2','wr3','wr4'].forEach(function(id){ document.getElementById(id).value=''; });
-    toast('Weekly reflection saved ✓','ok'); renderIdentityHist();
-  } catch(e) { console.error('saveWeekly:', e); toast('Save failed','err'); }
-}
-
-// saveIdEntry removed — identity data now saves directly to shipped_logs columns
-
-function renderIdentityHist() {
-  var c = document.getElementById('identityHist');
-  var entries = identityEntries.filter(function(e){ return e.type !== 'bevel'; });
-  if (!entries.length) { c.innerHTML = '<div style="color:var(--t3)">No entries yet.</div>'; return; }
-  c.innerHTML = entries.map(function(e) {
-    var color = e.type==='weekly' ? 'var(--accent)' : 'var(--disc)';
-    var bg = e.type==='weekly' ? 'rgba(124,110,255,.15)' : 'rgba(212,168,67,.1)';
-    return '<div class="id-hist-item">' +
-      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">' +
-        '<div class="id-hist-date">' + fmtDate(e.date) + '</div>' +
-        '<span style="font-size:.56rem;padding:1px 6px;border-radius:8px;background:' + bg + ';color:' + color + '">' + (e.type==='weekly'?'WEEKLY':'DAILY') + '</span>' +
-      '</div>' +
-      '<div class="id-hist-txt">' + esc(e.content||'') + '</div>' +
-    '</div>';
-  }).join('');
-}
-
-// ── BEVEL ──────────────────────────────────────
-function updateBevelBar(type, val) {
-  var pct = Math.min(100, Math.max(0, Number(val)||0));
-  var bar = document.getElementById('bbar-' + type);
-  if (!bar) return;
-  bar.style.width = pct + '%';
-  var good = type==='strain' ? pct<=30 : pct>=70;
-  var mid = type==='strain' ? pct<=60 : pct>=50;
-  bar.style.background = good ? 'var(--green)' : mid ? 'var(--warn)' : 'var(--red)';
-}
-
-function setBevelLevel(level) {
-  bevelLevel = bevelLevel === level ? '' : level;
-  ['low','med','hi'].forEach(function(l) {
-    var btn = document.getElementById('slev-' + l);
-    if (btn) btn.className = 'slev-btn' + (bevelLevel===l?' '+l:'');
-  });
-}
-
-async function saveBevel() {
-  var rec=document.getElementById('bvRecovery').value;
-  var slp=document.getElementById('bvSleep').value;
-  var str=document.getElementById('bvStrain').value;
-  var sc=document.getElementById('bvStress').value;
-  var sh=document.getElementById('bvSHigh').value;
-  var sl=document.getElementById('bvSLow').value;
-  var sa=document.getElementById('bvSAvg').value;
-  var note=document.getElementById('bvNote').value.trim();
-  if (!rec&&!slp&&!str) { toast('Enter at least one metric','err'); return; }
-  var today = todayStr();
-  var patch = {
-    bevel_recovery: Number(rec)||null,
-    bevel_sleep: Number(slp)||null,
-    bevel_strain: Number(str)||null,
-    bevel_stress_current: Number(sc)||null,
-    bevel_stress_high: Number(sh)||null,
-    bevel_stress_low: Number(sl)||null,
-    bevel_stress_avg: Number(sa)||null,
-    bevel_stress_level: bevelLevel,
-    bevel_note: note
   };
-  // Update currentLog
-  Object.assign(currentLog, patch);
-  try {
-    var existing = logs.find(function(l){ return l.date === today; });
-    if (existing) {
-      await sb('shipped_logs?date=eq.' + today, {method:'PATCH', body:JSON.stringify(patch)});
-      Object.assign(existing, patch);
-    } else {
-      var newRow = Object.assign(freshLog(today), patch);
-      var res = await sb('shipped_logs', {method:'POST', body:JSON.stringify(newRow)});
-      logs.unshift(Array.isArray(res) ? res[0] : newRow);
-      logs.sort(function(a,b){ return b.date.localeCompare(a.date); });
-    }
-    deriveIdentityFromLogs();
-    ['bvRecovery','bvSleep','bvStrain','bvStress','bvSHigh','bvSLow','bvSAvg','bvNote'].forEach(function(id){ document.getElementById(id).value=''; });
-    ['recovery','sleep','strain','stress'].forEach(function(t){ var b=document.getElementById('bbar-'+t); if(b){b.style.width='0%';} });
-    bevelLevel=''; setBevelLevel('');
-    toast('Bevel log saved ✓','ok'); renderBevelHist();
-  } catch(e) { console.error('saveBevel:', e); toast('Save failed','err'); }
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }, [state]);
+
+  const stats = useMemo(() => {
+    const logs = state.logs;
+    const all = Object.values(logs);
+    return {
+      shippedStreak: streak(logs, isShipped),
+      disciplineStreak: streak(logs, (l) => l.floorDay || l.checks?.wake5 || l.checks?.train),
+      shippedTotal: all.filter(isShipped).length,
+      votes: all.reduce((sum, l) => sum + scoreLog(l), 0),
+      reachOuts: all.reduce((sum, l) => sum + (l.reachOuts?.length || 0), 0),
+      samples: all.reduce((sum, l) => sum + (l.samples || 0), 0),
+      sixW: all.reduce((sum, l) => sum + (l.sixW || 0), 0),
+      mentors: all.reduce((sum, l) => sum + (l.mentors || 0), 0),
+      master: all.some((l) => l.directMentorEnrolled) + all.some((l) => l.mentorHelpedEnroll),
+    };
+  }, [state]);
+
+  const saveExport = () => {
+    const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `givers-hub-export-${todayISO()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const importData = (file) => {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const parsed = JSON.parse(String(reader.result));
+        if (parsed.logs && parsed.prospects) setState(parsed);
+      } catch {
+        alert("That file could not be imported.");
+      }
+    };
+    reader.readAsText(file);
+  };
+
+  return (
+    <div className="min-h-screen bg-white text-[#141424] p-4 md:p-6" style={{ backgroundImage: "radial-gradient(circle at 20% 0%, rgba(124,110,255,.08), transparent 28%), radial-gradient(circle at 80% 15%, rgba(245,200,66,.06), transparent 25%), radial-gradient(circle at 50% 100%, rgba(0,229,176,.04), transparent 30%)" }}>
+      <div className="mx-auto max-w-6xl space-y-4">
+        <header className="sticky top-0 z-20 -mx-4 -mt-4 border-b border-[#141424] bg-white px-4 py-4 backdrop-blur md:-mx-6 md:-mt-6 md:px-6">
+          <div className="mx-auto flex max-w-6xl flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div>
+              <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-[0.25em] text-[#141424]">
+                <Sparkles size={16} /> Evan's GIVER Daily Lifestyle Hub
+              </div>
+              <h1 className="mt-1 text-xl font-black md:text-3xl">Lifestyle + Mission Command Center</h1>
+              <p className="text-sm text-[#3d3858]">Give first. Keep vows. Build predictive results.</p>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              {["dashboard", "daily", "goals", "pipeline", "review"].map((t) => (
+                <Button key={t} variant={tab === t ? "default" : "secondary"} onClick={() => setTab(t)} className={`rounded-2xl capitalize ${tab === t ? "bg-[#7c6eff] text-[#141424] hover:bg-[#9080ff]" : "bg-white text-[#3d3858] hover:bg-white hover:text-[#eeeaff]"}`}>
+                  {t}
+                </Button>
+              ))}
+            </div>
+          </div>
+        </header>
+
+        {tab === "dashboard" && (
+          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+            <Card className="rounded-3xl border-[#141424]/30 bg-gradient-to-br from-white via-white to-white shadow-xl shadow-[#7c6eff]/10">
+              <CardContent className="p-5 md:p-8">
+                <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#141424]">Today’s P.E.R. Question</p>
+                    <h2 className="mt-2 text-2xl font-black md:text-4xl">What actions today make my desired end result predictable?</h2>
+                    <p className="mt-2 max-w-3xl text-[#3d3858]">Your life is being built through thoughts, habits, character, and repeated deeds. Today is a seed-planting day.</p>
+                  </div>
+                  <div className={`rounded-3xl border p-5 text-center ${isShipped(log) ? "border-[#141424] bg-white" : "border-[#141424]/40 bg-white"}`}>
+                    <div className="text-4xl font-black">{isShipped(log) ? "✓" : "○"}</div>
+                    <div className="text-sm font-bold uppercase tracking-widest">{isShipped(log) ? "Shipped" : "Not Yet"}</div>
+                    <div className="mt-1 text-xs text-[#2b2b45]">{prettyDate(date)}</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <div className="grid gap-3 md:grid-cols-4">
+              <Stat icon={<Flame />} label="Shipped Streak" value={stats.shippedStreak} />
+              <Stat icon={<Target />} label="Discipline Streak" value={stats.disciplineStreak} />
+              <Stat icon={<Heart />} label="Identity Votes" value={stats.votes} />
+              <Stat icon={<Trophy />} label="Master Mentor" value={`${stats.master}/2`} />
+            </div>
+
+            <Card className="rounded-3xl border-[#0033cc] bg-white shadow-md shadow-[#0033cc]/10">
+              <CardContent className="p-5">
+                <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#0033cc]">Today’s Win</p>
+                    <h3 className="mt-1 text-2xl font-black text-[#141424]">Your 1–3 most important actions</h3>
+                    <p className="mt-1 text-sm text-[#141424]">Chosen from your energy, BDD, P.E.R. goals, and neglected momentum areas.</p>
+                  </div>
+                  <EnergySelector value={log.energy || "yellow"} onChange={(energy) => setLog((l) => ({ ...l, energy }))} />
+                </div>
+                <div className="mt-5 grid gap-3">
+                  {suggestedPriorities.map((p, i) => (
+                    <div key={p.id} className="rounded-2xl border border-[#0033cc] bg-white p-4">
+                      <div className="flex items-start gap-3">
+                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#0033cc] text-sm font-black text-white">{i + 1}</div>
+                        <div className="flex-1">
+                          <div className="font-black text-[#0033cc]">{p.label}</div>
+                          <div className="mt-1 text-sm text-[#141424]">{p.reason}</div>
+                        </div>
+                        <button onClick={() => setLog((l) => ({ ...l, todayWin: l.todayWin?.includes(p.id) ? l.todayWin.filter((x) => x !== p.id) : [...(l.todayWin || []), p.id] }))} className={`rounded-xl border px-3 py-2 text-xs font-bold ${log.todayWin?.includes(p.id) ? "border-[#0033cc] bg-[#0033cc] text-white" : "border-[#0033cc] bg-white text-[#0033cc]"}`}>{log.todayWin?.includes(p.id) ? "Locked" : "Lock In"}</button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            <div className="grid gap-4 lg:grid-cols-2">
+              <Card className="rounded-3xl border-[#141424] bg-white">
+                <CardContent className="p-5">
+                  <h3 className="font-black text-[#141424]">Today’s Alignment</h3>
+                  <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                    {CHECKS.map((c) => (
+                      <CheckTile key={c.key} checked={Boolean(log.checks?.[c.key])} label={c.label} onClick={() => setLog((l) => ({ ...l, checks: { ...l.checks, [c.key]: !l.checks?.[c.key] } }))} />
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className="rounded-3xl border-[#141424] bg-white">
+                <CardContent className="p-5">
+                  <h3 className="font-black">7-Day Predictive Pattern</h3>
+                  <div className="mt-4 grid grid-cols-7 gap-2">
+                    {Array.from({ length: 7 }).map((_, i) => {
+                      const d = addDays(todayISO(), i - 6);
+                      const l = state.logs[d];
+                      const done = l && isShipped(l);
+                      const floor = l?.floorDay;
+                      return (
+                        <div key={d} className={`rounded-2xl border p-3 text-center ${d === todayISO() ? "border-violet-400" : done ? "border-emerald-400 bg-emerald-500/10" : floor ? "border-amber-400 bg-amber-500/10" : "border-slate-800 bg-white"}`}>
+                          <div className="text-[10px] uppercase text-[#3d3858]">{new Date(`${d}T12:00:00`).toLocaleDateString("en", { weekday: "short" })}</div>
+                          <div className="text-lg font-black">{done ? "✓" : floor ? "~" : "·"}</div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <p className="mt-4 text-sm text-[#2b2b45]">Full day = shipped. Floor day = vow kept. Miss = data, not identity.</p>
+                </CardContent>
+              </Card>
+            </div>
+          </motion.div>
+        )}
+
+        {tab === "daily" && (
+          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+            <Card className="rounded-3xl border-[#141424] bg-white">
+              <CardContent className="flex flex-col gap-3 p-5 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#5b4fd1]">Daily Log</p>
+                  <h2 className="text-2xl font-black">{prettyDate(date)}</h2>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button variant="secondary" className="rounded-2xl" onClick={() => setDate(addDays(date, -1))}><ChevronLeft size={16} /></Button>
+                  <input className="rounded-2xl border border-slate-700 bg-white px-3 py-2" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+                  <Button variant="secondary" className="rounded-2xl" disabled={date >= todayISO()} onClick={() => setDate(addDays(date, 1))}><ChevronRight size={16} /></Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <div className="grid gap-4 lg:grid-cols-3">
+              <Card className="rounded-3xl border-[#141424] bg-white lg:col-span-2">
+                <CardContent className="p-5">
+                  <h3 className="font-black">Daily GIVER Alignment</h3>
+                  <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                    {CHECKS.map((c) => (
+                      <CheckTile key={c.key} checked={Boolean(log.checks?.[c.key])} label={c.label} sub={GOALS.find((g) => g.key === c.goal)?.label} onClick={() => setLog((l) => ({ ...l, checks: { ...l.checks, [c.key]: !l.checks?.[c.key] } }))} />
+                    ))}
+                  </div>
+                  <div className="mt-4 rounded-2xl border border-amber-400/30 bg-amber-500/10 p-4">
+                    <label className="flex cursor-pointer items-center gap-3">
+                      <input type="checkbox" checked={log.floorDay} onChange={(e) => setLog((l) => ({ ...l, floorDay: e.target.checked }))} />
+                      <span><b>Floor Day counts.</b> Minimum vow kept. Never two misses in a row.</span>
+                    </label>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="rounded-3xl border-[#141424] bg-white">
+                <CardContent className="space-y-4 p-5">
+                  <h3 className="font-black">Business Cadence</h3>
+                  <Counter label="Samples offered" value={log.samples || 0} onChange={(v) => setLog((l) => ({ ...l, samples: Math.max(0, v) }))} />
+                  <Counter label="6-W conversations" value={log.sixW || 0} onChange={(v) => setLog((l) => ({ ...l, sixW: Math.max(0, v) }))} />
+                  <Counter label="New mentors" value={log.mentors || 0} onChange={(v) => setLog((l) => ({ ...l, mentors: Math.max(0, v) }))} />
+                  <Counter label="Core tricks practiced" value={log.coreTricksPracticed || 0} onChange={(v) => setLog((l) => ({ ...l, coreTricksPracticed: Math.max(0, v) }))} />
+                  <CheckTile checked={log.directMentorEnrolled} label="Direct mentor enrolled" onClick={() => setLog((l) => ({ ...l, directMentorEnrolled: !l.directMentorEnrolled }))} />
+                  <CheckTile checked={log.mentorHelpedEnroll} label="Mentor supported to enroll beneath them" onClick={() => setLog((l) => ({ ...l, mentorHelpedEnroll: !l.mentorHelpedEnroll }))} />
+                  <CheckTile checked={log.audienceRep} label="Live magic audience rep" onClick={() => setLog((l) => ({ ...l, audienceRep: !l.audienceRep }))} />
+                  <CheckTile checked={log.incomeSystemAction} label="Freedom income/system action" onClick={() => setLog((l) => ({ ...l, incomeSystemAction: !l.incomeSystemAction }))} />
+                </CardContent>
+              </Card>
+            </div>
+
+            <Card className="rounded-3xl border-[#141424] bg-white">
+              <CardContent className="p-5">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-black">Reach-Outs</h3>
+                  <Button className="rounded-2xl" variant="secondary" onClick={() => setLog((l) => ({ ...l, reachOuts: [...(l.reachOuts || []), ""] }))}><Plus size={16} /> Add</Button>
+                </div>
+                <div className="mt-4 grid gap-2 md:grid-cols-2">
+                  {(log.reachOuts || []).map((name, idx) => (
+                    <div className="flex gap-2" key={idx}>
+                      <input className="flex-1 rounded-2xl border border-slate-700 bg-white px-3 py-2" value={name} placeholder={`Reach-out ${idx + 1}`} onChange={(e) => setLog((l) => ({ ...l, reachOuts: l.reachOuts.map((x, i) => (i === idx ? e.target.value : x)) }))} />
+                      <Button variant="ghost" className="rounded-2xl" onClick={() => setLog((l) => ({ ...l, reachOuts: l.reachOuts.filter((_, i) => i !== idx) }))}><Trash2 size={16} /></Button>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="rounded-3xl border-[#141424] bg-white">
+              <CardContent className="p-5">
+                <h3 className="font-black">GIVERS Reflection Questions</h3>
+                <div className="mt-4 grid gap-3 md:grid-cols-2">
+                  <TextArea label="1. How did I GIVE first today?" value={log.reflections.give} onChange={(v) => setLog((l) => ({ ...l, reflections: { ...l.reflections, give: v } }))} />
+                  <TextArea label="2. What Wisdom did I gain or apply?" value={log.reflections.wisdom} onChange={(v) => setLog((l) => ({ ...l, reflections: { ...l.reflections, wisdom: v } }))} />
+                  <TextArea label="3. What vow did I keep when it was inconvenient?" value={log.reflections.vow} onChange={(v) => setLog((l) => ({ ...l, reflections: { ...l.reflections, vow: v } }))} />
+                  <TextArea label="4. What will I shift tomorrow?" value={log.reflections.shift} onChange={(v) => setLog((l) => ({ ...l, reflections: { ...l.reflections, shift: v } }))} />
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
+
+        {tab === "goals" && (
+          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="grid gap-4 md:grid-cols-2">
+            {GOALS.map((g) => {
+              const count = Object.values(state.logs).reduce((sum, l) => sum + CHECKS.filter((c) => c.goal === g.key && l.checks?.[c.key]).length, 0);
+              return (
+                <Card key={g.key} className="rounded-3xl border-[#141424] bg-white">
+                  <CardContent className="p-5">
+                    <div className="flex items-start gap-3">
+                      <div className="text-3xl">{g.icon}</div>
+                      <div>
+                        <h3 className="text-xl font-black">{g.label}</h3>
+                        <p className="mt-1 text-sm text-[#3d3858]">{g.anchor}</p>
+                        <p className="mt-3 rounded-2xl border border-[#7c6eff]/25 bg-[#7c6eff]/10 p-3 text-sm font-semibold text-[#eeeaff]">{g.question}</p>
+                      </div>
+                    </div>
+                    <div className="mt-4 rounded-2xl border border-slate-800 bg-white p-4">
+                      <div className="text-2xl font-black text-[#141424]">{count}</div>
+                      <div className="text-xs uppercase tracking-widest text-[#3d3858]">tracked alignment votes</div>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </motion.div>
+        )}
+
+        {tab === "pipeline" && (
+          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+            <Card className="rounded-3xl border-[#141424] bg-white">
+              <CardContent className="p-5">
+                <h3 className="font-black">Add Prospect / Relationship</h3>
+                <div className="mt-4 grid gap-3 md:grid-cols-5">
+                  <input className="rounded-2xl border border-slate-700 bg-white px-3 py-2 md:col-span-1" placeholder="Name" value={newProspect.name} onChange={(e) => setNewProspect({ ...newProspect, name: e.target.value })} />
+                  <select className="rounded-2xl border border-slate-700 bg-white px-3 py-2" value={newProspect.stage} onChange={(e) => setNewProspect({ ...newProspect, stage: e.target.value })}>{STAGES.map((s) => <option key={s}>{s}</option>)}</select>
+                  <input className="rounded-2xl border border-slate-700 bg-white px-3 py-2" placeholder="Tension point" value={newProspect.tension} onChange={(e) => setNewProspect({ ...newProspect, tension: e.target.value })} />
+                  <input className="rounded-2xl border border-slate-700 bg-white px-3 py-2" placeholder="Next step" value={newProspect.next} onChange={(e) => setNewProspect({ ...newProspect, next: e.target.value })} />
+                  <Button className="rounded-2xl" onClick={() => {
+                    if (!newProspect.name.trim()) return;
+                    setState((s) => ({ ...s, prospects: [{ ...newProspect, id: crypto.randomUUID(), updated: todayISO() }, ...s.prospects] }));
+                    setNewProspect({ name: "", stage: "New", next: "", tension: "", notes: "" });
+                  }}><Plus size={16} /> Add</Button>
+                </div>
+              </CardContent>
+            </Card>
+            <div className="grid gap-3">
+              {state.prospects.map((p) => (
+                <Card key={p.id} className="rounded-3xl border-[#141424] bg-white">
+                  <CardContent className="p-5">
+                    <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                      <div>
+                        <div className="flex items-center gap-2"><h3 className="text-lg font-black">{p.name}</h3><span className="rounded-full bg-violet-500/20 px-3 py-1 text-xs font-bold text-violet-200">{p.stage}</span></div>
+                        <p className="mt-1 text-sm text-[#2b2b45]"><b>Tension:</b> {p.tension || "—"}</p>
+                        <p className="text-sm text-[#2b2b45]"><b>Next:</b> {p.next || "—"}</p>
+                      </div>
+                      <Button variant="ghost" className="rounded-2xl" onClick={() => setState((s) => ({ ...s, prospects: s.prospects.filter((x) => x.id !== p.id) }))}><Trash2 size={16} /></Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        {tab === "review" && (
+          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+            <Card className="rounded-3xl border-[#141424] bg-white">
+              <CardContent className="p-5">
+                <h3 className="text-xl font-black">Weekly Review</h3>
+                <div className="mt-4 grid gap-3 md:grid-cols-4">
+                  <Stat label="Reach-Outs" value={stats.reachOuts} />
+                  <Stat label="Samples" value={stats.samples} />
+                  <Stat label="6-W" value={stats.sixW} />
+                  <Stat label="Mentors" value={stats.mentors} />
+                </div>
+                <div className="mt-5 rounded-3xl border border-emerald-500/20 bg-emerald-500/10 p-5">
+                  <p className="text-sm uppercase tracking-[0.25em] text-[#141424]">GIVERS Review Prompt</p>
+                  <p className="mt-2 text-lg font-bold">Where did I plant seeds, where did I keep vows, and where did my habits create predictable momentum?</p>
+                  <p className="mt-2 text-[#2b2b45]">Use this page each Sunday to compare your actions against your stated P.E.R. goals.</p>
+                </div>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <Button className="rounded-2xl" onClick={saveExport}><Download size={16} /> Export Data</Button>
+                  <label className="inline-flex cursor-pointer items-center gap-2 rounded-2xl bg-white px-4 py-2 text-sm font-medium hover:bg-[#f7f7fb]">
+                    <Upload size={16} /> Import Data
+                    <input className="hidden" type="file" accept="application/json" onChange={(e) => importData(e.target.files?.[0])} />
+                  </label>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
+      </div>
+    </div>
+  );
 }
 
-function renderBevelHist() {
-  var c = document.getElementById('bevelHist');
-  if (!c) return;
-  var entries = identityEntries.filter(function(e){ return e.type==='bevel'; }).slice(0,14);
-  if (!entries.length) { c.innerHTML = '<div style="color:var(--t3)">No Bevel logs yet.</div>'; return; }
-  c.innerHTML = entries.map(function(e) {
-    var d = {}; try { d=JSON.parse(e.content||'{}'); } catch(err) {}
-    var lc = d.stress_level==='low' ? 'var(--green)' : d.stress_level==='med' ? 'var(--warn)' : d.stress_level==='hi' ? 'var(--red)' : 'var(--t3)';
-    var rc = d.recovery>=70 ? 'var(--green)' : d.recovery>=50 ? 'var(--warn)' : 'var(--red)';
-    var sc = d.sleep>=70 ? 'var(--green)' : d.sleep>=50 ? 'var(--warn)' : 'var(--red)';
-    return '<div class="bv-hist-item">' +
-      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">' +
-        '<span style="font-size:.62rem;color:var(--t3)">' + fmtShort(e.date) + '</span>' +
-        (d.stress_level ? '<span style="font-size:.58rem;color:' + lc + ';text-transform:uppercase;letter-spacing:.06em">' + d.stress_level + ' stress</span>' : '') +
-      '</div>' +
-      '<div class="bv-metrics">' +
-        (d.recovery!=null ? '<span class="bv-metric" style="color:' + rc + '">Recovery: <b>' + d.recovery + '%</b></span>' : '') +
-        (d.sleep!=null ? '<span class="bv-metric" style="color:' + sc + '">Sleep: <b>' + d.sleep + '%</b></span>' : '') +
-        (d.strain!=null ? '<span class="bv-metric" style="color:var(--t2)">Strain: <b>' + d.strain + '%</b></span>' : '') +
-        (d.stress_current!=null ? '<span class="bv-metric" style="color:var(--t2)">Stress: <b>' + d.stress_current + '</b></span>' : '') +
-      '</div>' +
-      (d.note ? '<div style="font-size:.7rem;color:var(--t3);margin-top:3px;font-style:italic">' + esc(d.note) + '</div>' : '') +
-    '</div>';
-  }).join('');
+function Stat({ label, value, icon }) {
+  return (
+    <Card className="rounded-3xl border-[#0033cc] bg-white shadow-md shadow-[#0033cc]/10">
+      <CardContent className="p-5">
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-3xl font-black text-[#0033cc]">{value}</div>
+            <div className="mt-1 text-xs font-bold uppercase tracking-widest text-[#141424]">{label}</div>
+          </div>
+          {icon && <div className="text-[#0033cc]">{icon}</div>}
+        </div>
+      </CardContent>
+    </Card>
+  );
 }
 
-// ── INIT ──────────────────────────────────────
-async function init() {
-  // Tab click handler already bound via event delegation above
-
-  // Restore master steps
-  try {
-    var ms = JSON.parse(localStorage.getItem('masterSteps') || '{}');
-    masterSteps.s1 = !!ms.s1; masterSteps.s2 = !!ms.s2;
-  } catch(e) {}
-  updateMasterUI();
-
-  // Set date
-  var today = todayStr();
-  document.getElementById('logDatePicker').value = today;
-  document.getElementById('logDateDisplay').textContent = fmtDate(today);
-
-  // Load all data
-  await Promise.all([loadLogs(), loadProspects(), loadConvHistory(), loadSavedReviews()]);
-  deriveIdentityFromLogs(); // build identityEntries from shipped_logs columns
-
-  // Set current log
-  var todayLog = logs.find(function(l){ return l.date === today; });
-  currentLog = todayLog ? JSON.parse(JSON.stringify(todayLog)) : freshLog(today);
-
-  renderLogForm();
-  renderStats();
-  renderDash();
+function EnergySelector({ value, onChange }) {
+  const options = [
+    { key: "green", label: "Green", sub: "full power" },
+    { key: "yellow", label: "Yellow", sub: "steady" },
+    { key: "red", label: "Red", sub: "floor day" },
+  ];
+  return (
+    <div className="rounded-2xl border border-[#0033cc] bg-white p-2">
+      <div className="mb-2 text-center text-[10px] font-black uppercase tracking-widest text-[#0033cc]">Energy</div>
+      <div className="flex gap-2">
+        {options.map((o) => (
+          <button key={o.key} onClick={() => onChange(o.key)} className={`rounded-xl border px-3 py-2 text-left transition ${value === o.key ? "border-[#0033cc] bg-[#0033cc] text-white" : "border-[#0033cc] bg-white text-[#0033cc] hover:bg-[#eef3ff]"}`}>
+            <div className="text-xs font-black">{o.label}</div>
+            <div className="text-[10px] opacity-80">{o.sub}</div>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
 }
 
-init();
-</script>
-</body>
-</html>
+function CheckTile({ checked, label, sub, onClick }) {
+  return (
+    <button onClick={onClick} className={`flex min-h-[64px] items-center gap-3 rounded-2xl border p-3 text-left transition ${checked ? "border-[#141424] bg-white" : "border-[#1e1e32] bg-white hover:border-[#141424]/70"}`}>
+      <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-xl border ${checked ? "border-[#141424] bg-white text-[#141424]" : "border-[#2a2a42] text-transparent"}`}><Check size={16} /></span>
+      <span>
+        <span className="block text-sm font-bold text-[#0033cc]">{label}</span>
+        {sub && <span className="block text-xs font-semibold text-[#141424]">{sub}</span>}
+      </span>
+    </button>
+  );
+}
+
+function Counter({ label, value, onChange }) {
+  return (
+    <div className="flex items-center justify-between rounded-2xl border border-[#1e1e32] bg-white p-3">
+      <span className="text-sm font-semibold text-[#0033cc]">{label}</span>
+      <div className="flex items-center gap-2">
+        <Button variant="secondary" className="h-8 w-8 rounded-xl bg-white p-0 text-[#3d3858] hover:bg-[#f3f3f3]" onClick={() => onChange(value - 1)}>-</Button>
+        <span className="w-8 text-center text-lg font-black text-[#141424]">{value}</span>
+        <Button variant="secondary" className="h-8 w-8 rounded-xl bg-white p-0 text-[#3d3858] hover:bg-[#f3f3f3]" onClick={() => onChange(value + 1)}>+</Button>
+      </div>
+    </div>
+  );
+}
+
+function TextArea({ label, value, onChange }) {
+  return (
+    <label className="block">
+      <span className="text-sm font-bold text-[#0033cc]">{label}</span>
+      <textarea className="mt-2 min-h-[90px] w-full rounded-2xl border border-[#0033cc] bg-white px-3 py-2 text-[#141424] outline-none focus:border-[#0033cc]" value={value || ""} onChange={(e) => onChange(e.target.value)} />
+    </label>
+  );
+}
