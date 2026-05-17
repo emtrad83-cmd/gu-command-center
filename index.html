@@ -1,567 +1,458 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { motion } from "framer-motion";
-import { Check, ChevronLeft, ChevronRight, Download, Flame, Heart, Plus, Save, Sparkles, Target, Trash2, Trophy, Upload } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Evan's GIVER Daily Lifestyle Hub</title>
+  <style>
+    :root {
+      --blue: #0033cc;
+      --dark: #141424;
+      --light: #f7f9ff;
+      --border: #d6def7;
+      --success: #0f9d58;
+    }
 
-const todayISO = () => new Date().toISOString().slice(0, 10);
-const pad = (n) => String(n).padStart(2, "0");
-const addDays = (iso, days) => {
-  const d = new Date(`${iso}T12:00:00`);
-  d.setDate(d.getDate() + days);
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-};
-const prettyDate = (iso) =>
-  new Date(`${iso}T12:00:00`).toLocaleDateString("en-US", {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+    }
 
-const GOALS = [
-  { key: "prosperity", label: "Prosperity", icon: "🌱", question: "Where did I plant a seed today before seeing the harvest?", anchor: "Give first. Plant seeds daily without waiting for the harvest." },
-  { key: "wellness", label: "Wellness/Fitness", icon: "💪", question: "Did I treat my body like the asset that carries my mission?", anchor: "5am discipline, Vitruvian training, protein, recovery." },
-  { key: "happiness", label: "Happiness", icon: "😊", question: "What thought did I choose today that served my future self?", anchor: "Choose thoughts that serve and build happiness through alignment." },
-  { key: "freedom", label: "Freedom", icon: "🕊️", question: "What system, asset, or income action did I build today?", anchor: "Build systems and income streams beyond direct time." },
-  { key: "wealth", label: "Wealth", icon: "💰", question: "What did I do today that the first multimillionaire in my family would do?", anchor: "Think and build like the first multimillionaire in the family." },
-  { key: "travel", label: "Travel", icon: "✈️", question: "What disciplined action made future travel more possible?", anchor: "Plan it, earn it, book it." },
-  { key: "discipline", label: "Discipline", icon: "⏰", question: "What choice did I make when no one else could see it?", anchor: "Discipline is my identity, not a goal." },
-  { key: "magic", label: "Performing Magician", icon: "🎩", question: "What rep did I complete before I felt ready?", anchor: "Confidence comes from reps, not readiness." },
-  { key: "mentor", label: "Ambassador Mentor", icon: "🏆", question: "How did I rise by lifting another GIVER today?", anchor: "Rise by lifting. Develop other GIVERs." },
-  { key: "network", label: "Grow Network", icon: "🤝", question: "Who did I intentionally invest in or move closer today?", anchor: "Invest in like-minded GIVER relationships." },
-];
+    body {
+      background: white;
+      color: var(--dark);
+      padding: 24px;
+      line-height: 1.5;
+    }
 
-const CHECKS = [
-  { key: "wake5", label: "5am discipline", goal: "discipline", points: 1 },
-  { key: "train", label: "Vitruvian / movement", goal: "wellness", points: 1 },
-  { key: "protein", label: "Protein target", goal: "wellness", points: 1 },
-  { key: "giveFirst", label: "Give-first action", goal: "prosperity", points: 1 },
-  { key: "reachouts", label: "5 reach-outs", goal: "mentor", points: 1 },
-  { key: "samples", label: "Sample / invite / 6-W advanced", goal: "mentor", points: 1 },
-  { key: "magicReps", label: "Magic reps", goal: "magic", points: 1 },
-  { key: "teamEvan", label: "Team EVAN / mission action", goal: "freedom", points: 1 },
-  { key: "network", label: "Invested in one GIVER relationship", goal: "network", points: 1 },
-  { key: "learn", label: "Lifelong learning / reflection", goal: "happiness", points: 1 },
-];
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
 
-const STAGES = ["New", "Curious", "Sample", "6-W", "Patron", "Mentor", "Nurture", "Passed"];
-const ROYAL = "#0033cc";
+    .hero {
+      border: 2px solid var(--blue);
+      border-radius: 28px;
+      padding: 32px;
+      margin-bottom: 24px;
+      background: white;
+      box-shadow: 0 8px 24px rgba(0, 51, 204, 0.08);
+    }
 
-const PRIORITY_BANK = [
-  { id: "protect-body", label: "Protect the body: complete protein + 10 minutes of movement", energy: ["red", "yellow"], goal: "wellness", reason: "Your body carries the mission. A floor win keeps the identity intact." },
-  { id: "full-train", label: "Complete intentional Vitruvian training", energy: ["green", "yellow"], goal: "wellness", reason: "Strength compounds into energy, confidence, and discipline." },
-  { id: "one-reach", label: "Send one meaningful GU reach-out or follow-up", energy: ["red", "yellow", "green"], goal: "mentor", reason: "One planted seed prevents business drift." },
-  { id: "five-reach", label: "Complete the 5 reach-out cadence", energy: ["green", "yellow"], goal: "mentor", reason: "Consistent outreach makes Master Mentor predictable." },
-  { id: "sample-sixw", label: "Move one person toward a sample, 6-W, or patron step", energy: ["green", "yellow"], goal: "mentor", reason: "This is a multiplication action, not maintenance." },
-  { id: "magic-floor", label: "Practice one core magic trick 5 times", energy: ["red", "yellow"], goal: "magic", reason: "Confidence comes from reps, not readiness." },
-  { id: "magic-full", label: "Practice all three core tricks until clean", energy: ["green"], goal: "magic", reason: "Automatic skill creates performance confidence." },
-  { id: "give-first", label: "Do one give-first action for someone with no expectation", energy: ["red", "yellow", "green"], goal: "prosperity", reason: "Prosperity follows the GIVER who plants seeds." },
-  { id: "relationship", label: "Invest in one GIVER relationship", energy: ["yellow", "green"], goal: "network", reason: "Your BDD is built through people, not isolation." },
-  { id: "system", label: "Build or improve one small system for GU or Team EVAN", energy: ["green"], goal: "freedom", reason: "Freedom comes from systems that create value beyond your presence." },
-  { id: "wisdom", label: "Capture one lesson in the Wisdom Vault / reflection", energy: ["red", "yellow", "green"], goal: "happiness", reason: "Lifelong learning turns experience into character." },
-];
-const STORAGE_KEY = "giversDailyHub_v1";
+    .eyebrow {
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
 
-const blankLog = (date) => ({
-  date,
-  energy: "yellow",
-  todayWin: [],
-  checks: {},
-  reachOuts: [],
-  introduced: [],
-  samples: 0,
-  sixW: 0,
-  mentors: 0,
-  directMentorEnrolled: false,
-  mentorHelpedEnroll: false,
-  coreTricksPracticed: 0,
-  audienceRep: false,
-  incomeSystemAction: false,
-  floorDay: false,
-  reflections: {
-    give: "",
-    wisdom: "",
-    vow: "",
-    shift: "",
-    gratitude: "",
-  },
-});
+    h1 {
+      font-size: 48px;
+      line-height: 1.05;
+      margin-bottom: 10px;
+    }
 
-function loadState() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return { logs: {}, prospects: [] };
-    return JSON.parse(raw);
-  } catch {
-    return { logs: {}, prospects: [] };
-  }
-}
+    .sub {
+      color: #3d3858;
+      font-size: 18px;
+    }
 
-function scoreLog(log) {
-  const checkScore = CHECKS.reduce((sum, c) => sum + (log.checks?.[c.key] ? c.points : 0), 0);
-  const cadenceScore = Math.min((log.reachOuts?.length || 0) / 5, 1) * 2 + Math.min((log.samples || 0) / 3, 1) + Math.min((log.sixW || 0), 1);
-  const goalScore = (log.directMentorEnrolled ? 1 : 0) + (log.mentorHelpedEnroll ? 1 : 0) + (log.incomeSystemAction ? 1 : 0) + (log.audienceRep ? 1 : 0);
-  return Math.round(checkScore + cadenceScore + goalScore);
-}
+    .grid {
+      display: grid;
+      gap: 20px;
+    }
 
-function isShipped(log) {
-  const core = log.checks?.giveFirst && log.checks?.learn;
-  const wellness = log.checks?.wake5 || log.checks?.train || log.checks?.protein;
-  const business = (log.reachOuts?.length || 0) >= 5 || log.samples > 0 || log.sixW > 0 || log.directMentorEnrolled || log.mentorHelpedEnroll;
-  return log.floorDay || Boolean(core && wellness && business);
-}
+    .stats {
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      margin-bottom: 24px;
+    }
 
-function streak(logs, predicate) {
-  let count = 0;
-  let d = todayISO();
-  while (true) {
-    const log = logs[d];
-    if (!log || !predicate(log)) break;
-    count += 1;
-    d = addDays(d, -1);
-  }
-  return count;
-}
+    .card {
+      border: 2px solid var(--blue);
+      border-radius: 24px;
+      padding: 22px;
+      background: white;
+      box-shadow: 0 4px 18px rgba(0, 51, 204, 0.06);
+    }
 
-function recentNeglect(logs, goal, days = 4) {
-  for (let i = 0; i < days; i++) {
-    const d = addDays(todayISO(), -i);
-    const l = logs[d];
-    if (!l) continue;
-    const hit = CHECKS.some((c) => c.goal === goal && l.checks?.[c.key]);
-    if (hit) return false;
-  }
-  return true;
-}
+    .stat-number {
+      color: var(--blue);
+      font-size: 42px;
+      font-weight: 800;
+    }
 
-function suggestPriorities(log, logs) {
-  const energy = log.energy || "yellow";
-  const incomplete = PRIORITY_BANK.filter((p) => p.energy.includes(energy));
-  const scored = incomplete.map((p) => {
-    let score = 1;
-    if (["mentor", "wellness", "discipline"].includes(p.goal)) score += 2;
-    if (recentNeglect(logs, p.goal)) score += 2;
-    if (energy === "red" && ["protect-body", "one-reach", "magic-floor", "wisdom", "give-first"].includes(p.id)) score += 3;
-    if (energy === "green" && ["five-reach", "sample-sixw", "system", "magic-full"].includes(p.id)) score += 2;
-    if (log.todayWin?.includes(p.id)) score += 4;
-    return { ...p, score };
-  });
-  return scored.sort((a, b) => b.score - a.score).slice(0, 3);
-}
+    .stat-label {
+      margin-top: 6px;
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #3d3858;
+      font-weight: 700;
+    }
 
-export default function GiversDailyHub() {
-  const [state, setState] = useState(loadState);
-  const [date, setDate] = useState(todayISO());
-  const [tab, setTab] = useState("dashboard");
-  const [newProspect, setNewProspect] = useState({ name: "", stage: "New", next: "", tension: "", notes: "" });
+    .section-title {
+      color: var(--dark);
+      font-size: 32px;
+      margin-bottom: 8px;
+      font-weight: 800;
+    }
 
-  const log = state.logs[date] || blankLog(date);
-  const suggestedPriorities = suggestPriorities(log, state.logs);
-  const setLog = (updater) => {
-    setState((s) => {
-      const current = s.logs[date] || blankLog(date);
-      const next = typeof updater === "function" ? updater(current) : updater;
-      return { ...s, logs: { ...s.logs, [date]: next } };
-    });
-  };
+    .section-sub {
+      color: #3d3858;
+      margin-bottom: 20px;
+    }
 
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  }, [state]);
+    .today-win {
+      margin-bottom: 24px;
+    }
 
-  const stats = useMemo(() => {
-    const logs = state.logs;
-    const all = Object.values(logs);
-    return {
-      shippedStreak: streak(logs, isShipped),
-      disciplineStreak: streak(logs, (l) => l.floorDay || l.checks?.wake5 || l.checks?.train),
-      shippedTotal: all.filter(isShipped).length,
-      votes: all.reduce((sum, l) => sum + scoreLog(l), 0),
-      reachOuts: all.reduce((sum, l) => sum + (l.reachOuts?.length || 0), 0),
-      samples: all.reduce((sum, l) => sum + (l.samples || 0), 0),
-      sixW: all.reduce((sum, l) => sum + (l.sixW || 0), 0),
-      mentors: all.reduce((sum, l) => sum + (l.mentors || 0), 0),
-      master: all.some((l) => l.directMentorEnrolled) + all.some((l) => l.mentorHelpedEnroll),
-    };
-  }, [state]);
+    .priority {
+      border: 2px solid var(--blue);
+      border-radius: 20px;
+      padding: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      gap: 18px;
+    }
 
-  const saveExport = () => {
-    const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `givers-hub-export-${todayISO()}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
+    .priority-left {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
 
-  const importData = (file) => {
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      try {
-        const parsed = JSON.parse(String(reader.result));
-        if (parsed.logs && parsed.prospects) setState(parsed);
-      } catch {
-        alert("That file could not be imported.");
+    .priority-number {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--blue);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .priority-title {
+      color: var(--blue);
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .priority-reason {
+      color: #3d3858;
+      font-size: 15px;
+    }
+
+    .btn {
+      border: 2px solid var(--blue);
+      background: white;
+      color: var(--blue);
+      padding: 10px 18px;
+      border-radius: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .btn:hover {
+      background: var(--light);
+    }
+
+    .btn.active {
+      background: var(--blue);
+      color: white;
+    }
+
+    .energy-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+
+    .alignment-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .check {
+      border: 2px solid var(--blue);
+      border-radius: 18px;
+      padding: 18px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .check:hover {
+      background: var(--light);
+    }
+
+    .check input {
+      width: 22px;
+      height: 22px;
+      margin-top: 2px;
+      accent-color: var(--blue);
+    }
+
+    .check-title {
+      color: var(--blue);
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .check-sub {
+      font-size: 14px;
+      color: #3d3858;
+    }
+
+    .reflection-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 120px;
+      border: 2px solid var(--blue);
+      border-radius: 18px;
+      padding: 14px;
+      font-size: 15px;
+      margin-top: 10px;
+      resize: vertical;
+    }
+
+    label {
+      color: var(--blue);
+      font-weight: 700;
+    }
+
+    .footer {
+      margin-top: 36px;
+      text-align: center;
+      color: #3d3858;
+      font-size: 14px;
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 36px;
       }
-    };
-    reader.readAsText(file);
-  };
 
-  return (
-    <div className="min-h-screen bg-white text-[#141424] p-4 md:p-6" style={{ backgroundImage: "radial-gradient(circle at 20% 0%, rgba(124,110,255,.08), transparent 28%), radial-gradient(circle at 80% 15%, rgba(245,200,66,.06), transparent 25%), radial-gradient(circle at 50% 100%, rgba(0,229,176,.04), transparent 30%)" }}>
-      <div className="mx-auto max-w-6xl space-y-4">
-        <header className="sticky top-0 z-20 -mx-4 -mt-4 border-b border-[#141424] bg-white px-4 py-4 backdrop-blur md:-mx-6 md:-mt-6 md:px-6">
-          <div className="mx-auto flex max-w-6xl flex-col gap-3 md:flex-row md:items-center md:justify-between">
-            <div>
-              <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-[0.25em] text-[#141424]">
-                <Sparkles size={16} /> Evan's GIVER Daily Lifestyle Hub
-              </div>
-              <h1 className="mt-1 text-xl font-black md:text-3xl">Lifestyle + Mission Command Center</h1>
-              <p className="text-sm text-[#3d3858]">Give first. Keep vows. Build predictive results.</p>
-            </div>
-            <div className="flex flex-wrap items-center gap-2">
-              {["dashboard", "daily", "goals", "pipeline", "review"].map((t) => (
-                <Button key={t} variant={tab === t ? "default" : "secondary"} onClick={() => setTab(t)} className={`rounded-2xl capitalize ${tab === t ? "bg-[#7c6eff] text-[#141424] hover:bg-[#9080ff]" : "bg-white text-[#3d3858] hover:bg-white hover:text-[#eeeaff]"}`}>
-                  {t}
-                </Button>
-              ))}
-            </div>
-          </div>
-        </header>
+      body {
+        padding: 14px;
+      }
 
-        {tab === "dashboard" && (
-          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
-            <Card className="rounded-3xl border-[#141424]/30 bg-gradient-to-br from-white via-white to-white shadow-xl shadow-[#7c6eff]/10">
-              <CardContent className="p-5 md:p-8">
-                <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#141424]">Today’s P.E.R. Question</p>
-                    <h2 className="mt-2 text-2xl font-black md:text-4xl">What actions today make my desired end result predictable?</h2>
-                    <p className="mt-2 max-w-3xl text-[#3d3858]">Your life is being built through thoughts, habits, character, and repeated deeds. Today is a seed-planting day.</p>
-                  </div>
-                  <div className={`rounded-3xl border p-5 text-center ${isShipped(log) ? "border-[#141424] bg-white" : "border-[#141424]/40 bg-white"}`}>
-                    <div className="text-4xl font-black">{isShipped(log) ? "✓" : "○"}</div>
-                    <div className="text-sm font-bold uppercase tracking-widest">{isShipped(log) ? "Shipped" : "Not Yet"}</div>
-                    <div className="mt-1 text-xs text-[#2b2b45]">{prettyDate(date)}</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+      .hero,
+      .card {
+        padding: 20px;
+      }
 
-            <div className="grid gap-3 md:grid-cols-4">
-              <Stat icon={<Flame />} label="Shipped Streak" value={stats.shippedStreak} />
-              <Stat icon={<Target />} label="Discipline Streak" value={stats.disciplineStreak} />
-              <Stat icon={<Heart />} label="Identity Votes" value={stats.votes} />
-              <Stat icon={<Trophy />} label="Master Mentor" value={`${stats.master}/2`} />
-            </div>
+      .priority {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
 
-            <Card className="rounded-3xl border-[#0033cc] bg-white shadow-md shadow-[#0033cc]/10">
-              <CardContent className="p-5">
-                <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#0033cc]">Today’s Win</p>
-                    <h3 className="mt-1 text-2xl font-black text-[#141424]">Your 1–3 most important actions</h3>
-                    <p className="mt-1 text-sm text-[#141424]">Chosen from your energy, BDD, P.E.R. goals, and neglected momentum areas.</p>
-                  </div>
-                  <EnergySelector value={log.energy || "yellow"} onChange={(energy) => setLog((l) => ({ ...l, energy }))} />
-                </div>
-                <div className="mt-5 grid gap-3">
-                  {suggestedPriorities.map((p, i) => (
-                    <div key={p.id} className="rounded-2xl border border-[#0033cc] bg-white p-4">
-                      <div className="flex items-start gap-3">
-                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#0033cc] text-sm font-black text-white">{i + 1}</div>
-                        <div className="flex-1">
-                          <div className="font-black text-[#0033cc]">{p.label}</div>
-                          <div className="mt-1 text-sm text-[#141424]">{p.reason}</div>
-                        </div>
-                        <button onClick={() => setLog((l) => ({ ...l, todayWin: l.todayWin?.includes(p.id) ? l.todayWin.filter((x) => x !== p.id) : [...(l.todayWin || []), p.id] }))} className={`rounded-xl border px-3 py-2 text-xs font-bold ${log.todayWin?.includes(p.id) ? "border-[#0033cc] bg-[#0033cc] text-white" : "border-[#0033cc] bg-white text-[#0033cc]"}`}>{log.todayWin?.includes(p.id) ? "Locked" : "Lock In"}</button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+    <div class="hero">
+      <div class="eyebrow">Evan's GIVER Daily Lifestyle Hub</div>
+      <h1>Lifestyle + Mission Command Center</h1>
+      <p class="sub">
+        Give first. Keep vows. Build predictive results. Become the Big Definite Dream through aligned daily execution.
+      </p>
 
-            <div className="grid gap-4 lg:grid-cols-2">
-              <Card className="rounded-3xl border-[#141424] bg-white">
-                <CardContent className="p-5">
-                  <h3 className="font-black text-[#141424]">Today’s Alignment</h3>
-                  <div className="mt-4 grid gap-2 sm:grid-cols-2">
-                    {CHECKS.map((c) => (
-                      <CheckTile key={c.key} checked={Boolean(log.checks?.[c.key])} label={c.label} onClick={() => setLog((l) => ({ ...l, checks: { ...l.checks, [c.key]: !l.checks?.[c.key] } }))} />
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-              <Card className="rounded-3xl border-[#141424] bg-white">
-                <CardContent className="p-5">
-                  <h3 className="font-black">7-Day Predictive Pattern</h3>
-                  <div className="mt-4 grid grid-cols-7 gap-2">
-                    {Array.from({ length: 7 }).map((_, i) => {
-                      const d = addDays(todayISO(), i - 6);
-                      const l = state.logs[d];
-                      const done = l && isShipped(l);
-                      const floor = l?.floorDay;
-                      return (
-                        <div key={d} className={`rounded-2xl border p-3 text-center ${d === todayISO() ? "border-violet-400" : done ? "border-emerald-400 bg-emerald-500/10" : floor ? "border-amber-400 bg-amber-500/10" : "border-slate-800 bg-white"}`}>
-                          <div className="text-[10px] uppercase text-[#3d3858]">{new Date(`${d}T12:00:00`).toLocaleDateString("en", { weekday: "short" })}</div>
-                          <div className="text-lg font-black">{done ? "✓" : floor ? "~" : "·"}</div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                  <p className="mt-4 text-sm text-[#2b2b45]">Full day = shipped. Floor day = vow kept. Miss = data, not identity.</p>
-                </CardContent>
-              </Card>
-            </div>
-          </motion.div>
-        )}
-
-        {tab === "daily" && (
-          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
-            <Card className="rounded-3xl border-[#141424] bg-white">
-              <CardContent className="flex flex-col gap-3 p-5 md:flex-row md:items-center md:justify-between">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#5b4fd1]">Daily Log</p>
-                  <h2 className="text-2xl font-black">{prettyDate(date)}</h2>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Button variant="secondary" className="rounded-2xl" onClick={() => setDate(addDays(date, -1))}><ChevronLeft size={16} /></Button>
-                  <input className="rounded-2xl border border-slate-700 bg-white px-3 py-2" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
-                  <Button variant="secondary" className="rounded-2xl" disabled={date >= todayISO()} onClick={() => setDate(addDays(date, 1))}><ChevronRight size={16} /></Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            <div className="grid gap-4 lg:grid-cols-3">
-              <Card className="rounded-3xl border-[#141424] bg-white lg:col-span-2">
-                <CardContent className="p-5">
-                  <h3 className="font-black">Daily GIVER Alignment</h3>
-                  <div className="mt-4 grid gap-2 sm:grid-cols-2">
-                    {CHECKS.map((c) => (
-                      <CheckTile key={c.key} checked={Boolean(log.checks?.[c.key])} label={c.label} sub={GOALS.find((g) => g.key === c.goal)?.label} onClick={() => setLog((l) => ({ ...l, checks: { ...l.checks, [c.key]: !l.checks?.[c.key] } }))} />
-                    ))}
-                  </div>
-                  <div className="mt-4 rounded-2xl border border-amber-400/30 bg-amber-500/10 p-4">
-                    <label className="flex cursor-pointer items-center gap-3">
-                      <input type="checkbox" checked={log.floorDay} onChange={(e) => setLog((l) => ({ ...l, floorDay: e.target.checked }))} />
-                      <span><b>Floor Day counts.</b> Minimum vow kept. Never two misses in a row.</span>
-                    </label>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="rounded-3xl border-[#141424] bg-white">
-                <CardContent className="space-y-4 p-5">
-                  <h3 className="font-black">Business Cadence</h3>
-                  <Counter label="Samples offered" value={log.samples || 0} onChange={(v) => setLog((l) => ({ ...l, samples: Math.max(0, v) }))} />
-                  <Counter label="6-W conversations" value={log.sixW || 0} onChange={(v) => setLog((l) => ({ ...l, sixW: Math.max(0, v) }))} />
-                  <Counter label="New mentors" value={log.mentors || 0} onChange={(v) => setLog((l) => ({ ...l, mentors: Math.max(0, v) }))} />
-                  <Counter label="Core tricks practiced" value={log.coreTricksPracticed || 0} onChange={(v) => setLog((l) => ({ ...l, coreTricksPracticed: Math.max(0, v) }))} />
-                  <CheckTile checked={log.directMentorEnrolled} label="Direct mentor enrolled" onClick={() => setLog((l) => ({ ...l, directMentorEnrolled: !l.directMentorEnrolled }))} />
-                  <CheckTile checked={log.mentorHelpedEnroll} label="Mentor supported to enroll beneath them" onClick={() => setLog((l) => ({ ...l, mentorHelpedEnroll: !l.mentorHelpedEnroll }))} />
-                  <CheckTile checked={log.audienceRep} label="Live magic audience rep" onClick={() => setLog((l) => ({ ...l, audienceRep: !l.audienceRep }))} />
-                  <CheckTile checked={log.incomeSystemAction} label="Freedom income/system action" onClick={() => setLog((l) => ({ ...l, incomeSystemAction: !l.incomeSystemAction }))} />
-                </CardContent>
-              </Card>
-            </div>
-
-            <Card className="rounded-3xl border-[#141424] bg-white">
-              <CardContent className="p-5">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-black">Reach-Outs</h3>
-                  <Button className="rounded-2xl" variant="secondary" onClick={() => setLog((l) => ({ ...l, reachOuts: [...(l.reachOuts || []), ""] }))}><Plus size={16} /> Add</Button>
-                </div>
-                <div className="mt-4 grid gap-2 md:grid-cols-2">
-                  {(log.reachOuts || []).map((name, idx) => (
-                    <div className="flex gap-2" key={idx}>
-                      <input className="flex-1 rounded-2xl border border-slate-700 bg-white px-3 py-2" value={name} placeholder={`Reach-out ${idx + 1}`} onChange={(e) => setLog((l) => ({ ...l, reachOuts: l.reachOuts.map((x, i) => (i === idx ? e.target.value : x)) }))} />
-                      <Button variant="ghost" className="rounded-2xl" onClick={() => setLog((l) => ({ ...l, reachOuts: l.reachOuts.filter((_, i) => i !== idx) }))}><Trash2 size={16} /></Button>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="rounded-3xl border-[#141424] bg-white">
-              <CardContent className="p-5">
-                <h3 className="font-black">GIVERS Reflection Questions</h3>
-                <div className="mt-4 grid gap-3 md:grid-cols-2">
-                  <TextArea label="1. How did I GIVE first today?" value={log.reflections.give} onChange={(v) => setLog((l) => ({ ...l, reflections: { ...l.reflections, give: v } }))} />
-                  <TextArea label="2. What Wisdom did I gain or apply?" value={log.reflections.wisdom} onChange={(v) => setLog((l) => ({ ...l, reflections: { ...l.reflections, wisdom: v } }))} />
-                  <TextArea label="3. What vow did I keep when it was inconvenient?" value={log.reflections.vow} onChange={(v) => setLog((l) => ({ ...l, reflections: { ...l.reflections, vow: v } }))} />
-                  <TextArea label="4. What will I shift tomorrow?" value={log.reflections.shift} onChange={(v) => setLog((l) => ({ ...l, reflections: { ...l.reflections, shift: v } }))} />
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        )}
-
-        {tab === "goals" && (
-          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="grid gap-4 md:grid-cols-2">
-            {GOALS.map((g) => {
-              const count = Object.values(state.logs).reduce((sum, l) => sum + CHECKS.filter((c) => c.goal === g.key && l.checks?.[c.key]).length, 0);
-              return (
-                <Card key={g.key} className="rounded-3xl border-[#141424] bg-white">
-                  <CardContent className="p-5">
-                    <div className="flex items-start gap-3">
-                      <div className="text-3xl">{g.icon}</div>
-                      <div>
-                        <h3 className="text-xl font-black">{g.label}</h3>
-                        <p className="mt-1 text-sm text-[#3d3858]">{g.anchor}</p>
-                        <p className="mt-3 rounded-2xl border border-[#7c6eff]/25 bg-[#7c6eff]/10 p-3 text-sm font-semibold text-[#eeeaff]">{g.question}</p>
-                      </div>
-                    </div>
-                    <div className="mt-4 rounded-2xl border border-slate-800 bg-white p-4">
-                      <div className="text-2xl font-black text-[#141424]">{count}</div>
-                      <div className="text-xs uppercase tracking-widest text-[#3d3858]">tracked alignment votes</div>
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </motion.div>
-        )}
-
-        {tab === "pipeline" && (
-          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
-            <Card className="rounded-3xl border-[#141424] bg-white">
-              <CardContent className="p-5">
-                <h3 className="font-black">Add Prospect / Relationship</h3>
-                <div className="mt-4 grid gap-3 md:grid-cols-5">
-                  <input className="rounded-2xl border border-slate-700 bg-white px-3 py-2 md:col-span-1" placeholder="Name" value={newProspect.name} onChange={(e) => setNewProspect({ ...newProspect, name: e.target.value })} />
-                  <select className="rounded-2xl border border-slate-700 bg-white px-3 py-2" value={newProspect.stage} onChange={(e) => setNewProspect({ ...newProspect, stage: e.target.value })}>{STAGES.map((s) => <option key={s}>{s}</option>)}</select>
-                  <input className="rounded-2xl border border-slate-700 bg-white px-3 py-2" placeholder="Tension point" value={newProspect.tension} onChange={(e) => setNewProspect({ ...newProspect, tension: e.target.value })} />
-                  <input className="rounded-2xl border border-slate-700 bg-white px-3 py-2" placeholder="Next step" value={newProspect.next} onChange={(e) => setNewProspect({ ...newProspect, next: e.target.value })} />
-                  <Button className="rounded-2xl" onClick={() => {
-                    if (!newProspect.name.trim()) return;
-                    setState((s) => ({ ...s, prospects: [{ ...newProspect, id: crypto.randomUUID(), updated: todayISO() }, ...s.prospects] }));
-                    setNewProspect({ name: "", stage: "New", next: "", tension: "", notes: "" });
-                  }}><Plus size={16} /> Add</Button>
-                </div>
-              </CardContent>
-            </Card>
-            <div className="grid gap-3">
-              {state.prospects.map((p) => (
-                <Card key={p.id} className="rounded-3xl border-[#141424] bg-white">
-                  <CardContent className="p-5">
-                    <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                      <div>
-                        <div className="flex items-center gap-2"><h3 className="text-lg font-black">{p.name}</h3><span className="rounded-full bg-violet-500/20 px-3 py-1 text-xs font-bold text-violet-200">{p.stage}</span></div>
-                        <p className="mt-1 text-sm text-[#2b2b45]"><b>Tension:</b> {p.tension || "—"}</p>
-                        <p className="text-sm text-[#2b2b45]"><b>Next:</b> {p.next || "—"}</p>
-                      </div>
-                      <Button variant="ghost" className="rounded-2xl" onClick={() => setState((s) => ({ ...s, prospects: s.prospects.filter((x) => x.id !== p.id) }))}><Trash2 size={16} /></Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </motion.div>
-        )}
-
-        {tab === "review" && (
-          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
-            <Card className="rounded-3xl border-[#141424] bg-white">
-              <CardContent className="p-5">
-                <h3 className="text-xl font-black">Weekly Review</h3>
-                <div className="mt-4 grid gap-3 md:grid-cols-4">
-                  <Stat label="Reach-Outs" value={stats.reachOuts} />
-                  <Stat label="Samples" value={stats.samples} />
-                  <Stat label="6-W" value={stats.sixW} />
-                  <Stat label="Mentors" value={stats.mentors} />
-                </div>
-                <div className="mt-5 rounded-3xl border border-emerald-500/20 bg-emerald-500/10 p-5">
-                  <p className="text-sm uppercase tracking-[0.25em] text-[#141424]">GIVERS Review Prompt</p>
-                  <p className="mt-2 text-lg font-bold">Where did I plant seeds, where did I keep vows, and where did my habits create predictable momentum?</p>
-                  <p className="mt-2 text-[#2b2b45]">Use this page each Sunday to compare your actions against your stated P.E.R. goals.</p>
-                </div>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <Button className="rounded-2xl" onClick={saveExport}><Download size={16} /> Export Data</Button>
-                  <label className="inline-flex cursor-pointer items-center gap-2 rounded-2xl bg-white px-4 py-2 text-sm font-medium hover:bg-[#f7f7fb]">
-                    <Upload size={16} /> Import Data
-                    <input className="hidden" type="file" accept="application/json" onChange={(e) => importData(e.target.files?.[0])} />
-                  </label>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        )}
+      <div class="energy-buttons">
+        <button class="btn active">Green Day</button>
+        <button class="btn">Yellow Day</button>
+        <button class="btn">Red Day</button>
       </div>
     </div>
-  );
-}
 
-function Stat({ label, value, icon }) {
-  return (
-    <Card className="rounded-3xl border-[#0033cc] bg-white shadow-md shadow-[#0033cc]/10">
-      <CardContent className="p-5">
-        <div className="flex items-center justify-between">
+    <div class="grid stats">
+      <div class="card">
+        <div class="stat-number">12</div>
+        <div class="stat-label">Shipped Streak</div>
+      </div>
+
+      <div class="card">
+        <div class="stat-number">47</div>
+        <div class="stat-label">Identity Votes</div>
+      </div>
+
+      <div class="card">
+        <div class="stat-number">3</div>
+        <div class="stat-label">Seeds Planted Today</div>
+      </div>
+
+      <div class="card">
+        <div class="stat-number">1/2</div>
+        <div class="stat-label">Master Mentor Progress</div>
+      </div>
+    </div>
+
+    <div class="card today-win">
+      <div class="section-title">Today's Win</div>
+      <div class="section-sub">
+        If these 1–3 things get done, today stays aligned.
+      </div>
+
+      <div class="priority">
+        <div class="priority-left">
+          <div class="priority-number">1</div>
           <div>
-            <div className="text-3xl font-black text-[#0033cc]">{value}</div>
-            <div className="mt-1 text-xs font-bold uppercase tracking-widest text-[#141424]">{label}</div>
+            <div class="priority-title">Complete 5 meaningful GU reach-outs</div>
+            <div class="priority-reason">
+              Consistent outreach makes Master Mentor predictable.
+            </div>
           </div>
-          {icon && <div className="text-[#0033cc]">{icon}</div>}
         </div>
-      </CardContent>
-    </Card>
-  );
-}
 
-function EnergySelector({ value, onChange }) {
-  const options = [
-    { key: "green", label: "Green", sub: "full power" },
-    { key: "yellow", label: "Yellow", sub: "steady" },
-    { key: "red", label: "Red", sub: "floor day" },
-  ];
-  return (
-    <div className="rounded-2xl border border-[#0033cc] bg-white p-2">
-      <div className="mb-2 text-center text-[10px] font-black uppercase tracking-widest text-[#0033cc]">Energy</div>
-      <div className="flex gap-2">
-        {options.map((o) => (
-          <button key={o.key} onClick={() => onChange(o.key)} className={`rounded-xl border px-3 py-2 text-left transition ${value === o.key ? "border-[#0033cc] bg-[#0033cc] text-white" : "border-[#0033cc] bg-white text-[#0033cc] hover:bg-[#eef3ff]"}`}>
-            <div className="text-xs font-black">{o.label}</div>
-            <div className="text-[10px] opacity-80">{o.sub}</div>
-          </button>
-        ))}
+        <button class="btn">Lock In</button>
+      </div>
+
+      <div class="priority">
+        <div class="priority-left">
+          <div class="priority-number">2</div>
+          <div>
+            <div class="priority-title">Vitruvian workout + protein target</div>
+            <div class="priority-reason">
+              Your body carries the mission.
+            </div>
+          </div>
+        </div>
+
+        <button class="btn">Lock In</button>
+      </div>
+
+      <div class="priority">
+        <div class="priority-left">
+          <div class="priority-number">3</div>
+          <div>
+            <div class="priority-title">Practice one core magic routine 5 times</div>
+            <div class="priority-reason">
+              Confidence comes from reps, not readiness.
+            </div>
+          </div>
+        </div>
+
+        <button class="btn">Lock In</button>
       </div>
     </div>
-  );
-}
 
-function CheckTile({ checked, label, sub, onClick }) {
-  return (
-    <button onClick={onClick} className={`flex min-h-[64px] items-center gap-3 rounded-2xl border p-3 text-left transition ${checked ? "border-[#141424] bg-white" : "border-[#1e1e32] bg-white hover:border-[#141424]/70"}`}>
-      <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-xl border ${checked ? "border-[#141424] bg-white text-[#141424]" : "border-[#2a2a42] text-transparent"}`}><Check size={16} /></span>
-      <span>
-        <span className="block text-sm font-bold text-[#0033cc]">{label}</span>
-        {sub && <span className="block text-xs font-semibold text-[#141424]">{sub}</span>}
-      </span>
-    </button>
-  );
-}
+    <div class="card">
+      <div class="section-title">Daily GIVER Alignment</div>
+      <div class="section-sub">
+        Vote for the identity you want to become.
+      </div>
 
-function Counter({ label, value, onChange }) {
-  return (
-    <div className="flex items-center justify-between rounded-2xl border border-[#1e1e32] bg-white p-3">
-      <span className="text-sm font-semibold text-[#0033cc]">{label}</span>
-      <div className="flex items-center gap-2">
-        <Button variant="secondary" className="h-8 w-8 rounded-xl bg-white p-0 text-[#3d3858] hover:bg-[#f3f3f3]" onClick={() => onChange(value - 1)}>-</Button>
-        <span className="w-8 text-center text-lg font-black text-[#141424]">{value}</span>
-        <Button variant="secondary" className="h-8 w-8 rounded-xl bg-white p-0 text-[#3d3858] hover:bg-[#f3f3f3]" onClick={() => onChange(value + 1)}>+</Button>
+      <div class="alignment-grid">
+
+        <label class="check">
+          <input type="checkbox" />
+          <div>
+            <div class="check-title">5am Discipline</div>
+            <div class="check-sub">Discipline</div>
+          </div>
+        </label>
+
+        <label class="check">
+          <input type="checkbox" />
+          <div>
+            <div class="check-title">Vitruvian / Movement</div>
+            <div class="check-sub">Wellness & Fitness</div>
+          </div>
+        </label>
+
+        <label class="check">
+          <input type="checkbox" />
+          <div>
+            <div class="check-title">Protein Target</div>
+            <div class="check-sub">Wellness & Fitness</div>
+          </div>
+        </label>
+
+        <label class="check">
+          <input type="checkbox" />
+          <div>
+            <div class="check-title">Give-First Action</div>
+            <div class="check-sub">Prosperity</div>
+          </div>
+        </label>
+
+        <label class="check">
+          <input type="checkbox" />
+          <div>
+            <div class="check-title">5 Reach-Outs</div>
+            <div class="check-sub">Ambassador Mentor</div>
+          </div>
+        </label>
+
+        <label class="check">
+          <input type="checkbox" />
+          <div>
+            <div class="check-title">Magic Reps</div>
+            <div class="check-sub">Performing Magician</div>
+          </div>
+        </label>
+
       </div>
     </div>
-  );
-}
 
-function TextArea({ label, value, onChange }) {
-  return (
-    <label className="block">
-      <span className="text-sm font-bold text-[#0033cc]">{label}</span>
-      <textarea className="mt-2 min-h-[90px] w-full rounded-2xl border border-[#0033cc] bg-white px-3 py-2 text-[#141424] outline-none focus:border-[#0033cc]" value={value || ""} onChange={(e) => onChange(e.target.value)} />
-    </label>
-  );
-}
+    <div class="card" style="margin-top: 24px;">
+      <div class="section-title">Evening Reflection</div>
+      <div class="section-sub">
+        Close the day intentionally. Preserve momentum.
+      </div>
+
+      <div class="reflection-grid">
+
+        <div>
+          <label>How did I GIVE first today?</label>
+          <textarea placeholder="Capture the seeds planted today..."></textarea>
+        </div>
+
+        <div>
+          <label>What vow did I keep?</label>
+          <textarea placeholder="Record the identity reinforced today..."></textarea>
+        </div>
+
+        <div>
+          <label>What resistance did I overcome?</label>
+          <textarea placeholder="Where did discipline win over emotion?"></textarea>
+        </div>
+
+        <div>
+          <label>What matters most tomorrow?</label>
+          <textarea placeholder="Clarify tomorrow before the day begins..."></textarea>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="footer">
+      Built around the GIVER philosophy • Wisdom • Wealth • Wellness • Predictive Massive Exceptional Results
+    </div>
+
+  </div>
+</body>
+</html>
